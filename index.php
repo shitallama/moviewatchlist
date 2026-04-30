@@ -12,7 +12,7 @@
 <body>
     <div class="container">
         <h1>Welcome to the Home Page</h1>
-        <p>You can customize it as needed.</p>
+        <p>Thank you! You can customize it as needed.</p>
     </div>
 </body>
 </html>
