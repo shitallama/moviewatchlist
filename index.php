@@ -11,8 +11,8 @@
 </head>
 <body>
     <div class="container">
-		<h1>Welcome to the Home Page</h1>
-		<p>This is a simple home page created using HTML and CSS. You can customize it as needed.</p>
-	</div>
+        <h1>Welcome to the Home Page</h1>
+        <p>Thank you! You can customize it as needed.</p>
+    </div>
 </body>
 </html>
