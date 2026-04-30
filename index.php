@@ -13,6 +13,7 @@
     <div class="container">
         <h1>Welcome to the Home Page</h1>
         <p>Thank you! You can customize it as needed.</p>
+        <p>Mallika committed this file.</p>
     </div>
 </body>
 </html>
