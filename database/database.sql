@@ -28,3 +28,27 @@ INSERT INTO Movies (title, genre, release_date, rating, watched, user_id) VALUES
 ('The Social Network', 'Drama', '2010-10-01', 4, TRUE, 6),
 ('Harry Potter and the Sorcerer\'s Stone', 'Fantasy', '2001-11-16', 4, TRUE, 7),
 ('The Lord of the Rings: The Fellowship of the Ring', 'Fantasy', '2001-12-19', 5, TRUE, 7);
+
+
+
+CREATE TABLE Movies (
+    movie_id INT PRIMARY KEY AUTO_INCREMENT,
+    title VARCHAR(100) NOT NULL,
+    genre VARCHAR(50),
+    rating INT CHECK (rating >= 1 AND rating <= 5),
+    watched BOOLEAN DEFAULT FALSE,
+    watch_date DATE NULL,
+    user_notes VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Seed data for testing
+INSERT INTO Movies (title, genre, rating, watched, watch_date, user_notes) VALUES
+('Inception', 'Sci-Fi', 5, TRUE, '2024-03-15', 'Mind-bending masterpiece, loved the ending.'),
+('The Dark Knight', 'Action', 5, TRUE, '2024-01-10', 'Best Joker performance ever.'),
+('Interstellar', 'Sci-Fi', 4, FALSE, NULL, 'Need to watch this on a big screen.'),
+('Pulp Fiction', 'Crime', 5, TRUE, '2023-11-20', 'Classic Tarantino dialogue.'),
+('The Matrix Resurrections', 'Sci-Fi', 2, TRUE, '2024-02-05', 'A bit disappointing compared to the original.');
+
+-- Verify the data
+SELECT * FROM Movies;
