@@ -58,3 +58,12 @@ CREATE TABLE categories (
     created_at DATE,
     is_active BOOLEAN DEFAULT TRUE
 );
+
+CREATE TABLE Review (
+    review_id INT PRIMARY KEY,
+    rating INT,
+    review_text VARCHAR(1000),
+    is_recommended BOOLEAN,
+    created_at DATE,
+    updated_at DATE
+);
