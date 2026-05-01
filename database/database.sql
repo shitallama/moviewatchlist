@@ -28,3 +28,13 @@ INSERT INTO Movies (title, genre, release_date, rating, watched, user_id) VALUES
 ('The Social Network', 'Drama', '2010-10-01', 4, TRUE, 6),
 ('Harry Potter and the Sorcerer\'s Stone', 'Fantasy', '2001-11-16', 4, TRUE, 7),
 ('The Lord of the Rings: The Fellowship of the Ring', 'Fantasy', '2001-12-19', 5, TRUE, 7);
+
+
+CREATE TABLE Review (
+    review_id INT PRIMARY KEY,
+    rating INT CHECK (rating BETWEEN 1 AND 5),
+    review_text VARCHAR(1000),
+    is_recommended BOOLEAN NOT NULL,
+    created_at DATE NOT NULL,
+    updated_at DATE
+);
