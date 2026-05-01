@@ -50,3 +50,11 @@ INSERT INTO Movies (title, genre, rating, watched, watch_date, user_notes) VALUE
 
 -- Verify the data
 SELECT * FROM Movies;
+
+CREATE TABLE categories (
+    category_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    description VARCHAR(255),
+    created_at DATE,
+    is_active BOOLEAN DEFAULT TRUE
+);
