@@ -12,10 +12,10 @@
             <div class="footer-section">
                 <h4>Quick Links</h4>
                 <ul>
-                    <li><a href="movies.php">Browse Movies</a></li>
-                    <li><a href="watchlist.php">My Watchlist</a></li>
-                    <li><a href="genres.php">Genres</a></li>
-                    <li><a href="reviews.php">Reviews</a></li>
+                    <li><a href="<?php echo $basePath; ?>movies.php">Browse Movies</a></li>
+                    <li><a href="<?php echo $basePath; ?>watchlist.php">My Watchlist</a></li>
+                    <li><a href="<?php echo $basePath; ?>genres.php">Genres</a></li>
+                    <li><a href="<?php echo $basePath; ?>reviews.php">Reviews</a></li>
                 </ul>
             </div>
             
@@ -23,12 +23,12 @@
                 <h4>Account</h4>
                 <ul>
                     <?php if($isLoggedIn): ?>
-                        <li><a href="profile.php">My Profile</a></li>
-                        <li><a href="settings.php">Settings</a></li>
-                        <li><a href="logout.php">Logout</a></li>
+                        <li><a href="<?php echo $basePath; ?>profile.php">My Profile</a></li>
+                        <li><a href="<?php echo $basePath; ?>settings.php">Settings</a></li>
+                        <li><a href="<?php echo $basePath; ?>logout.php">Logout</a></li>
                     <?php else: ?>
-                        <li><a href="login.php">Login</a></li>
-                        <li><a href="register.php">Register</a></li>
+                        <li><a href="<?php echo $basePath; ?>login.php">Login</a></li>
+                        <li><a href="<?php echo $basePath; ?>register.php">Register</a></li>
                     <?php endif; ?>
                 </ul>
             </div>
@@ -50,5 +50,5 @@
         </div>
     </footer>
     
-    <script src="js/script.js"></script>
+    <script src="<?php echo $basePath; ?>assets/js/script.js"></script>
 </body>

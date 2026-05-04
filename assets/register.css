@@ -1,0 +1,207 @@
+@import 'colors.css';
+
+body {
+    font-family: 'Space Grotesk', sans-serif;
+    background: radial-gradient(circle at 15% 20%, rgba(99, 102, 241, 0.24), transparent 45%),
+        radial-gradient(circle at 85% 15%, rgba(16, 185, 129, 0.2), transparent 40%),
+        linear-gradient(150deg, var(--darker-bg), var(--dark-bg));
+}
+
+.register-shell {
+    min-height: calc(100vh - 200px);
+    display: grid;
+    place-items: center;
+    padding: 3.5rem 1.5rem 5rem;
+}
+
+.register-panel {
+    width: min(1020px, 100%);
+    background: rgba(15, 23, 42, 0.92);
+    border: 1px solid rgba(148, 163, 184, 0.25);
+    border-radius: 1.5rem;
+    display: grid;
+    grid-template-columns: minmax(300px, 1.1fr) minmax(320px, 1fr);
+    overflow: hidden;
+    box-shadow: 0 25px 85px rgba(15, 23, 42, 0.6);
+}
+
+.register-visual {
+    padding: 3rem;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.25), rgba(16, 185, 129, 0.2));
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    border-right: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+.register-visual h1 {
+    font-size: 2.4rem;
+    line-height: 1.1;
+}
+
+.register-visual p {
+    color: var(--text-secondary);
+}
+
+.register-steps {
+    display: grid;
+    gap: 0.75rem;
+}
+
+.step-item {
+    padding: 0.75rem 1rem;
+    border-radius: 0.85rem;
+    background: rgba(2, 6, 23, 0.5);
+    border: 1px solid rgba(148, 163, 184, 0.25);
+    color: var(--text-primary);
+    display: flex;
+    gap: 0.6rem;
+    align-items: center;
+}
+
+.register-form-wrap {
+    padding: 3rem;
+    background: rgba(2, 6, 23, 0.6);
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.register-form-wrap h2 {
+    font-size: 2rem;
+}
+
+.form-alert {
+    border: 1px solid rgba(239, 68, 68, 0.5);
+    background: rgba(239, 68, 68, 0.12);
+    color: #fecaca;
+    padding: 0.75rem 1rem;
+    border-radius: 0.75rem;
+    font-size: 0.95rem;
+}
+
+.form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-field label {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+}
+
+.form-field input {
+    background: rgba(15, 23, 42, 0.85);
+    border: 1px solid rgba(148, 163, 184, 0.3);
+    border-radius: 0.75rem;
+    padding: 0.75rem 1rem;
+    color: var(--text-primary);
+    font-size: 1rem;
+}
+
+.form-field input:focus {
+    outline: none;
+    border-color: rgba(16, 185, 129, 0.8);
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+}
+
+.password-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-wrap input {
+    width: 100%;
+    padding-right: 4.5rem;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 0.75rem;
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.register-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+.terms-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+}
+
+.primary-btn {
+    padding: 0.85rem 1.5rem;
+    border: none;
+    border-radius: 0.85rem;
+    background: linear-gradient(135deg, var(--primary-color), #10b981);
+    color: white;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.primary-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
+}
+
+.login-meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+}
+
+.login-meta a {
+    color: var(--text-primary);
+    text-decoration: none;
+}
+
+.login-meta a:hover {
+    color: var(--primary-color);
+}
+
+@media (max-width: 900px) {
+    .register-panel {
+        grid-template-columns: 1fr;
+    }
+
+    .register-visual {
+        border-right: none;
+        border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+    }
+}
+
+@media (max-width: 640px) {
+    .register-shell {
+        padding: 2.5rem 1rem 4rem;
+    }
+
+    .register-visual,
+    .register-form-wrap {
+        padding: 2rem 1.5rem;
+    }
+
+    .register-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .login-meta {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
