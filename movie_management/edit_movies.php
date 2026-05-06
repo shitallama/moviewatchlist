@@ -1,11 +1,26 @@
 <?php
 include('../includes/db.php');
 
+session_start();
+
+// Check login
+if (!isset($_SESSION['user_id'])) {
+    header("Location: ../Login/login.php");
+    exit();
+}
+
 $id = $_GET['id'];
+$user_id = $_SESSION['user_id'];
 
 // Get movie
-$result = $conn->query("SELECT * FROM movies WHERE movie_id=$id");
-$row = $result->fetch_assoc();
+$stmt = $pdo->prepare("SELECT * FROM movies WHERE movie_id = ? AND user_id = ?");
+$stmt->execute([$id, $user_id]);
+$row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+if (!$row) {
+    echo "Movie not found or access denied.";
+    exit();
+}
 
 // Update movie
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -16,15 +31,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $rating = $_POST['rating'];
     $watched = isset($_POST['watched']) ? 1 : 0;
 
-    $conn->query("UPDATE movies SET 
-        title='$title',
-        genre='$genre',
-        release_date='$release_date',
-        rating='$rating',
-        watched='$watched'
-        WHERE movie_id=$id");
+    $stmt = $pdo->prepare("UPDATE movies SET 
+        title = ?,
+        genre = ?,
+        release_date = ?,
+        rating = ?,
+        watched = ?
+        WHERE movie_id = ? AND user_id = ?");
+    $stmt->execute([$title, $genre, $release_date, $rating, $watched, $id, $user_id]);
 
     header("Location: view_movies.php");
+    exit();
 }
 ?>
 

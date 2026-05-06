@@ -24,17 +24,10 @@ $userName = $_SESSION['user_name'] ?? 'Guest';
                 <ul class="nav-links">
                     <li><a href="<?php echo $basePath; ?>index.php"><img class="icon" src="<?php echo $basePath; ?>assets/icons/home.svg" alt="" aria-hidden="true"> Home</a></li>
                     <?php if($isLoggedIn): ?>
-<<<<<<< HEAD
-                    <li><a href="<?php echo $basePath; ?>movie_management/add_movies.php"><i class="fas fa-video"></i> Movies</a></li>
-                    <li><a href="<?php echo $basePath; ?>watchlist.php"><i class="fas fa-eye"></i> Watchlist</a></li>
-                    <li><a href="<?php echo $basePath; ?>genres.php"><i class="fas fa-tags"></i> Genres</a></li>
-                    <li><a href="<?php echo $basePath; ?>reviews.php"><i class="fas fa-star"></i> Reviews</a></li>
-=======
-                    <li><a href="<?php echo $basePath; ?>movies.php"><img class="icon" src="<?php echo $basePath; ?>assets/icons/video.svg" alt="" aria-hidden="true"> Movies</a></li>
+                    <li><a href="<?php echo $basePath; ?>movie_management/add_movies.php"><img class="icon" src="<?php echo $basePath; ?>assets/icons/video.svg" alt="" aria-hidden="true"> Movies</a></li>
                     <li><a href="<?php echo $basePath; ?>watchlist.php"><img class="icon" src="<?php echo $basePath; ?>assets/icons/eye.svg" alt="" aria-hidden="true"> Watchlist</a></li>
                     <li><a href="<?php echo $basePath; ?>genres.php"><img class="icon" src="<?php echo $basePath; ?>assets/icons/tag.svg" alt="" aria-hidden="true"> Genres</a></li>
                     <li><a href="<?php echo $basePath; ?>reviews.php"><img class="icon" src="<?php echo $basePath; ?>assets/icons/star.svg" alt="" aria-hidden="true"> Reviews</a></li>
->>>>>>> dfdabba90492e4506ea6aa710ba86dd8e5d68e7e
                     <?php endif; ?>
                 </ul>
                 

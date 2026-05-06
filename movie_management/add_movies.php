@@ -1,6 +1,8 @@
 <?php
 include('../includes/db.php');
 
+session_start();
+
 // Check login
 if (!isset($_SESSION['user_id'])) {
     header("Location: ../Login/login.php");
@@ -23,11 +25,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } elseif ($rating < 1 || $rating > 5) {
         echo "Rating must be 1-5";
     } else {
-        $sql = "INSERT INTO movies (title, genre, release_date, rating, watched, user_id)
-                VALUES ('$title', '$genre', '$release_date', '$rating', '$watched', '$user_id')";
-
-        $conn->query($sql);
-        echo "Movie added!";
+        $stmt = $pdo->prepare("INSERT INTO movies (title, genre, release_date, rating, watched, user_id)
+                VALUES (?, ?, ?, ?, ?, ?)");
+        $stmt->execute([$title, $genre, $release_date, $rating, $watched, $user_id]);
+        header("Location: view_movies.php");
+        exit();
     }
 }
 ?>
