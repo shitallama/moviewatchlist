@@ -6,12 +6,26 @@
     box-sizing: border-box;
 }
 
+.icon {
+    width: 1em;
+    height: 1em;
+    display: inline-block;
+    object-fit: contain;
+    flex-shrink: 0;
+    filter: var(--icon-filter);
+}
+
+.icon-warning {
+    filter: none;
+}
+
 body {
     font-family: 'Inter', sans-serif;
-    background: linear-gradient(135deg, var(--dark-bg) 0%, var(--darker-bg) 100%);
+    background: linear-gradient(135deg, var(--page-bg-start) 0%, var(--page-bg-end) 100%);
     color: var(--text-primary);
     line-height: 1.6;
     min-height: 100vh;
+    transition: background 0.4s ease, color 0.3s ease;
 }
 
 /* Main Content */
@@ -22,11 +36,12 @@ body {
 
 /* Navbar Styles */
 .navbar {
-    background: var(--dark-bg);
+    background: var(--nav-bg);
     border-bottom: 1px solid var(--border-color);
     position: sticky;
     top: 0;
     z-index: 1000;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .nav-container {
@@ -48,8 +63,9 @@ body {
     text-decoration: none;
 }
 
-.nav-brand i {
-    font-size: 1.8rem;
+.nav-brand .icon {
+    width: 1.8rem;
+    height: 1.8rem;
 }
 
 .mobile-menu-btn {
@@ -57,8 +73,12 @@ body {
     background: none;
     border: none;
     color: var(--text-primary);
-    font-size: 1.5rem;
     cursor: pointer;
+}
+
+.mobile-menu-btn .icon {
+    width: 1.5rem;
+    height: 1.5rem;
 }
 
 .nav-menu {
@@ -82,6 +102,13 @@ body {
     gap: 0.5rem;
 }
 
+.nav-links .icon,
+.nav-user .icon,
+.dropdown-menu .icon {
+    width: 1rem;
+    height: 1rem;
+}
+
 .nav-links a:hover {
     color: var(--primary-color);
 }
@@ -96,7 +123,7 @@ body {
     padding: 0.5rem 1rem;
     border-radius: 0.5rem;
     text-decoration: none;
-    transition: all 0.3s;
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
 .btn-login {
@@ -131,6 +158,7 @@ body {
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
 }
 
 .dropdown-menu {
@@ -143,6 +171,7 @@ body {
     min-width: 200px;
     display: none;
     margin-top: 0.5rem;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .user-dropdown:hover .dropdown-menu {
@@ -160,7 +189,7 @@ body {
 }
 
 .dropdown-menu a:hover {
-    background: var(--dark-bg);
+    background: var(--hover-bg);
 }
 
 .dropdown-menu hr {
@@ -170,9 +199,10 @@ body {
 
 /* Footer */
 .footer {
-    background: var(--darker-bg);
+    background: var(--footer-static);
     border-top: 1px solid var(--border-color);
     padding: 3rem 2rem 1rem;
+    transition: border-color 0.3s ease;
 }
 
 .footer-container {
@@ -185,11 +215,16 @@ body {
 }
 
 .footer-section h3, .footer-section h4 {
+    color: var(--footer-text);
     margin-bottom: 1rem;
 }
 
+.footer .icon {
+    filter: invert(1);
+}
+
 .footer-section p {
-    color: var(--text-secondary);
+    color: var(--footer-text-muted);
     margin-bottom: 1rem;
 }
 
@@ -199,13 +234,17 @@ body {
 }
 
 .social-links a {
-    color: var(--text-secondary);
-    font-size: 1.2rem;
+    color: var(--footer-text-muted);
     transition: color 0.3s;
 }
 
+.social-links .icon {
+    width: 1.2rem;
+    height: 1.2rem;
+}
+
 .social-links a:hover {
-    color: var(--primary-color);
+    color: var(--footer-text);
 }
 
 .footer-section ul {
@@ -217,29 +256,57 @@ body {
 }
 
 .footer-section ul li a {
-    color: var(--text-secondary);
+    color: var(--footer-text-muted);
     text-decoration: none;
     transition: color 0.3s;
 }
 
 .footer-section ul li a:hover {
-    color: var(--primary-color);
+    color: var(--footer-text);
 }
 
 .footer-bottom {
     text-align: center;
     padding-top: 2rem;
     border-top: 1px solid var(--border-color);
-    color: var(--text-secondary);
+    color: var(--footer-text-muted);
 }
 
 .footer-link {
-    color: var(--text-secondary);
+    color: var(--footer-text-muted);
     text-decoration: none;
     transition: color 0.3s;
 }
 .footer-link:hover {
-    color: var(--primary-color);
+    color: var(--footer-text);
+}
+
+.theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    padding: 0.45rem 0.75rem;
+    border-radius: 999px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: transform 0.2s ease, border-color 0.2s ease, background-color 0.3s ease, color 0.3s ease;
+}
+
+.theme-toggle .icon {
+    width: 1rem;
+    height: 1rem;
+}
+
+.theme-toggle:hover {
+    transform: translateY(-1px);
+    border-color: var(--primary-color);
+}
+
+.theme-toggle i {
+    font-size: 0.95rem;
 }
 
 /* Responsive Design */

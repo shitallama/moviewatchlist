@@ -2,9 +2,10 @@
 
 /* Hero Section */
 .hero-section {
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    background: linear-gradient(135deg, var(--hero-start) 0%, var(--hero-end) 100%);
     padding: 4rem 2rem;
     text-align: center;
+    transition: background 0.4s ease;
 }
 
 .hero-content {
@@ -15,6 +16,7 @@
 .hero-content h1 {
     font-size: 3rem;
     margin-bottom: 1rem;
+    color: white;
     animation: fadeInUp 0.8s ease;
 }
 
@@ -22,6 +24,8 @@
     font-size: 1.2rem;
     margin-bottom: 2rem;
     opacity: 0.9;
+    color: white;
+    animation: fadeInUp 0.8s ease;
 }
 
 .hero-buttons {
@@ -68,6 +72,7 @@
 .stats-section {
     padding: 3rem 2rem;
     background: var(--card-bg);
+    transition: background-color 0.3s ease;
 }
 
 .stats-container {
@@ -79,21 +84,22 @@
 }
 
 .stat-card {
-    background: var(--dark-bg);
+    background: var(--darker-bg);
     padding: 1.5rem;
     border-radius: 1rem;
     display: flex;
     align-items: center;
     gap: 1rem;
-    transition: transform 0.3s;
+    transition: transform 0.3s, background-color 0.3s ease;
 }
 
 .stat-card:hover {
     transform: translateY(-5px);
 }
 
-.stat-card i {
-    font-size: 2.5rem;
+.stat-card .icon {
+    width: 2.5rem;
+    height: 2.5rem;
     color: var(--primary-color);
 }
 
@@ -133,7 +139,7 @@
     padding: 2rem;
     border-radius: 1rem;
     text-align: center;
-    transition: transform 0.3s;
+    transition: transform 0.3s, background-color 0.3s ease;
     position: relative;
 }
 
@@ -152,9 +158,11 @@
     margin: 0 auto 1.5rem;
 }
 
-.feature-icon i {
-    font-size: 2rem;
+.feature-icon .icon {
+    width: 2rem;
+    height: 2rem;
     color: white;
+    filter: invert(1);
 }
 
 .feature-card h3 {
@@ -170,6 +178,7 @@
 .top-rated-section {
     padding: 4rem 2rem;
     background: var(--card-bg);
+    transition: background-color 0.3s ease;
 }
 
 .movies-slider {
@@ -180,10 +189,10 @@
 }
 
 .movie-card {
-    background: var(--dark-bg);
+    background: var(--darker-bg);
     border-radius: 0.5rem;
     overflow: hidden;
-    transition: transform 0.3s;
+    transition: transform 0.3s, background-color 0.3s ease;
 }
 
 .movie-card:hover {
@@ -212,6 +221,11 @@
     display: flex;
     align-items: center;
     gap: 0.25rem;
+}
+
+.movie-rating .icon {
+    width: 0.9rem;
+    height: 0.9rem;
 }
 
 .movie-rating i {
