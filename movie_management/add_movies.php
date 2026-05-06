@@ -44,4 +44,4 @@ Watched: <input type="checkbox" name="watched"><br>
 <button>Add</button>
 </form>
 
-<a href="view_movies.php">Back</a>
+<button><a href="view_movies.php">Back</a></button>
