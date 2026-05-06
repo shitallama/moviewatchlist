@@ -72,10 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 					'password_hash' => $passwordHash,
 				]);
 
-				$_SESSION['user_id'] = $pdo->lastInsertId();
-				$_SESSION['user_name'] = $username;
-
-				header('Location: ' . $basePath . 'index.php');
+				header('Location: ' . $basePath . 'Login/login.php?registered=1');
 				exit;
 			} catch (PDOException $e) {
 				$errors[] = 'Could not create your account. Please try again.';
@@ -104,9 +101,9 @@ require_once $basePath . 'includes/header.php';
 				<h1>Join CineList today</h1>
 				<p>Track what you watch, build smarter lists, and get inspired for your next movie night.</p>
 				<div class="register-steps">
-					<div class="step-item"><i class="fas fa-user-plus"></i> Create your profile</div>
-					<div class="step-item"><i class="fas fa-layer-group"></i> Organize your genres</div>
-					<div class="step-item"><i class="fas fa-heart"></i> Save favorites fast</div>
+					<div class="step-item"><img class="icon" src="<?php echo $basePath; ?>assets/icons/user-plus.svg" alt="" aria-hidden="true"> Create your profile</div>
+					<div class="step-item"><img class="icon" src="<?php echo $basePath; ?>assets/icons/layers.svg" alt="" aria-hidden="true"> Organize your genres</div>
+					<div class="step-item"><img class="icon" src="<?php echo $basePath; ?>assets/icons/heart.svg" alt="" aria-hidden="true"> Save favorites fast</div>
 				</div>
 			</div>
 			<div class="register-form-wrap">
@@ -187,20 +184,6 @@ require_once $basePath . 'includes/header.php';
 		</div>
 	</section>
 
-	<script>
-		const toggles = document.querySelectorAll('.toggle-password');
-		toggles.forEach((toggle) => {
-			toggle.addEventListener('click', () => {
-				const targetId = toggle.getAttribute('data-target');
-				const input = document.getElementById(targetId);
-				if (!input) {
-					return;
-				}
-				const isPassword = input.type === 'password';
-				input.type = isPassword ? 'text' : 'password';
-				toggle.textContent = isPassword ? 'Hide' : 'Show';
-			});
-		});
-	</script>
-<?php require_once $basePath . 'includes/footer.php'; ?>
+    <script src="<?php echo $basePath; ?>assets/js/script.js"></script>
+    <?php require_once $basePath . 'includes/footer.php'; ?>
 </html>

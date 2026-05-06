@@ -14,6 +14,11 @@ if (isset($_SESSION['user_id'])) {
 $errors = [];
 $identifier = '';
 $remember = false;
+$successMessage = '';
+
+if ($_SERVER['REQUEST_METHOD'] !== 'POST' && isset($_GET['registered']) && $_GET['registered'] === '1') {
+	$successMessage = 'Account created, please sign in.';
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	$identifier = trim($_POST['identifier'] ?? '');
@@ -72,9 +77,9 @@ require_once $basePath . 'includes/header.php';
 				<h1>Welcome back to CineList</h1>
 				<p>Pick up your next movie night, track new releases, and keep the watchlist tight.</p>
 				<div class="login-badges">
-					<div class="badge-item"><i class="fas fa-clapperboard"></i> Curate your collection</div>
-					<div class="badge-item"><i class="fas fa-eye"></i> Track watch status</div>
-					<div class="badge-item"><i class="fas fa-star"></i> Review with confidence</div>
+					<div class="badge-item"><img class="icon" src="<?php echo $basePath; ?>assets/icons/clapperboard.svg" alt="" aria-hidden="true"> Curate your collection</div>
+					<div class="badge-item"><img class="icon" src="<?php echo $basePath; ?>assets/icons/eye.svg" alt="" aria-hidden="true"> Track watch status</div>
+					<div class="badge-item"><img class="icon" src="<?php echo $basePath; ?>assets/icons/star.svg" alt="" aria-hidden="true"> Review with confidence</div>
 				</div>
 			</div>
 			<div class="login-form-wrap">
@@ -82,6 +87,12 @@ require_once $basePath . 'includes/header.php';
 					<h2>Sign in</h2>
 					<p class="login-meta">Use your CineList account to continue.</p>
 				</div>
+
+				<?php if ($successMessage !== ''): ?>
+					<div class="form-success form-message" data-auto-dismiss>
+						<?php echo htmlspecialchars($successMessage); ?>
+					</div>
+				<?php endif; ?>
 
 				<?php if (!empty($errors)): ?>
 					<div class="form-alert">
@@ -125,26 +136,12 @@ require_once $basePath . 'includes/header.php';
 
 				<div class="login-meta">
 					<span>New here?</span>
-					<a href="<?php echo $basePath; ?>register.php">Create an account</a>
+					<a href="<?php echo $basePath; ?>Login/register.php">Create an account</a>
 				</div>
 			</div>
 		</div>
 	</section>
 
-	<script>
-		const toggles = document.querySelectorAll('.toggle-password');
-		toggles.forEach((toggle) => {
-			toggle.addEventListener('click', () => {
-				const targetId = toggle.getAttribute('data-target');
-				const input = document.getElementById(targetId);
-				if (!input) {
-					return;
-				}
-				const isPassword = input.type === 'password';
-				input.type = isPassword ? 'text' : 'password';
-				toggle.textContent = isPassword ? 'Hide' : 'Show';
-			});
-		});
-	</script>
+<script src="<?php echo $basePath; ?>assets/js/login.js"></script>
 <?php require_once $basePath . 'includes/footer.php'; ?>
 </html>
