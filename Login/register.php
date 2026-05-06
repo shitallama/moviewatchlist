@@ -123,50 +123,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 						<div class="form-field">
 							<label for="username">Username</label>
 							<input
-								type="text"
-								id="username"
-								name="username"
-								autocomplete="username"
-								required
-								value="<?php echo htmlspecialchars($username); ?>"
-							>
+								type="text" id="username" name="username" autocomplete="username" placeholder="Choose a username" required value="<?php echo htmlspecialchars($username); ?>">
 						</div>
 						<div class="form-field">
 							<label for="email">Email</label>
-							<input
-								type="email"
-								id="email"
-								name="email"
-								autocomplete="email"
-								required
-								value="<?php echo htmlspecialchars($email); ?>"
-							>
+							<input type="email" id="email" name="email" autocomplete="email" placeholder="Enter your email" required value="<?php echo htmlspecialchars($email); ?>">
 						</div>
 					</div>
 					<div class="form-field">
 						<label for="password">Password</label>
 						<div class="password-wrap">
-							<input
-								type="password"
-								id="password"
-								name="password"
-								autocomplete="new-password"
-								required
-							>
-							<button class="toggle-password" type="button" data-target="password">Show</button>
+							<input type="password" id="password" name="password" autocomplete="new-password" required placeholder="Enter a password (min 8 characters)">
+							<button class="toggle-password" type="button" data-target="password" aria-label="Show password">
+								<img class="icon" src="<?php echo $basePath; ?>assets/icons/eye-closed.svg" alt="" aria-hidden="true" data-icon-open="<?php echo $basePath; ?>assets/icons/eye-open.svg" data-icon-closed="<?php echo $basePath; ?>assets/icons/eye-closed.svg">
+							</button>
 						</div>
 					</div>
 					<div class="form-field">
 						<label for="confirm_password">Confirm password</label>
 						<div class="password-wrap">
-							<input
-								type="password"
-								id="confirm_password"
-								name="confirm_password"
-								autocomplete="new-password"
-								required
-							>
-							<button class="toggle-password" type="button" data-target="confirm_password">Show</button>
+							<input type="password" id="confirm_password" name="confirm_password" autocomplete="new-password" required placeholder="Confirm your password">
+							<button class="toggle-password" type="button" data-target="confirm_password" aria-label="Show password">
+								<img class="icon" src="<?php echo $basePath; ?>assets/icons/eye-closed.svg" alt="" aria-hidden="true" data-icon-open="<?php echo $basePath; ?>assets/icons/eye-open.svg" data-icon-closed="<?php echo $basePath; ?>assets/icons/eye-closed.svg">
+							</button>
 						</div>
 					</div>
 					<label class="terms-row">
@@ -182,8 +161,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 				</div>
 			</div>
 		</div>
-	</section>
+</section>
 
-    <script src="<?php echo $basePath; ?>assets/js/script.js"></script>
-    <?php require_once $basePath . 'includes/footer.php'; ?>
+<?php require_once $basePath . 'includes/footer.php'; ?>
 </html>

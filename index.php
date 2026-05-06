@@ -5,33 +5,37 @@ require_once 'includes/db.php';
 // Fetch some statistics for the dashboard
 try {
     // Get total movies count
-    $stmt = $pdo->query("SELECT COUNT(*) as count FROM movies");
+    $stmt = $pdo->query("SELECT COUNT(*) as count FROM Movies");
     $totalMovies = $stmt->fetch()['count'];
     
     // Get top rated movies (assuming you have reviews table)
     $stmt = $pdo->query("
-        SELECT m.*, AVG(r.rating) as avg_rating, COUNT(r.id) as review_count 
-        FROM movies m 
-        LEFT JOIN reviews r ON m.id = r.movie_id 
-        GROUP BY m.id 
+        SELECT m.*, AVG(r.rating) as avg_rating, COUNT(r.review_id) as review_count 
+        FROM Movies m 
+        LEFT JOIN Review r ON m.movie_id = r.movie_id 
+        GROUP BY m.movie_id 
         ORDER BY avg_rating DESC 
         LIMIT 6
     ");
     $topMovies = $stmt->fetchAll();
     
     // Get recent movies
-    $stmt = $pdo->query("SELECT * FROM movies ORDER BY created_at DESC LIMIT 8");
+    $stmt = $pdo->query("SELECT * FROM Movies ORDER BY movie_id DESC LIMIT 8");
     $recentMovies = $stmt->fetchAll();
     
     // Get genres count
-    $stmt = $pdo->query("SELECT COUNT(*) as count FROM genres");
+    $stmt = $pdo->query("SELECT COUNT(*) as count FROM categories");
     $totalGenres = $stmt->fetch()['count'];
+
+    $stmt = $pdo->query("SELECT COUNT(*) as count FROM Review");
+    $totalReviews = $stmt->fetch()['count'];
     
 } catch(PDOException $e) {
     $totalMovies = 0;
     $topMovies = [];
     $recentMovies = [];
     $totalGenres = 0;
+    $totalReviews = 0;
 }
 ?>
 <!DOCTYPE html>
@@ -58,8 +62,8 @@ try {
             </div>
         <?php else: ?>
             <div class="hero-buttons">
-                <a href="movies.php" class="btn-primary">Browse Movies</a>
-                <a href="watchlist.php" class="btn-secondary">My Watchlist</a>
+                <a href="movie_management/view_movies.php" class="btn-primary">Browse Movies</a>
+                <a href="watch_status_management/watchlist.php" class="btn-secondary">My Watchlist</a>
             </div>
         <?php endif; ?>
     </div>
@@ -75,13 +79,6 @@ try {
             </div>
         </div>
         <div class="stat-card">
-            <img class="icon" src="assets/icons/users.svg" alt="" aria-hidden="true">
-            <div class="stat-info">
-                <h3>5+</h3>
-                <p>Team Members</p>
-            </div>
-        </div>
-        <div class="stat-card">
             <img class="icon" src="assets/icons/tag.svg" alt="" aria-hidden="true">
             <div class="stat-info">
                 <h3><?php echo $totalGenres; ?></h3>
@@ -91,7 +88,7 @@ try {
         <div class="stat-card">
             <img class="icon" src="assets/icons/star.svg" alt="" aria-hidden="true">
             <div class="stat-info">
-                <h3>100+</h3>
+                <h3><?php echo $totalReviews; ?></h3>
                 <p>User Reviews</p>
             </div>
         </div>
@@ -104,18 +101,10 @@ try {
         <div class="features-grid">
             <div class="feature-card">
                 <div class="feature-icon">
-                    <img class="icon" src="assets/icons/shield.svg" alt="" aria-hidden="true">
-                </div>
-                <h3>User Management</h3>
-                <p>Complete user management system - Register, login, profile management and more.</p>
-            </div>
-            
-            <div class="feature-card">
-                <div class="feature-icon">
                     <img class="icon" src="assets/icons/video.svg" alt="" aria-hidden="true">
                 </div>
                 <h3>Movie Management</h3>
-                <p>Full CRUD operations for movies - Add, edit, delete and browse movies.</p>
+                <p>Manage your movie collection - Add, edit, delete and browse movies.</p>
             </div>
             
             <div class="feature-card">
