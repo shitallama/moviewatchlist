@@ -2,10 +2,12 @@
     <footer class="footer">
         <div class="footer-container">
             <div class="footer-section">
-                <h3><i class="fas fa-film"></i> MovieHub</h3>
+                <h3><img class="icon" src="<?php echo $basePath; ?>assets/icons/film.svg" alt="" aria-hidden="true" width="20" height="20"> MovieHub</h3>
                 <p>Your complete movie management system. Track, rate, and discover amazing movies.</p>
                 <div class="social-links">
-                    <a href="https://github.com/shitallama/moviewatchlist" target="_blank"><i class="fab fa-github"></i></a>
+                    <a href="https://github.com/shitallama/moviewatchlist" target="_blank" aria-label="GitHub">
+                        <img class="icon" src="<?php echo $basePath; ?>assets/icons/github.svg" alt="" aria-hidden="true">
+                    </a>
                 </div>
             </div>
             
@@ -25,10 +27,10 @@
                     <?php if($isLoggedIn): ?>
                         <li><a href="<?php echo $basePath; ?>profile.php">My Profile</a></li>
                         <li><a href="<?php echo $basePath; ?>settings.php">Settings</a></li>
-                        <li><a href="<?php echo $basePath; ?>logout.php">Logout</a></li>
+                        <li><a href="<?php echo $basePath; ?>Login/logout.php">Logout</a></li>
                     <?php else: ?>
-                        <li><a href="<?php echo $basePath; ?>login.php">Login</a></li>
-                        <li><a href="<?php echo $basePath; ?>register.php">Register</a></li>
+                        <li><a href="<?php echo $basePath; ?>Login/login.php">Login</a></li>
+                        <li><a href="<?php echo $basePath; ?>Login/register.php">Register</a></li>
                     <?php endif; ?>
                 </ul>
             </div>

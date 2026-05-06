@@ -53,8 +53,8 @@ try {
         <p>Your ultimate destination for movie management, reviews, and tracking</p>
         <?php if(!$isLoggedIn): ?>
             <div class="hero-buttons">
-                <a href="register.php" class="btn-primary">Get Started</a>
-                <a href="login.php" class="btn-secondary">Login</a>
+                <a href="Login/register.php" class="btn-primary">Get Started</a>
+                <a href="Login/login.php" class="btn-secondary">Login</a>
             </div>
         <?php else: ?>
             <div class="hero-buttons">
@@ -68,28 +68,28 @@ try {
 <div class="stats-section">
     <div class="stats-container">
         <div class="stat-card">
-            <i class="fas fa-film"></i>
+            <img class="icon" src="assets/icons/film.svg" alt="" aria-hidden="true">
             <div class="stat-info">
                 <h3><?php echo $totalMovies; ?></h3>
                 <p>Total Movies</p>
             </div>
         </div>
         <div class="stat-card">
-            <i class="fas fa-users"></i>
+            <img class="icon" src="assets/icons/users.svg" alt="" aria-hidden="true">
             <div class="stat-info">
                 <h3>5+</h3>
                 <p>Team Members</p>
             </div>
         </div>
         <div class="stat-card">
-            <i class="fas fa-tags"></i>
+            <img class="icon" src="assets/icons/tag.svg" alt="" aria-hidden="true">
             <div class="stat-info">
                 <h3><?php echo $totalGenres; ?></h3>
                 <p>Genres</p>
             </div>
         </div>
         <div class="stat-card">
-            <i class="fas fa-star"></i>
+            <img class="icon" src="assets/icons/star.svg" alt="" aria-hidden="true">
             <div class="stat-info">
                 <h3>100+</h3>
                 <p>User Reviews</p>
@@ -100,11 +100,11 @@ try {
 
 <div class="features-section">
     <div class="container">
-        <h2 class="section-title">Powerful Features</h2>
+        <h2 class="section-title">Features</h2>
         <div class="features-grid">
             <div class="feature-card">
                 <div class="feature-icon">
-                    <i class="fas fa-user-shield"></i>
+                    <img class="icon" src="assets/icons/shield.svg" alt="" aria-hidden="true">
                 </div>
                 <h3>User Management</h3>
                 <p>Complete user management system - Register, login, profile management and more.</p>
@@ -112,7 +112,7 @@ try {
             
             <div class="feature-card">
                 <div class="feature-icon">
-                    <i class="fas fa-video"></i>
+                    <img class="icon" src="assets/icons/video.svg" alt="" aria-hidden="true">
                 </div>
                 <h3>Movie Management</h3>
                 <p>Full CRUD operations for movies - Add, edit, delete and browse movies.</p>
@@ -120,7 +120,7 @@ try {
             
             <div class="feature-card">
                 <div class="feature-icon">
-                    <i class="fas fa-eye"></i>
+                    <img class="icon" src="assets/icons/eye.svg" alt="" aria-hidden="true">
                 </div>
                 <h3>Watch Status</h3>
                 <p>Track your viewing progress - Mark movies as watched or to-watch.</p>
@@ -128,7 +128,7 @@ try {
             
             <div class="feature-card">
                 <div class="feature-icon">
-                    <i class="fas fa-tags"></i>
+                    <img class="icon" src="assets/icons/tag.svg" alt="" aria-hidden="true">
                 </div>
                 <h3>Genre Management</h3>
                 <p>Organize movies by genres - Create, edit and categorize genres.</p>
@@ -136,7 +136,7 @@ try {
             
             <div class="feature-card">
                 <div class="feature-icon">
-                    <i class="fas fa-star-half-alt"></i>
+                    <img class="icon" src="assets/icons/star-half.svg" alt="" aria-hidden="true">
                 </div>
                 <h3>Review & Rating</h3>
                 <p>Rate and review movies - Average ratings, comments and feedback system.</p>
@@ -155,7 +155,7 @@ try {
                 <div class="movie-poster">
                     <img src="images/placeholder.jpg" alt="<?php echo htmlspecialchars($movie['title']); ?>">
                     <div class="movie-rating">
-                        <i class="fas fa-star"></i>
+                        <img class="icon icon-warning" src="assets/icons/star-warning.svg" alt="" aria-hidden="true">
                         <span><?php echo number_format($movie['avg_rating'] ?? 0, 1); ?></span>
                     </div>
                 </div>
