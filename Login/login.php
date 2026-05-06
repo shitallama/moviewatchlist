@@ -77,9 +77,9 @@ require_once $basePath . 'includes/header.php';
 				<h1>Welcome back to CineList</h1>
 				<p>Pick up your next movie night, track new releases, and keep the watchlist tight.</p>
 				<div class="login-badges">
-					<div class="badge-item"><img class="icon" src="<?php echo $basePath; ?>assets/icons/clapperboard.svg" alt="" aria-hidden="true"> Curate your collection</div>
-					<div class="badge-item"><img class="icon" src="<?php echo $basePath; ?>assets/icons/eye.svg" alt="" aria-hidden="true"> Track watch status</div>
-					<div class="badge-item"><img class="icon" src="<?php echo $basePath; ?>assets/icons/star.svg" alt="" aria-hidden="true"> Review with confidence</div>
+					<div class="badge-item"><img class="icon" src="<?php echo $basePath; ?>assets/icons/clapperboard.svg" alt="" aria-hidden="true"> Create your collection</div>
+					<div class="badge-item"><img class="icon" src="<?php echo $basePath; ?>assets/icons/eye.svg" alt="" aria-hidden="true"> Track your watch status</div>
+					<div class="badge-item"><img class="icon" src="<?php echo $basePath; ?>assets/icons/star.svg" alt="" aria-hidden="true"> Write Reviews</div>
 				</div>
 			</div>
 			<div class="login-form-wrap">
