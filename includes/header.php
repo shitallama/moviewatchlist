@@ -24,7 +24,7 @@ $userName = $_SESSION['user_name'] ?? 'Guest';
                 <ul class="nav-links">
                     <li><a href="<?php echo $basePath; ?>index.php"><i class="fas fa-home"></i> Home</a></li>
                     <?php if($isLoggedIn): ?>
-                    <li><a href="<?php echo $basePath; ?>movies.php"><i class="fas fa-video"></i> Movies</a></li>
+                    <li><a href="<?php echo $basePath; ?>movie_management/add_movies.php"><i class="fas fa-video"></i> Movies</a></li>
                     <li><a href="<?php echo $basePath; ?>watchlist.php"><i class="fas fa-eye"></i> Watchlist</a></li>
                     <li><a href="<?php echo $basePath; ?>genres.php"><i class="fas fa-tags"></i> Genres</a></li>
                     <li><a href="<?php echo $basePath; ?>reviews.php"><i class="fas fa-star"></i> Reviews</a></li>
