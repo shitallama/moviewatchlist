@@ -24,7 +24,7 @@ $userName = $_SESSION['user_name'] ?? 'Guest';
                 <ul class="nav-links">
                     <li><a href="<?php echo $basePath; ?>index.php"><img class="icon" src="<?php echo $basePath; ?>assets/icons/home.svg" alt="" aria-hidden="true"> Home</a></li>
                     <?php if($isLoggedIn): ?>
-                    <li><a href="<?php echo $basePath; ?>movies.php"><img class="icon" src="<?php echo $basePath; ?>assets/icons/video.svg" alt="" aria-hidden="true"> Movies</a></li>
+                    <li><a href="<?php echo $basePath; ?>movie_management/add_movies.php"><img class="icon" src="<?php echo $basePath; ?>assets/icons/video.svg" alt="" aria-hidden="true"> Movies</a></li>
                     <li><a href="<?php echo $basePath; ?>watchlist.php"><img class="icon" src="<?php echo $basePath; ?>assets/icons/eye.svg" alt="" aria-hidden="true"> Watchlist</a></li>
                     <li><a href="<?php echo $basePath; ?>genres.php"><img class="icon" src="<?php echo $basePath; ?>assets/icons/tag.svg" alt="" aria-hidden="true"> Genres</a></li>
                     <li><a href="<?php echo $basePath; ?>reviews.php"><img class="icon" src="<?php echo $basePath; ?>assets/icons/star.svg" alt="" aria-hidden="true"> Reviews</a></li>
