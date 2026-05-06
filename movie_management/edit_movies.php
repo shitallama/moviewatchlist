@@ -9,6 +9,8 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
+$basePath = '../';
+
 $id = $_GET['id'];
 $user_id = $_SESSION['user_id'];
 
@@ -24,7 +26,6 @@ if (!$row) {
 
 // Update movie
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-
     $title = $_POST['title'];
     $genre = $_POST['genre'];
     $release_date = $_POST['release_date'];
@@ -44,14 +45,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     exit();
 }
 ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Edit Movie | CineList</title>
+    <link rel="stylesheet" href="<?php echo $basePath; ?>assets/style.css">
+    <link rel="stylesheet" href="<?php echo $basePath; ?>assets/manage.css">
+</head>
+<body>
+<?php require_once $basePath . 'includes/header.php'; ?>
 
 <h2>Edit Movie</h2>
 
 <form method="POST">
-Title: <input type="text" name="title" value="<?= $row['title'] ?>"><br>
-Genre: <input type="text" name="genre" value="<?= $row['genre'] ?>"><br>
-Date: <input type="date" name="release_date" value="<?= $row['release_date'] ?>"><br>
-Rating: <input type="number" name="rating" value="<?= $row['rating'] ?>"><br>
-Watched: <input type="checkbox" name="watched" <?= $row['watched'] ? 'checked' : '' ?>><br>
-<button>Update</button>
+    Title: <input type="text" name="title" value="<?= htmlspecialchars($row['title']) ?>"><br>
+    Genre: <input type="text" name="genre" value="<?= htmlspecialchars($row['genre']) ?>"><br>
+    Date: <input type="date" name="release_date" value="<?= htmlspecialchars($row['release_date']) ?>"><br>
+    Rating: <input type="number" name="rating" value="<?= htmlspecialchars($row['rating']) ?>"><br>
+    Watched: <input type="checkbox" name="watched" <?= $row['watched'] ? 'checked' : '' ?>><br>
+    <button>Update</button>
 </form>
+
+<?php require_once $basePath . 'includes/footer.php'; ?>
+</html>
