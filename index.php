@@ -1,7 +1,6 @@
 
 <?php
 require_once 'includes/db.php';
-require_once 'includes/header.php';
 
 // Fetch some statistics for the dashboard
 try {
@@ -47,6 +46,7 @@ try {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
+<?php require_once 'includes/header.php'; ?>
 <div class="hero-section">
     <div class="hero-content">
         <h1>Welcome to MovieHub</h1>

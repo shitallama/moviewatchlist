@@ -57,7 +57,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	}
 }
 
-require_once $basePath . 'includes/header.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -71,6 +70,7 @@ require_once $basePath . 'includes/header.php';
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
+<?php require_once $basePath . 'includes/header.php'; ?>
 	<section class="login-shell">
 		<div class="login-panel">
 			<div class="login-visual">
