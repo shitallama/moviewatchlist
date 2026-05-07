@@ -32,13 +32,8 @@ $userName = $_SESSION['user_name'] ?? 'Guest';
 =======
                     <li><a href="<?php echo $basePath; ?>movie_management/view_movies.php"><img class="icon" src="<?php echo $basePath; ?>assets/icons/video.svg" alt="" aria-hidden="true"> Movies</a></li>
                     <li><a href="<?php echo $basePath; ?>watch_status_management/watchlist.php"><img class="icon" src="<?php echo $basePath; ?>assets/icons/eye.svg" alt="" aria-hidden="true"> Watchlist</a></li>
-<<<<<<< HEAD
-                    <li><a href="<?php echo $basePath; ?>genres.php"><img class="icon" src="<?php echo $basePath; ?>assets/icons/tag.svg" alt="" aria-hidden="true"> Genres</a></li>
-                    <li><a href="<?php echo $basePath; ?>git reviews.php"><img class="icon" src="<?php echo $basePath; ?>assets/icons/star.svg" alt="" aria-hidden="true"> Reviews</a></li>
-=======
                     <li><a href="<?php echo $basePath; ?>categories_management/view_category.php"><img class="icon" src="<?php echo $basePath; ?>assets/icons/tag.svg" alt="" aria-hidden="true"> Genres</a></li>
                     <li><a href="<?php echo $basePath; ?>review_system/review_page.php"><img class="icon" src="<?php echo $basePath; ?>assets/icons/star.svg" alt="" aria-hidden="true"> Reviews</a></li>
->>>>>>> 5a4b5a02a4b1c1cad6bebf03072b272027dfd0f6
                     <?php endif; ?>
                 </ul>
                 
