@@ -11,10 +11,16 @@ if (!isset($_SESSION['user_id'])) {
 
 $basePath = '../';
 $user_id = $_SESSION['user_id'];
+$showAll = isset($_GET['all']) && $_GET['all'] === '1';
 
 // Base query
-$sql = "SELECT * FROM movies WHERE user_id = ?";
-$params = [$user_id];
+if ($showAll) {
+    $sql = "SELECT * FROM Movies";
+    $params = [];
+} else {
+    $sql = "SELECT * FROM Movies WHERE user_id = ?";
+    $params = [$user_id];
+}
 
 // SEARCH (Find)
 if (isset($_GET['search']) && !empty($_GET['search'])) {
@@ -130,7 +136,11 @@ $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     <?php if(empty($result)): ?>
     <div class="empty-state">
-        <p>No movies found. <a href="add_movies.php">Add your first movie</a> to get started!</p>
+        <?php if ($showAll): ?>
+            <p>No movies were found in the database.</p>
+        <?php else: ?>
+            <p>No movies found for your account. <a href="?all=1">Show all movies</a> or insert movies with your current user_id.</p>
+        <?php endif; ?>
     </div>
     <?php endif; ?>
 </div>

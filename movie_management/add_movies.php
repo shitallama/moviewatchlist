@@ -26,7 +26,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } elseif ($rating < 1 || $rating > 5) {
         echo "Rating must be 1-5";
     } else {
-        $stmt = $pdo->prepare("INSERT INTO movies (title, genre, release_date, rating, watched, user_id)
+        $stmt = $pdo->prepare("INSERT INTO Movies (title, genre, release_date, rating, watched, user_id)
                 VALUES (?, ?, ?, ?, ?, ?)");
         $stmt->execute([$title, $genre, $release_date, $rating, $watched, (int)$user_id]);
         header("Location: view_movies.php");

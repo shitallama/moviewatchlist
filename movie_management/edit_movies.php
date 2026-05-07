@@ -15,7 +15,7 @@ $id = $_GET['id'];
 $user_id = $_SESSION['user_id'];
 
 // Get movie
-$stmt = $pdo->prepare("SELECT * FROM movies WHERE movie_id = ? AND user_id = ?");
+$stmt = $pdo->prepare("SELECT * FROM Movies WHERE movie_id = ? AND user_id = ?");
 $stmt->execute([$id, $user_id]);
 $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -32,7 +32,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $rating = $_POST['rating'];
     $watched = isset($_POST['watched']) ? 1 : 0;
 
-    $stmt = $pdo->prepare("UPDATE movies SET 
+    $stmt = $pdo->prepare("UPDATE Movies SET 
         title = ?,
         genre = ?,
         release_date = ?,
