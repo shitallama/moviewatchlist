@@ -134,31 +134,5 @@ try {
     </div>
 </div>
 
-<?php if(!empty($topMovies)): ?>
-<div class="top-rated-section">
-    <div class="container">
-        <h2 class="section-title">Top Rated Movies</h2>
-        <div class="movies-slider">
-            <?php foreach($topMovies as $movie): ?>
-            <div class="movie-card">
-                <div class="movie-poster">
-                    <img src="images/placeholder.jpg" alt="<?php echo htmlspecialchars($movie['title']); ?>">
-                    <div class="movie-rating">
-                        <img class="icon icon-warning" src="assets/icons/star-warning.svg" alt="" aria-hidden="true">
-                        <span><?php echo number_format($movie['avg_rating'] ?? 0, 1); ?></span>
-                    </div>
-                </div>
-                <div class="movie-info">
-                    <h4><?php echo htmlspecialchars($movie['title']); ?></h4>
-                    <p><?php echo $movie['year'] ?? 'N/A'; ?></p>
-                    <a href="movie-details.php?id=<?php echo $movie['id']; ?>" class="btn-view">View Details</a>
-                </div>
-            </div>
-            <?php endforeach; ?>
-        </div>
-    </div>
-</div>
-<?php endif; ?>
-
 <?php require 'includes/footer.php';?>
 </html>
