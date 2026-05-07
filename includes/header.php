@@ -11,7 +11,7 @@ $userName = $_SESSION['user_name'] ?? 'Guest';
         <div class="nav-container">
             <div class="nav-brand">
                 <a href="<?php echo $basePath; ?>index.php">
-                    <img class="icon" src="<?php echo $basePath; ?>assets/icons/film.svg" alt="" aria-hidden="true" width="28" height="28">
+                    <img class="icon" src="<?php echo $basePath; ?>assets/icons/film.svg" alt="" aria-hidden="true" width="28" height="28" style="fill: var(--primary-color);">
                     <span>CineList</span>
                 </a>
             </div>
