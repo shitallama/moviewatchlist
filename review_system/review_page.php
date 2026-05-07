@@ -31,11 +31,11 @@ $basePath = '../';
             <label for="rating">Rating</label>
             <select id="rating" name="rating" required>
                 <option value="">Select</option>
-                <option value="1">1 &#9733;</option>
-                <option value="2">2 &#9733;</option>
-                <option value="3">3 &#9733;</option>
-                <option value="4">4 &#9733;</option>
-                <option value="5">5 &#9733;</option>
+                <option value="1">1 ⭐</option>
+                <option value="2">2 ⭐</option>
+                <option value="3">3 ⭐</option>
+                <option value="4">4 ⭐</option>
+                <option value="5">5 ⭐</option>
             </select>
 
             <label for="review">Review</label>
