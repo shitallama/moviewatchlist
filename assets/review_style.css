@@ -1,0 +1,190 @@
+@import 'colors.css';
+
+.review-page {
+    padding: 2rem 0 3rem;
+}
+
+.review-panel {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem;
+    border-radius: 32px;
+    background: var(--card-bg);
+    border: 1px solid var(--panel-border);
+    box-shadow: 0 36px 80px rgba(15, 23, 42, 0.15);
+}
+
+.review-header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 1.75rem;
+}
+
+.review-header h2 {
+    margin: 0;
+    font-size: clamp(2rem, 2.5vw, 2.6rem);
+    color: var(--text-primary);
+}
+
+.review-subtitle {
+    color: var(--text-secondary);
+    max-width: 720px;
+    line-height: 1.65;
+}
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-bottom: 0.5rem;
+    padding: 0.45rem 0.95rem;
+    border-radius: 999px;
+    background: rgba(47, 107, 255, 0.12);
+    color: var(--primary-color);
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+}
+
+.review-form {
+    display: grid;
+    gap: 1.25rem;
+}
+
+.review-form label {
+    display: block;
+    color: var(--text-primary);
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+}
+
+.review-form select,
+.review-form textarea {
+    width: 100%;
+    border-radius: 18px;
+    border: 1px solid var(--border-color);
+    background: var(--input-bg);
+    color: var(--text-primary);
+    padding: 1rem 1.1rem;
+    font-size: 1rem;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.review-form select:hover,
+.review-form textarea:hover,
+.review-form select:focus,
+.review-form textarea:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 8px rgba(47, 107, 255, 0.08);
+    outline: none;
+}
+
+.review-form textarea {
+    min-height: 170px;
+    resize: vertical;
+    line-height: 1.75;
+}
+
+.review-form button {
+    width: fit-content;
+    border: none;
+    border-radius: 18px;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: #ffffff;
+    padding: 0.95rem 1.9rem;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 18px 34px rgba(47, 107, 255, 0.2);
+    transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.review-form button:hover {
+    filter: brightness(1.05);
+    transform: translateY(-1px);
+}
+
+.review-list {
+    display: grid;
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+.review {
+    padding: 1.75rem 1.5rem;
+    border-radius: 26px;
+    background: var(--card-bg);
+    border: 1px solid var(--panel-border);
+    box-shadow: 0 22px 45px rgba(0, 0, 0, 0.08);
+}
+
+.review::before {
+    content: "";
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    width: 12px;
+    height: 12px;
+    border-radius: 999px;
+    background: var(--primary-color);
+    box-shadow: 0 0 0 6px rgba(47, 107, 255, 0.12);
+}
+
+.review strong {
+    display: block;
+    margin-bottom: 0.85rem;
+    font-size: 1.05rem;
+    color: var(--text-primary);
+}
+
+.review p {
+    margin: 0 0 1rem;
+    color: var(--text-secondary);
+    line-height: 1.8;
+}
+
+.review small {
+    color: var(--text-secondary);
+    display: block;
+    margin-bottom: 1rem;
+}
+
+.review-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.85rem;
+}
+
+.review-actions button {
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    background: var(--dark-bg);
+    color: var(--text-primary);
+    padding: 0.85rem 1.1rem;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.review-actions button:hover {
+    background: var(--hover-bg);
+    transform: translateY(-1px);
+}
+
+@media (max-width: 720px) {
+    .review-panel {
+        padding: 1.5rem;
+    }
+
+    .review-header {
+        gap: 0.5rem;
+    }
+
+    .review-list {
+        gap: 1rem;
+    }
+
+    .review-actions {
+        flex-direction: column;
+    }
+}
