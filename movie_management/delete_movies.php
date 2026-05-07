@@ -14,10 +14,6 @@ if (isset($_GET['id'])) {
     $id = $_GET['id'];
     $user_id = $_SESSION['user_id'];
 
-    $stmt = $pdo->prepare("DELETE FROM movies WHERE movie_id = ? AND user_id = ?");
-    $stmt->execute([$id, $user_id]);
-}
-
-header("Location: view_movies.php");
+        $stmt = $pdo->prepare("DELETE FROM Movies WHERE movie_id = ? AND user_id = ?");
 exit();
 ?>
