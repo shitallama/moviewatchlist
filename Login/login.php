@@ -104,25 +104,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 					<div class="form-field">
 						<label for="identifier">Email or username</label>
 						<input
-							type="text"
-							id="identifier"
-							name="identifier"
-							autocomplete="username"
-							required
-							value="<?php echo htmlspecialchars($identifier); ?>"
+							type="text" id="identifier" name="identifier" autocomplete="username" placeholder="Enter your username or email" required value="<?php echo htmlspecialchars($identifier); ?>"
 						>
 					</div>
 					<div class="form-field">
 						<label for="password">Password</label>
 						<div class="password-wrap">
 							<input
-								type="password"
-								id="password"
-								name="password"
-								autocomplete="current-password"
-								required
+								type="password" id="password" name="password" autocomplete="current-password" placeholder="Enter your password" required
 							>
-							<button class="toggle-password" type="button" data-target="password">Show</button>
+							<button class="toggle-password" type="button" data-target="password" aria-label="Show password">
+								<img class="icon" src="<?php echo $basePath; ?>assets/icons/eye-closed.svg" alt="" aria-hidden="true" data-icon-open="<?php echo $basePath; ?>assets/icons/eye-open.svg" data-icon-closed="<?php echo $basePath; ?>assets/icons/eye-closed.svg">
+							</button>
 						</div>
 					</div>
 					<div class="form-row">
