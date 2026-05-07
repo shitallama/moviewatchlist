@@ -1,45 +1,54 @@
+<?php
+$basePath = '../';
+?>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Review System</title>
-    <style>
-        body { font-family: Arial; margin: 40px; }
-        textarea { width: 300px; height: 80px; }
-        .review { border: 1px solid #ccc; padding: 10px; margin-top: 10px; }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Movie Reviews | CineList</title>
+    <link rel="stylesheet" href="<?php echo $basePath; ?>assets/style.css">
+    <link rel="stylesheet" href="<?php echo $basePath; ?>assets/review_style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
+<?php require_once $basePath . 'includes/header.php'; ?>
 
-<h2>Movie Review System</h2>
+<section class="review-page">
+    <div class="review-panel">
+        <div class="review-header">
+            <div>
+                <span class="badge">Reviews</span>
+                <h2>Movie Review System</h2>
+            </div>
+            <p class="review-subtitle">Share your rating and feedback for your favorite movies.</p>
+        </div>
 
-<!-- REVIEW FORM -->
-<form id="reviewForm">
-    <input type="hidden" name="user_id" value="1">
-    <input type="hidden" name="movie_id" value="1">
+        <form id="reviewForm" class="review-form">
+            <input type="hidden" name="user_id" value="1">
+            <input type="hidden" name="movie_id" value="1">
 
-    <label>Rating:</label>
-    <select name="rating" required>
-        <option value="">Select</option>
-        <option value="1">1 ⭐</option>
-        <option value="2">2 ⭐</option>
-        <option value="3">3 ⭐</option>
-        <option value="4">4 ⭐</option>
-        <option value="5">5 ⭐</option>
-    </select>
+            <label for="rating">Rating</label>
+            <select id="rating" name="rating" required>
+                <option value="">Select</option>
+                <option value="1">1 &#9733;</option>
+                <option value="2">2 &#9733;</option>
+                <option value="3">3 &#9733;</option>
+                <option value="4">4 &#9733;</option>
+                <option value="5">5 &#9733;</option>
+            </select>
 
-    <br><br>
+            <label for="review">Review</label>
+            <textarea id="review" name="review" placeholder="Write your review..." required></textarea>
 
-    <textarea name="review" placeholder="Write your review..." required></textarea>
+            <button type="submit">Submit Review</button>
+        </form>
 
-    <br><br>
+        <div id="reviewList" class="review-list"></div>
+    </div>
+</section>
 
-    <button type="submit">Submit Review</button>
-</form>
-
-<hr>
-
-<!-- REVIEW LIST -->
-<div id="reviewList"></div>
+<?php require_once $basePath . 'includes/footer.php'; ?>
 
 <script>
 // LOAD REVIEWS
@@ -72,7 +81,6 @@ function deleteReview(id) {
 function editReview(id, rating, review) {
     let form = document.getElementById("reviewForm");
 
-    // remove old hidden input if exists
     document.querySelector("input[name='review_id']")?.remove();
 
     let hidden = document.createElement("input");
@@ -112,9 +120,7 @@ document.getElementById("reviewForm").addEventListener("submit", function(e) {
     });
 });
 
-// LOAD ON PAGE START
 window.onload = loadReviews;
 </script>
-
 </body>
 </html>
