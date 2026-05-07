@@ -27,7 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } else {
         $stmt = $pdo->prepare("INSERT INTO movies (title, genre, release_date, rating, watched, user_id)
                 VALUES (?, ?, ?, ?, ?, ?)");
-        $stmt->execute([$title, $genre, $release_date, $rating, $watched, $user_id]);
+        $stmt->execute([$title, $genre, $release_date, $rating, $watched, (int)$user_id]);
         header("Location: view_movies.php");
         exit();
     }
