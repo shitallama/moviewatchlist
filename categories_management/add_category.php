@@ -1,46 +1,77 @@
 <?php
-// Database connection
-$conn = new mysqli("localhost", "root", "", "moviewatchlist");
+$basePath = '../';
+require_once $basePath . 'includes/db.php';
 
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+$error = '';
+$name = '';
+$description = '';
 
-// Insert category
-if (isset($_POST['submit'])) {
-    $name = $_POST['name'];
-    $description = $_POST['description'];
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $name = trim($_POST['name'] ?? '');
+    $description = trim($_POST['description'] ?? '');
 
-    $sql = "INSERT INTO categories (name, description, created_at, is_active)
-            VALUES ('$name', '$description', CURDATE(), 1)";
+    if ($name === '') {
+        $error = 'Category name is required.';
+    } else {
+        try {
+            $stmt = $pdo->prepare(
+                'INSERT INTO categories (name, description, created_at, is_active) VALUES (:name, :description, CURDATE(), 1)'
+            );
+            $stmt->execute([
+                'name' => $name,
+                'description' => $description,
+            ]);
 
-    $conn->query($sql);
-
-    // Redirect after insert
-    header("Location: view_category.php");
+            header('Location: view_category.php?status=added');
+            exit;
+        } catch (PDOException $e) {
+            $error = 'Unable to save category. Please try again.';
+        }
+    }
 }
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Add Category</title>
-    <link rel="stylesheet" href="../assets/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Add Category | CineList</title>
+    <link rel="stylesheet" href="<?php echo $basePath; ?>assets/style.css">
+    <link rel="stylesheet" href="<?php echo $basePath; ?>assets/categories.css">
 </head>
-<body>
+<body class="categories-page">
+<?php require_once $basePath . 'includes/header.php'; ?>
 
 <div class="container">
-    <h2 class="section-title">Add Category</h2>
+    <div class="page-header">
+        <h2 class="section-title">Add Category</h2>
+        <div class="header-actions">
+            <a href="view_category.php" class="btn-secondary">Back to list</a>
+        </div>
+    </div>
 
-    <form method="POST">
-        <input type="text" name="name" placeholder="Category Name" required><br><br>
+    <?php if ($error): ?>
+        <div class="message-banner error"><?php echo htmlspecialchars($error); ?></div>
+    <?php endif; ?>
 
-        <textarea name="description" placeholder="Description"></textarea><br><br>
+    <form method="POST" class="category-form">
+        <div class="form-field">
+            <label for="name">Category name</label>
+            <input type="text" id="name" name="name" placeholder="Category name" value="<?php echo htmlspecialchars($name); ?>" required>
+        </div>
 
-        <button type="submit" name="submit" class="btn-view">Add Category</button>
+        <div class="form-field">
+            <label for="description">Description</label>
+            <textarea id="description" name="description" placeholder="Description"><?php echo htmlspecialchars($description); ?></textarea>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" name="submit" class="btn-view">Add Category</button>
+        </div>
     </form>
 </div>
 
+<?php require_once $basePath . 'includes/footer.php'; ?>
 </body>
 </html>

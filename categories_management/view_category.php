@@ -1,58 +1,85 @@
 <?php
-// Database connection
-$conn = new mysqli("localhost", "root", "", "moviewatchlist");
+$basePath = '../';
+require_once $basePath . 'includes/db.php';
 
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+$status = $_GET['status'] ?? '';
+$message = '';
+if ($status === 'added') {
+    $message = 'Category added successfully.';
+} elseif ($status === 'updated') {
+    $message = 'Category updated successfully.';
+} elseif ($status === 'deleted') {
+    $message = 'Category deleted successfully.';
 }
 
-// Fetch categories
-$result = $conn->query("SELECT * FROM categories");
+$stmt = $pdo->query('SELECT * FROM categories ORDER BY created_at ASC');
+$categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>View Categories</title>
-    <link rel="stylesheet" href="../assets/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Categories | CineList</title>
+    <link rel="stylesheet" href="<?php echo $basePath; ?>assets/style.css">
+    <link rel="stylesheet" href="<?php echo $basePath; ?>assets/categories.css">
 </head>
-<body>
+<body class="categories-page">
+<?php require_once $basePath . 'includes/header.php'; ?>
 
 <div class="container">
-    <h2 class="section-title">Categories List</h2>
+    <div class="page-header">
+        <h2 class="section-title">Categories List</h2>
+        <div class="header-actions">
+            <a href="add_category.php" class="btn-view">Add Category</a>
+        </div>
+    </div>
 
-    <a href="add_category.php" class="btn-view"> Add Category</a>
-    <br><br>
+    <?php if ($message): ?>
+        <div class="message-banner success"><?php echo htmlspecialchars($message); ?></div>
+    <?php endif; ?>
 
-    <table border="1" cellpadding="10">
-        <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Created Date</th>
-            <th>Status</th>
-            <th>Actions</th>
-        </tr>
-
-        <?php while($row = $result->fetch_assoc()) { ?>
-        <tr>
-            <td><?php echo $row['category_id']; ?></td>
-            <td><?php echo $row['name']; ?></td>
-            <td><?php echo $row['description']; ?></td>
-            <td><?php echo $row['created_at']; ?></td>
-            <td>
-                <?php echo ($row['is_active'] == 1) ? "Active" : "Inactive"; ?>
-            </td>
-            <td>
-                <a href="edit_category.php?id=<?php echo $row['category_id']; ?>">Edit</a> |
-                <a href="delete_category.php?id=<?php echo $row['category_id']; ?>">Delete</a>
-            </td>
-        </tr>
-        <?php } ?>
-
-    </table>
+    <?php if (empty($categories)): ?>
+        <div class="message-banner">
+            No categories found yet. Use the button above to add your first category.
+        </div>
+    <?php else: ?>
+        <table>
+            <thead>
+                <tr>
+                    <th>No.</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Created Date</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php $rowNumber = 1; ?>
+                <?php foreach ($categories as $row): ?>
+                    <tr>
+                        <td data-label="No."><?php echo $rowNumber++; ?></td>
+                        <td data-label="Name"><?php echo htmlspecialchars($row['name']); ?></td>
+                        <td data-label="Description"><?php echo htmlspecialchars($row['description']); ?></td>
+                        <td data-label="Created Date"><?php echo htmlspecialchars(date('M j, Y', strtotime($row['created_at']))); ?></td>
+                        <td data-label="Status">
+                            <span class="status-pill <?php echo $row['is_active'] == 1 ? 'active' : 'inactive'; ?>">
+                                <?php echo $row['is_active'] == 1 ? 'Active' : 'Inactive'; ?>
+                            </span>
+                        </td>
+                        <td class="table-actions" data-label="Actions">
+                            <a href="edit_category.php?id=<?php echo urlencode($row['category_id']); ?>">Edit</a>
+                            <a href="delete_category.php?id=<?php echo urlencode($row['category_id']); ?>" class="btn-secondary" onclick="return confirm('Delete this category?');">Delete</a>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    <?php endif; ?>
 </div>
 
+<?php require_once $basePath . 'includes/footer.php'; ?>
 </body>
 </html>

@@ -1,21 +1,13 @@
 <?php
-// Database connection
-$conn = new mysqli("localhost", "root", "", "moviewatchlist");
+$basePath = '../';
+require_once $basePath . 'includes/db.php';
 
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+$id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+if ($id) {
+    $stmt = $pdo->prepare('DELETE FROM categories WHERE category_id = :id');
+    $stmt->execute(['id' => $id]);
 }
 
-// Check if ID is passed
-if (isset($_GET['id'])) {
-    $id = $_GET['id'];
-
-    // Delete query
-    $sql = "DELETE FROM categories WHERE category_id=$id";
-    $conn->query($sql);
-}
-
-// Redirect back to view page
-header("Location: view_category.php");
+header('Location: view_category.php?status=deleted');
+exit;
 ?>
