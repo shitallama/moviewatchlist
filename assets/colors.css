@@ -33,6 +33,22 @@
     --message-success-bg: rgba(34, 197, 94, 0.12);
     --message-success-border: rgba(34, 197, 94, 0.5);
     --message-success-text: #bbf7d0;
+    --input-bg: var(--card-bg);
+    --secondary-bg: var(--hover-bg);
+    --primary-hover: var(--primary-dark);
+    --table-header-bg: var(--darker-bg);
+    --edit-bg: rgba(59, 130, 246, 0.2);
+    --edit-color: #3b82f6;
+    --edit-hover: rgba(59, 130, 246, 0.3);
+    --delete-bg: rgba(239, 68, 68, 0.2);
+    --delete-color: #ef4444;
+    --delete-hover: rgba(239, 68, 68, 0.3);
+    --star-filled: #fbbf24;
+    --star-empty: #d1d5db;
+    --success-bg: rgba(34, 197, 94, 0.2);
+    --success-color: #22c55e;
+    --warning-bg: rgba(245, 158, 11, 0.2);
+    --warning-color: #f59e0b;
 }
 
 html[data-theme='light'] {
@@ -64,4 +80,20 @@ html[data-theme='light'] {
     --message-success-bg: rgba(34, 197, 94, 0.18);
     --message-success-border: rgba(34, 197, 94, 0.55);
     --message-success-text: #14532d;
+    --input-bg: var(--card-bg);
+    --secondary-bg: var(--hover-bg);
+    --primary-hover: var(--primary-dark);
+    --table-header-bg: var(--darker-bg);
+    --edit-bg: rgba(59, 130, 246, 0.2);
+    --edit-color: #2563eb;
+    --edit-hover: rgba(59, 130, 246, 0.3);
+    --delete-bg: rgba(239, 68, 68, 0.2);
+    --delete-color: #dc2626;
+    --delete-hover: rgba(239, 68, 68, 0.3);
+    --star-filled: #f59e0b;
+    --star-empty: #9ca3af;
+    --success-bg: rgba(34, 197, 94, 0.2);
+    --success-color: #16a34a;
+    --warning-bg: rgba(245, 158, 11, 0.2);
+    --warning-color: #d97706;
 }

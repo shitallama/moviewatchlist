@@ -146,8 +146,16 @@ body {
     background: none;
     border: none;
     color: var(--text-secondary);
-    font-weight: 600;
     cursor: pointer;
+    padding: 0.4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.2s ease;
+}
+
+.toggle-password:hover {
+    opacity: 0.7;
 }
 
 .form-row {
