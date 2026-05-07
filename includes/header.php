@@ -11,7 +11,7 @@ $userName = $_SESSION['user_name'] ?? 'Guest';
         <div class="nav-container">
             <div class="nav-brand">
                 <a href="<?php echo $basePath; ?>index.php">
-                    <img class="icon" src="<?php echo $basePath; ?>assets/icons/film.svg" alt="" aria-hidden="true" width="28" height="28">
+                    <img class="icon" src="<?php echo $basePath; ?>assets/icons/film.svg" alt="" aria-hidden="true" width="28" height="28" style="fill: var(--primary-color);">
                     <span>CineList</span>
                 </a>
             </div>
@@ -26,17 +26,8 @@ $userName = $_SESSION['user_name'] ?? 'Guest';
                     <?php if($isLoggedIn): ?>
                     <li><a href="<?php echo $basePath; ?>movie_management/view_movies.php"><img class="icon" src="<?php echo $basePath; ?>assets/icons/video.svg" alt="" aria-hidden="true"> Movies</a></li>
                     <li><a href="<?php echo $basePath; ?>watch_status_management/watchlist.php"><img class="icon" src="<?php echo $basePath; ?>assets/icons/eye.svg" alt="" aria-hidden="true"> Watchlist</a></li>
-<<<<<<< HEAD
-                    <li><a href="<?php echo $basePath; ?>genres.php"><img class="icon" src="<?php echo $basePath; ?>assets/icons/tag.svg" alt="" aria-hidden="true"> Genres</a></li>
-=======
-<<<<<<< HEAD
-                    <li><a href="<?php echo $basePath; ?>genres.php"><img class="icon" src="<?php echo $basePath; ?>assets/icons/tag.svg" alt="" aria-hidden="true"> Genres</a></li>
-                    <li><a href="<?php echo $basePath; ?>git reviews.php"><img class="icon" src="<?php echo $basePath; ?>assets/icons/star.svg" alt="" aria-hidden="true"> Reviews</a></li>
-=======
                     <li><a href="<?php echo $basePath; ?>categories_management/view_category.php"><img class="icon" src="<?php echo $basePath; ?>assets/icons/tag.svg" alt="" aria-hidden="true"> Genres</a></li>
->>>>>>> b55de545b0fa7ed9bcfc4eca29a6f734850b289a
                     <li><a href="<?php echo $basePath; ?>review_system/review_page.php"><img class="icon" src="<?php echo $basePath; ?>assets/icons/star.svg" alt="" aria-hidden="true"> Reviews</a></li>
->>>>>>> 5a4b5a02a4b1c1cad6bebf03072b272027dfd0f6
                     <?php endif; ?>
                 </ul>
                 

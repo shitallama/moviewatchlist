@@ -1,0 +1,317 @@
+﻿/* categories.css
+   Category management styles for add/edit/view pages.
+   Scoped to category-management pages and complements the base app theme.
+*/
+
+.categories-page {
+    min-height: 100vh;
+}
+
+.categories-page .container {
+    max-width: 1100px;
+    margin: 3rem auto;
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 1.25rem;
+    box-shadow: 0 24px 50px rgba(0, 0, 0, 0.08);
+    backdrop-filter: blur(18px);
+}
+
+.categories-page .section-title {
+    margin-bottom: 1.75rem;
+    font-size: clamp(1.85rem, 2.5vw, 2.4rem);
+    letter-spacing: -0.03em;
+    color: var(--primary-color);
+}
+
+.categories-page .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.75rem;
+}
+
+.categories-page .header-actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.categories-page .btn-view,
+.categories-page .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    padding: 0.95rem 1.5rem;
+    border-radius: 0.85rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.categories-page .btn-view {
+    background: var(--primary-color);
+    color: #ffffff;
+    border: none;
+}
+
+.categories-page .btn-secondary {
+    background: transparent;
+    color: var(--text-primary);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.categories-page .btn-view:hover,
+.categories-page .btn-view:focus-visible,
+.categories-page .btn-secondary:hover,
+.categories-page .btn-secondary:focus-visible {
+    background: var(--primary-dark);
+    box-shadow: 0 12px 28px rgba(15, 86, 172, 0.18);
+    transform: translateY(-1px);
+    color: #ffffff;
+}
+
+.categories-page .btn-secondary:hover,
+.categories-page .btn-secondary:focus-visible {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.categories-page .btn-view:focus-visible,
+.categories-page .btn-secondary:focus-visible {
+    outline: 3px solid rgba(56, 136, 255, 0.25);
+    outline-offset: 3px;
+}
+
+.categories-page .message-banner {
+    padding: 1rem 1.2rem;
+    border-radius: 1rem;
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+}
+
+.categories-page .message-banner.success {
+    background: var(--message-success-bg);
+    border: 1px solid var(--message-success-border);
+    color: var(--message-success-text);
+}
+
+.categories-page .message-banner.error {
+    background: var(--message-error-bg);
+    border: 1px solid var(--message-error-border);
+    color: var(--message-error-text);
+}
+
+.categories-page .form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.categories-page .form-field label {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    font-weight: 600;
+}
+
+.categories-page .status-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.4rem 0.85rem;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+}
+
+.categories-page .status-pill.active {
+    background: rgba(34, 197, 94, 0.14);
+    color: var(--success);
+}
+
+.categories-page .status-pill.inactive {
+    background: rgba(239, 68, 68, 0.14);
+    color: var(--danger);
+}
+
+.categories-page .table-actions a {
+    padding: 0.6rem 0.95rem;
+    border-radius: 0.75rem;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: var(--text-primary);
+}
+
+.categories-page .table-actions a:hover {
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.categories-page .form-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: 0.5rem;
+}
+
+.categories-page .btn-view:hover,
+.categories-page .btn-view:focus-visible {
+    background: var(--primary-dark);
+    box-shadow: 0 12px 28px rgba(15, 86, 172, 0.18);
+    transform: translateY(-1px);
+}
+
+.categories-page .btn-view:focus-visible {
+    outline: 3px solid rgba(56, 136, 255, 0.25);
+    outline-offset: 3px;
+}
+
+.categories-page table {
+    width: 100%;
+    border-collapse: collapse;
+    border-radius: 1rem;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.categories-page th,
+.categories-page td {
+    padding: 1rem 1.1rem;
+    text-align: left;
+    vertical-align: middle;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.categories-page th {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    letter-spacing: 0.01em;
+}
+
+.categories-page tbody tr:nth-child(odd) {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.categories-page tbody tr:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.categories-page td a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s ease;
+}
+
+.categories-page td a:hover {
+    color: var(--primary-dark);
+}
+
+.categories-page form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    max-width: 760px;
+}
+
+.categories-page input[type="text"],
+.categories-page textarea,
+.categories-page select {
+    width: 100%;
+    min-height: 3rem;
+    padding: 0.95rem 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 0.95rem;
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-primary);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.categories-page textarea {
+    min-height: 140px;
+    resize: vertical;
+}
+
+.categories-page input[type="text"]:focus,
+.categories-page textarea:focus,
+.categories-page select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 4px rgba(29, 155, 240, 0.12);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.categories-page label {
+    display: block;
+    margin-bottom: 0.35rem;
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.categories-page .form-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: 0.25rem;
+}
+
+.categories-page .table-actions {
+    display: inline-flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.categories-page .table-actions a {
+    padding: 0.45rem 0.8rem;
+    border-radius: 0.75rem;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.categories-page .table-actions a:hover {
+    background: rgba(255, 255, 255, 0.12);
+}
+
+@media (max-width: 900px) {
+    .categories-page .container {
+        padding: 1.5rem;
+        margin: 1.5rem auto;
+    }
+
+    .categories-page table,
+    .categories-page th,
+    .categories-page td {
+        display: block;
+        width: 100%;
+    }
+
+    .categories-page thead {
+        display: none;
+    }
+
+    .categories-page tbody tr {
+        margin-bottom: 1rem;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 1rem;
+        overflow: hidden;
+    }
+
+    .categories-page td {
+        border-bottom: none;
+        padding: 0.85rem 1rem;
+    }
+
+    .categories-page td::before {
+        content: attr(data-label);
+        display: block;
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+        margin-bottom: 0.35rem;
+    }
+}
