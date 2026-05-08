@@ -14,7 +14,18 @@ if (!isset($_SESSION['user_id'])) {
 $user_id = $_SESSION['user_id'];
 
 try {
-    $stmt = $pdo->prepare("SELECT movie_id, title, watched, watch_date FROM Movies WHERE user_id = ? ORDER BY watched ASC, title ASC");
+    $stmt = $pdo->prepare(
+        "SELECT m.movie_id, m.title, m.watch_date, m.watched, ws.watch_state, ws.progress_percent
+         FROM WatchStatus ws
+         JOIN Movies m ON ws.movie_id = m.movie_id
+         WHERE ws.user_id = ?
+         ORDER BY CASE ws.watch_state
+             WHEN 'plan' THEN 1
+             WHEN 'watching' THEN 2
+             WHEN 'completed' THEN 3
+             ELSE 4
+         END, m.title ASC"
+    );
     $stmt->execute([$user_id]);
     $movies = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (Exception $e) {
@@ -50,6 +61,7 @@ include '../includes/header.php';
                         <tr>
                             <th>Title</th>
                             <th>Status</th>
+                            <th>Progress</th>
                             <th>Watch Date</th>
                             <th>Actions</th>
                         </tr>
@@ -59,16 +71,22 @@ include '../includes/header.php';
                             <tr>
                                 <td><?php echo htmlspecialchars($movie['title']); ?></td>
                                 <td>
-                                    <span class="status <?php echo $movie['watched'] ? 'watched' : 'to-watch'; ?>">
-                                        <?php echo $movie['watched'] ? 'Watched' : 'To Watch'; ?>
+                                    <span class="status <?php echo htmlspecialchars($movie['watch_state']); ?>">
+                                        <?php echo ucfirst(htmlspecialchars($movie['watch_state'])); ?>
                                     </span>
                                 </td>
+                                <td><?php echo intval($movie['progress_percent']); ?>%</td>
                                 <td><?php echo $movie['watch_date'] ? htmlspecialchars($movie['watch_date']) : 'N/A'; ?></td>
-                                <td>
-                                    <button onclick="toggleStatus(<?php echo $movie['movie_id']; ?>, <?php echo $movie['watched'] ? 1 : 0; ?>)" class="btn-toggle">
-                                        <i class="fas <?php echo $movie['watched'] ? 'fa-eye-slash' : 'fa-eye'; ?>"></i>
-                                        Mark as <?php echo $movie['watched'] ? 'Unwatched' : 'Watched'; ?>
-                                    </button>
+                                <td class="action-buttons">
+                                    <a href="../movie_management/edit_movies.php?id=<?php echo $movie['movie_id']; ?>" class="btn btn-edit">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </a>
+                                    <form method="POST" action="remove_watchlist.php" class="inline-form" onsubmit="return confirm('Remove this movie from your watchlist?');">
+                                        <input type="hidden" name="id" value="<?php echo $movie['movie_id']; ?>">
+                                        <button type="submit" class="btn btn-delete">
+                                            <i class="fas fa-trash"></i> Delete
+                                        </button>
+                                    </form>
                                 </td>
                             </tr>
                         <?php endforeach; ?>

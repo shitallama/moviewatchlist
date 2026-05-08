@@ -26,16 +26,22 @@ if (!$row) {
 
 // Update movie
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $title = $_POST['title'];
-    $genre = $_POST['genre'];
-    $release_date = $_POST['release_date'];
+    $title = trim($_POST['title']);
+    $genre = trim($_POST['genre']);
+    $release_date = $_POST['release_date'] ?: null;
+    $watch_date = $_POST['watch_date'] ?: null;
+    $user_notes = trim($_POST['user_notes']) ?: null;
+    $watched = isset($_POST['watched']) ? 1 : 0;
 
     $stmt = $pdo->prepare("UPDATE Movies SET 
         title = ?,
         genre = ?,
-        release_date = ?
+        release_date = ?,
+        watched = ?,
+        watch_date = ?,
+        user_notes = ?
         WHERE movie_id = ? AND user_id = ?");
-    $stmt->execute([$title, $genre, $release_date, $id, $user_id]);
+    $stmt->execute([$title, $genre, $release_date, $watched, $watch_date, $user_notes, $id, $user_id]);
 
     header("Location: view_movies.php");
     exit();
@@ -73,6 +79,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <div class="form-group">
             <label for="release_date">Release Date</label>
             <input type="date" id="release_date" name="release_date" value="<?= htmlspecialchars($row['release_date']) ?>">
+        </div>
+
+        <div class="form-group checkbox-group">
+            <label>
+                <input type="checkbox" id="watched" name="watched" value="1" <?= $row['watched'] ? 'checked' : '' ?>>
+                Watched
+            </label>
+        </div>
+
+        <div class="form-group">
+            <label for="watch_date">Watch Date</label>
+            <input type="date" id="watch_date" name="watch_date" value="<?= htmlspecialchars($row['watch_date']) ?>">
+        </div>
+
+        <div class="form-group">
+            <label for="user_notes">Notes</label>
+            <textarea id="user_notes" name="user_notes" rows="4"><?= htmlspecialchars($row['user_notes']) ?></textarea>
         </div>
 
         <div class="btn-group">
