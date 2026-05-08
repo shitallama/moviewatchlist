@@ -1,5 +1,18 @@
 <?php
 $basePath = '../';
+session_start();
+
+if (!isset($_SESSION['user_id'])) {
+    header('Location: ../Login/login.php');
+    exit();
+}
+
+$user_id = $_SESSION['user_id'];
+$movie_id = isset($_GET['movie_id']) ? intval($_GET['movie_id']) : 0;
+if ($movie_id <= 0) {
+    echo 'Invalid movie selected.';
+    exit();
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -25,8 +38,8 @@ $basePath = '../';
         </div>
 
         <form id="reviewForm" class="review-form">
-            <input type="hidden" name="user_id" value="1">
-            <input type="hidden" name="movie_id" value="1">
+            <input type="hidden" name="user_id" value="<?= htmlspecialchars($user_id) ?>">
+            <input type="hidden" name="movie_id" value="<?= htmlspecialchars($movie_id) ?>">
 
             <label for="rating">Rating</label>
             <select id="rating" name="rating" required>
