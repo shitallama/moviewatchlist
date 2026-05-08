@@ -29,17 +29,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $title = $_POST['title'];
     $genre = $_POST['genre'];
     $release_date = $_POST['release_date'];
-    $rating = $_POST['rating'];
-    $watched = isset($_POST['watched']) ? 1 : 0;
 
     $stmt = $pdo->prepare("UPDATE Movies SET 
         title = ?,
         genre = ?,
-        release_date = ?,
-        rating = ?,
-        watched = ?
+        release_date = ?
         WHERE movie_id = ? AND user_id = ?");
-    $stmt->execute([$title, $genre, $release_date, $rating, $watched, $id, $user_id]);
+    $stmt->execute([$title, $genre, $release_date, $id, $user_id]);
 
     header("Location: view_movies.php");
     exit();
@@ -77,18 +73,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <div class="form-group">
             <label for="release_date">Release Date</label>
             <input type="date" id="release_date" name="release_date" value="<?= htmlspecialchars($row['release_date']) ?>">
-        </div>
-
-        <div class="form-group">
-            <label for="rating">Rating (1-5)</label>
-            <input type="number" id="rating" name="rating" value="<?= htmlspecialchars($row['rating']) ?>" min="1" max="5">
-        </div>
-
-        <div class="form-group">
-            <div class="checkbox-group">
-                <input type="checkbox" id="watched" name="watched" <?= $row['watched'] ? 'checked' : '' ?>>
-                <label for="watched">Mark as watched</label>
-            </div>
         </div>
 
         <div class="btn-group">
