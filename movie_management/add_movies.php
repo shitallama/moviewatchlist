@@ -16,19 +16,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $title = $_POST['title'];
     $genre = $_POST['genre'];
     $release_date = $_POST['release_date'];
-    $rating = $_POST['rating'];
-    $watched = isset($_POST['watched']) ? 1 : 0;
+    $watched = 0;
     $user_id = $_SESSION['user_id'];
 
     // Validation
     if (empty($title) || empty($genre)) {
         echo "All fields required!";
-    } elseif ($rating < 1 || $rating > 5) {
-        echo "Rating must be 1-5";
     } else {
-        $stmt = $pdo->prepare("INSERT INTO Movies (title, genre, release_date, rating, watched, user_id)
-                VALUES (?, ?, ?, ?, ?, ?)");
-        $stmt->execute([$title, $genre, $release_date, $rating, $watched, (int)$user_id]);
+        $stmt = $pdo->prepare("INSERT INTO Movies (title, genre, release_date, watched, user_id)
+                VALUES (?, ?, ?, ?, ?)");
+        $stmt->execute([$title, $genre, $release_date, $watched, (int)$user_id]);
         header("Location: view_movies.php");
         exit();
     }
@@ -66,18 +63,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <div class="form-group">
             <label for="release_date">Release Date</label>
             <input type="date" id="release_date" name="release_date">
-        </div>
-
-        <div class="form-group">
-            <label for="rating">Rating (1-5)</label>
-            <input type="number" id="rating" name="rating" min="1" max="5">
-        </div>
-
-        <div class="form-group">
-            <div class="checkbox-group">
-                <input type="checkbox" id="watched" name="watched">
-                <label for="watched">Mark as watched</label>
-            </div>
         </div>
 
         <div class="btn-group">

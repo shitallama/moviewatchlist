@@ -46,6 +46,29 @@ if (isset($_GET['watched']) && $_GET['watched'] != "") {
 $stmt = $pdo->prepare($sql);
 $stmt->execute($params);
 $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+$reviewsByMovie = [];
+$avgRatingByMovie = [];
+if (!empty($result)) {
+    $movieIds = array_column($result, 'movie_id');
+    $placeholders = implode(',', array_fill(0, count($movieIds), '?'));
+    $reviewSql = "SELECT * FROM Review WHERE movie_id IN ($placeholders) ORDER BY created_at DESC";
+    $stmtReviews = $pdo->prepare($reviewSql);
+    $stmtReviews->execute($movieIds);
+    $allReviews = $stmtReviews->fetchAll(PDO::FETCH_ASSOC);
+
+    foreach ($allReviews as $review) {
+        $reviewsByMovie[$review['movie_id']][] = $review;
+    }
+
+    foreach ($reviewsByMovie as $movieId => $movieReviews) {
+        $sum = 0;
+        foreach ($movieReviews as $review) {
+            $sum += intval($review['rating']);
+        }
+        $avgRatingByMovie[$movieId] = count($movieReviews) ? round($sum / count($movieReviews)) : 0;
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -99,6 +122,7 @@ $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <th>Genre</th>
                 <th>Release Date</th>
                 <th>Rating</th>
+                <th>Reviews</th>
                 <th>Status</th>
                 <th>Actions</th>
             </tr>
@@ -110,14 +134,27 @@ $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <td><?= htmlspecialchars($row['genre']) ?></td>
                 <td><?= htmlspecialchars($row['release_date']) ?></td>
                 <td>
-                    <?php if($row['rating']): ?>
+                    <?php if (!empty($avgRatingByMovie[$row['movie_id']])): ?>
                         <span class="rating-stars">
-                            <?php for($i = 1; $i <= 5; $i++): ?>
-                                <span class="star <?= $i <= $row['rating'] ? 'filled' : '' ?>">&#9733;</span>
+                            <?php for ($i = 1; $i <= 5; $i++): ?>
+                                <span class="star <?= $i <= $avgRatingByMovie[$row['movie_id']] ? 'filled' : '' ?>">&#9733;</span>
                             <?php endfor; ?>
                         </span>
                     <?php else: ?>
                         Not rated
+                    <?php endif; ?>
+                </td>
+                <td>
+                    <?php if (!empty($reviewsByMovie[$row['movie_id']])): ?>
+                        <div class="movie-review-list">
+                            <?php foreach ($reviewsByMovie[$row['movie_id']] as $review): ?>
+                                <div class="movie-review-item">
+                                    <p><?= htmlspecialchars($review['review_text']) ?></p>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php else: ?>
+                        <span class="no-reviews">No reviews yet</span>
                     <?php endif; ?>
                 </td>
                 <td>
@@ -127,6 +164,7 @@ $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 </td>
                 <td>
                     <a href="edit_movies.php?id=<?= $row['movie_id'] ?>" class="action-link edit">Edit</a>
+                    <a href="../review_system/review_page.php?movie_id=<?= $row['movie_id'] ?>" class="action-link review">Reviews</a>
                     <a href="delete_movies.php?id=<?= $row['movie_id'] ?>" class="action-link delete" onclick="return confirm('Are you sure you want to delete this movie?')">Delete</a>
                 </td>
             </tr>
