@@ -31,8 +31,6 @@ try {
     $movies = [];
     $error = $e->getMessage();
 }
-
-include '../includes/header.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -46,6 +44,7 @@ include '../includes/header.php';
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
+<?php include '../includes/header.php'; ?>
     <section class="container">
         <h2>Movie Watchlist</h2>
         <?php if (!empty($error)): ?>
