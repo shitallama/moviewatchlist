@@ -13,35 +13,40 @@ $basePath = '../';
 $user_id = $_SESSION['user_id'];
 $showAll = isset($_GET['all']) && $_GET['all'] === '1';
 
-// Base query
-if ($showAll) {
-    $sql = "SELECT * FROM Movies";
-    $params = [];
-} else {
-    $sql = "SELECT * FROM Movies WHERE user_id = ?";
-    $params = [$user_id];
+$conditions = [];
+$params = [];
+
+if (!$showAll) {
+    $conditions[] = "user_id = ?";
+    $params[] = $user_id;
 }
 
 // SEARCH (Find)
-if (isset($_GET['search']) && !empty($_GET['search'])) {
-    $search = $_GET['search'];
-    $sql .= " AND title LIKE ?";
+if (isset($_GET['search']) && $_GET['search'] !== '') {
+    $search = trim($_GET['search']);
+    $conditions[] = "title LIKE ?";
     $params[] = "%$search%";
 }
 
 // FILTER (Genre)
-if (isset($_GET['genre']) && $_GET['genre'] != "") {
-    $genre = $_GET['genre'];
-    $sql .= " AND genre = ?";
+if (isset($_GET['genre']) && $_GET['genre'] !== "") {
+    $genre = trim($_GET['genre']);
+    $conditions[] = "genre = ?";
     $params[] = $genre;
 }
 
 // FILTER (Watched)
-if (isset($_GET['watched']) && $_GET['watched'] != "") {
+if (isset($_GET['watched']) && $_GET['watched'] !== "") {
     $watched = $_GET['watched'];
-    $sql .= " AND watched = ?";
+    $conditions[] = "watched = ?";
     $params[] = $watched;
 }
+
+$sql = "SELECT * FROM Movies";
+if (!empty($conditions)) {
+    $sql .= " WHERE " . implode(" AND ", $conditions);
+}
+$sql .= " ORDER BY title ASC";
 
 $stmt = $pdo->prepare($sql);
 $stmt->execute($params);
@@ -121,7 +126,9 @@ if (!empty($result)) {
                 <th>Title</th>
                 <th>Genre</th>
                 <th>Release Date</th>
+                <th>Watch Date</th>
                 <th>Rating</th>
+                <th>Notes</th>
                 <th>Reviews</th>
                 <th>Status</th>
                 <th>Actions</th>
@@ -132,7 +139,8 @@ if (!empty($result)) {
             <tr>
                 <td><?= htmlspecialchars($row['title']) ?></td>
                 <td><?= htmlspecialchars($row['genre']) ?></td>
-                <td><?= htmlspecialchars($row['release_date']) ?></td>
+                <td><?= htmlspecialchars($row['release_date']) ?: 'N/A' ?></td>
+                <td><?= htmlspecialchars($row['watch_date']) ?: 'N/A' ?></td>
                 <td>
                     <?php if (!empty($avgRatingByMovie[$row['movie_id']])): ?>
                         <span class="rating-stars">
@@ -143,6 +151,9 @@ if (!empty($result)) {
                     <?php else: ?>
                         Not rated
                     <?php endif; ?>
+                </td>
+                <td>
+                    <?= htmlspecialchars($row['user_notes'] ?: 'No notes') ?>
                 </td>
                 <td>
                     <?php if (!empty($reviewsByMovie[$row['movie_id']])): ?>

@@ -1,10 +1,12 @@
 -- References:
 -- Previous project database schema: https://github.com/shitallama/studentcoursehub/blob/main/database/database.sql
 -- 1. Drop tables first to prevent errors if you run this multiple times
+DROP TABLE IF EXISTS WatchStatus;
 DROP TABLE IF EXISTS Review;
 DROP TABLE IF EXISTS Movies;
 DROP TABLE IF EXISTS categories;
 DROP TABLE IF EXISTS Users;
+
 
 -- 2. Create independent tables first
 CREATE TABLE Users (
@@ -16,7 +18,7 @@ CREATE TABLE Users (
     is_admin TINYINT(1) DEFAULT 0,                 -- 1 if user has admin privileges, 0 if not
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP -- Date and time of registration
 );
-
+ 
 CREATE TABLE categories (
     category_id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
@@ -24,7 +26,7 @@ CREATE TABLE categories (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     is_active BOOLEAN DEFAULT TRUE
 );
-
+ 
 -- 3. Create dependent tables
 CREATE TABLE Movies (
     movie_id INT PRIMARY KEY AUTO_INCREMENT,
@@ -38,7 +40,7 @@ CREATE TABLE Movies (
     user_id INT NOT NULL,
     FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE
 );
-
+ 
 CREATE TABLE Review (
     review_id INT PRIMARY KEY AUTO_INCREMENT,
     movie_id INT NOT NULL,       -- Added so we know WHICH movie is being reviewed
@@ -51,22 +53,40 @@ CREATE TABLE Review (
     FOREIGN KEY (movie_id) REFERENCES Movies(movie_id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE
 );
-
+ 
+-- Create table for granular watch status management
+CREATE TABLE WatchStatus (
+    status_id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    movie_id INT NOT NULL,
+    -- 'plan' = Watchlist, 'watching' = In Progress, 'completed' = Watched
+    watch_state ENUM('plan', 'watching', 'completed') DEFAULT 'plan',
+    progress_percent INT DEFAULT 0 CHECK (progress_percent >= 0 AND progress_percent <= 100),
+    added_to_list_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    finished_at DATETIME NULL,
+    FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (movie_id) REFERENCES Movies(movie_id) ON DELETE CASCADE,
+    -- Ensure a user can only have one status record per movie
+    UNIQUE KEY unique_user_movie (user_id, movie_id)
+);
+ 
 -- ==========================================
 -- SEED DATA (Inserting the things!)
 -- ==========================================
-
+ 
 -- Insert Users first
 INSERT INTO Users (username, email, password_hash, is_admin) VALUES
 ('cinephile_99', 'cinephile@example.com', 'hashed_pw_1', 0),
 ('movie_boss', 'admin@example.com', 'hashed_pw_2', 1);
-
+ 
 -- Insert Categories
 INSERT INTO categories (name, description) VALUES
 ('Sci-Fi', 'Science fiction, space, and futuristic concepts.'),
 ('Action', 'High-energy, stunts, and fast-paced storylines.'),
 ('Crime', 'True crime and fictional underworld stories.');
-
+ 
+ 
+ 
 -- Insert Movies (Now with the required user_id included)
 INSERT INTO Movies (title, genre, rating, watched, watch_date, user_notes, user_id) VALUES
 ('Inception', 'Sci-Fi', 5, TRUE, '2024-03-15', 'Mind-bending masterpiece, loved the ending.', 1),
@@ -74,14 +94,23 @@ INSERT INTO Movies (title, genre, rating, watched, watch_date, user_notes, user_
 ('Interstellar', 'Sci-Fi', 4, FALSE, NULL, 'Need to watch this on a big screen.', 1),
 ('Pulp Fiction', 'Crime', 5, TRUE, '2023-11-20', 'Classic Tarantino dialogue.', 2),
 ('The Matrix Resurrections', 'Sci-Fi', 2, TRUE, '2024-02-05', 'A bit disappointing compared to the original.', 2);
-
+ 
 -- Insert some sample Reviews
 INSERT INTO Review (movie_id, user_id, rating, review_text, is_recommended) VALUES
 (1, 1, 5, 'Absolutely incredible visuals and a plot that keeps you guessing until the very last frame.', TRUE),
 (5, 2, 2, 'The nostalgia was nice, but the plot felt really disjointed and unnecessary.', FALSE);
 
+-- Insert sample watch statuses
+INSERT INTO WatchStatus (user_id, movie_id, watch_state, progress_percent, finished_at) VALUES 
+(1, 3, 'plan', 0, NULL),
+(1, 1, 'completed', 100, '2024-03-15'),
+(2, 4, 'completed', 100, '2023-11-20'),
+(1, 2, 'watching', 45, NULL);
+ 
+ 
 -- Verify the data
 SELECT * FROM Movies;
 SELECT * FROM Users;
 SELECT * FROM categories;
 SELECT * FROM Review;
+SELECT * FROM WatchStatus;
