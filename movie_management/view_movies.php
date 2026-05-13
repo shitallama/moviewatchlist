@@ -1,5 +1,6 @@
 <?php
 include('../includes/db.php');
+require_once __DIR__ . '/MovieManager.php';
 
 session_start();
 
@@ -10,69 +11,26 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 $basePath = '../';
-$user_id = $_SESSION['user_id'];
+$user_id = (int)$_SESSION['user_id'];
 $showAll = isset($_GET['all']) && $_GET['all'] === '1';
 
-$conditions = [];
-$params = [];
+$search = isset($_GET['search']) ? trim($_GET['search']) : '';
+$genre = isset($_GET['genre']) ? trim($_GET['genre']) : '';
+$watched = isset($_GET['watched']) && $_GET['watched'] !== '' ? (int)$_GET['watched'] : null;
 
-if (!$showAll) {
-    $conditions[] = "user_id = ?";
-    $params[] = $user_id;
-}
+$movieRepository = new MovieRepository($pdo);
+$result = $movieRepository->find($user_id, $showAll, $search, $genre, $watched);
 
-// SEARCH (Find)
-if (isset($_GET['search']) && $_GET['search'] !== '') {
-    $search = trim($_GET['search']);
-    $conditions[] = "title LIKE ?";
-    $params[] = "%$search%";
-}
-
-// FILTER (Genre)
-if (isset($_GET['genre']) && $_GET['genre'] !== "") {
-    $genre = trim($_GET['genre']);
-    $conditions[] = "genre = ?";
-    $params[] = $genre;
-}
-
-// FILTER (Watched)
-if (isset($_GET['watched']) && $_GET['watched'] !== "") {
-    $watched = $_GET['watched'];
-    $conditions[] = "watched = ?";
-    $params[] = $watched;
-}
-
-$sql = "SELECT * FROM Movies";
-if (!empty($conditions)) {
-    $sql .= " WHERE " . implode(" AND ", $conditions);
-}
-$sql .= " ORDER BY title ASC";
-
-$stmt = $pdo->prepare($sql);
-$stmt->execute($params);
-$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-$reviewsByMovie = [];
+$movieIds = array_filter(array_map(fn($movie) => $movie->movie_id, $result), fn($id) => $id !== null);
+$reviewsByMovie = $movieRepository->getReviewsByMovieIds($movieIds);
 $avgRatingByMovie = [];
-if (!empty($result)) {
-    $movieIds = array_column($result, 'movie_id');
-    $placeholders = implode(',', array_fill(0, count($movieIds), '?'));
-    $reviewSql = "SELECT * FROM Review WHERE movie_id IN ($placeholders) ORDER BY created_at DESC";
-    $stmtReviews = $pdo->prepare($reviewSql);
-    $stmtReviews->execute($movieIds);
-    $allReviews = $stmtReviews->fetchAll(PDO::FETCH_ASSOC);
 
-    foreach ($allReviews as $review) {
-        $reviewsByMovie[$review['movie_id']][] = $review;
+foreach ($reviewsByMovie as $movieId => $movieReviews) {
+    $sum = 0;
+    foreach ($movieReviews as $review) {
+        $sum += intval($review['rating']);
     }
-
-    foreach ($reviewsByMovie as $movieId => $movieReviews) {
-        $sum = 0;
-        foreach ($movieReviews as $review) {
-            $sum += intval($review['rating']);
-        }
-        $avgRatingByMovie[$movieId] = count($movieReviews) ? round($sum / count($movieReviews)) : 0;
-    }
+    $avgRatingByMovie[$movieId] = count($movieReviews) ? round($sum / count($movieReviews)) : 0;
 }
 ?>
 <!DOCTYPE html>
@@ -135,17 +93,17 @@ if (!empty($result)) {
             </tr>
         </thead>
         <tbody>
-            <?php foreach($result as $row): ?>
+            <?php foreach($result as $movie): ?>
             <tr>
-                <td><?= htmlspecialchars($row['title']) ?></td>
-                <td><?= htmlspecialchars($row['genre']) ?></td>
-                <td><?= htmlspecialchars($row['release_date']) ?: 'N/A' ?></td>
-                <td><?= htmlspecialchars($row['watch_date']) ?: 'N/A' ?></td>
+                <td><?= htmlspecialchars($movie->title) ?></td>
+                <td><?= htmlspecialchars($movie->genre) ?></td>
+                <td><?= htmlspecialchars($movie->release_date) ?: 'N/A' ?></td>
+                <td><?= htmlspecialchars($movie->watch_date) ?: 'N/A' ?></td>
                 <td>
-                    <?php if (!empty($avgRatingByMovie[$row['movie_id']])): ?>
+                    <?php if (!empty($avgRatingByMovie[$movie->movie_id])): ?>
                         <span class="rating-stars">
                             <?php for ($i = 1; $i <= 5; $i++): ?>
-                                <span class="star <?= $i <= $avgRatingByMovie[$row['movie_id']] ? 'filled' : '' ?>">&#9733;</span>
+                                <span class="star <?= $i <= $avgRatingByMovie[$movie->movie_id] ? 'filled' : '' ?>">&#9733;</span>
                             <?php endfor; ?>
                         </span>
                     <?php else: ?>
@@ -153,12 +111,12 @@ if (!empty($result)) {
                     <?php endif; ?>
                 </td>
                 <td>
-                    <?= htmlspecialchars($row['user_notes'] ?: 'No notes') ?>
+                    <?= htmlspecialchars($movie->user_notes ?: 'No notes') ?>
                 </td>
                 <td>
-                    <?php if (!empty($reviewsByMovie[$row['movie_id']])): ?>
+                    <?php if (!empty($reviewsByMovie[$movie->movie_id])): ?>
                         <div class="movie-review-list">
-                            <?php foreach ($reviewsByMovie[$row['movie_id']] as $review): ?>
+                            <?php foreach ($reviewsByMovie[$movie->movie_id] as $review): ?>
                                 <div class="movie-review-item">
                                     <p><?= htmlspecialchars($review['review_text']) ?></p>
                                 </div>
@@ -169,14 +127,14 @@ if (!empty($result)) {
                     <?php endif; ?>
                 </td>
                 <td>
-                    <span class="status-badge <?= $row['watched'] ? 'watched' : 'not-watched' ?>">
-                        <?= $row['watched'] ? 'Watched' : 'Not Watched' ?>
+                    <span class="status-badge <?= $movie->watched ? 'watched' : 'not-watched' ?>">
+                        <?= $movie->watched ? 'Watched' : 'Not Watched' ?>
                     </span>
                 </td>
                 <td>
-                    <a href="edit_movies.php?id=<?= $row['movie_id'] ?>" class="action-link edit">Edit</a>
-                    <a href="../review_system/review_page.php?movie_id=<?= $row['movie_id'] ?>" class="action-link review">Reviews</a>
-                    <a href="delete_movies.php?id=<?= $row['movie_id'] ?>" class="action-link delete" onclick="return confirm('Are you sure you want to delete this movie?')">Delete</a>
+                    <a href="edit_movies.php?id=<?= $movie->movie_id ?>" class="action-link edit">Edit</a>
+                    <a href="../review_system/review_page.php?movie_id=<?= $movie->movie_id ?>" class="action-link review">Reviews</a>
+                    <a href="delete_movies.php?id=<?= $movie->movie_id ?>" class="action-link delete" onclick="return confirm('Are you sure you want to delete this movie?')">Delete</a>
                 </td>
             </tr>
             <?php endforeach; ?>

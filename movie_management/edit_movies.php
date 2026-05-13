@@ -1,5 +1,6 @@
 <?php
 include('../includes/db.php');
+require_once __DIR__ . '/MovieManager.php';
 
 session_start();
 
@@ -10,38 +11,28 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 $basePath = '../';
+$movieRepository = new MovieRepository($pdo);
 
-$id = $_GET['id'];
-$user_id = $_SESSION['user_id'];
+$id = (int)$_GET['id'];
+$user_id = (int)$_SESSION['user_id'];
 
-// Get movie
-$stmt = $pdo->prepare("SELECT * FROM Movies WHERE movie_id = ? AND user_id = ?");
-$stmt->execute([$id, $user_id]);
-$row = $stmt->fetch(PDO::FETCH_ASSOC);
+$movie = $movieRepository->getById($id, $user_id);
 
-if (!$row) {
+if (!$movie) {
     echo "Movie not found or access denied.";
     exit();
 }
 
 // Update movie
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $title = trim($_POST['title']);
-    $genre = trim($_POST['genre']);
-    $release_date = $_POST['release_date'] ?: null;
-    $watch_date = $_POST['watch_date'] ?: null;
-    $user_notes = trim($_POST['user_notes']) ?: null;
-    $watched = isset($_POST['watched']) ? 1 : 0;
+    $movie->title = trim($_POST['title']);
+    $movie->genre = trim($_POST['genre']);
+    $movie->release_date = $_POST['release_date'] ?: null;
+    $movie->watch_date = $_POST['watch_date'] ?: null;
+    $movie->user_notes = trim($_POST['user_notes']) ?: null;
+    $movie->watched = isset($_POST['watched']) ? 1 : 0;
 
-    $stmt = $pdo->prepare("UPDATE Movies SET 
-        title = ?,
-        genre = ?,
-        release_date = ?,
-        watched = ?,
-        watch_date = ?,
-        user_notes = ?
-        WHERE movie_id = ? AND user_id = ?");
-    $stmt->execute([$title, $genre, $release_date, $watched, $watch_date, $user_notes, $id, $user_id]);
+    $movieRepository->update($movie);
 
     header("Location: view_movies.php");
     exit();

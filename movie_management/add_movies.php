@@ -1,5 +1,6 @@
 <?php
 include('../includes/db.php');
+require_once __DIR__ . '/MovieManager.php';
 
 session_start();
 
@@ -10,6 +11,7 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 $basePath = '../';
+$movieRepository = new MovieRepository($pdo);
 
 // Add movie
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -19,15 +21,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $watch_date = $_POST['watch_date'] ?: null;
     $user_notes = trim($_POST['user_notes']) ?: null;
     $watched = isset($_POST['watched']) ? 1 : 0;
-    $user_id = $_SESSION['user_id'];
+    $user_id = (int)$_SESSION['user_id'];
 
     // Validation
     if (empty($title) || empty($genre)) {
         echo "Title and Genre are required.";
     } else {
-        $stmt = $pdo->prepare("INSERT INTO Movies (title, genre, release_date, watched, watch_date, user_notes, user_id)
-                VALUES (?, ?, ?, ?, ?, ?, ?)");
-        $stmt->execute([$title, $genre, $release_date, $watched, $watch_date, $user_notes, (int)$user_id]);
+        $movie = new Movie(
+            null,
+            $title,
+            $genre,
+            $release_date,
+            $watched,
+            $watch_date,
+            $user_notes,
+            $user_id
+        );
+
+        $movieRepository->add($movie);
         header("Location: view_movies.php");
         exit();
     }
