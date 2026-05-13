@@ -2,6 +2,8 @@
 // watch_status_management/get_watchlist.php
 $basePath = '../';
 require_once '../includes/db.php';
+require_once 'WatchStatusService.php';
+require_once 'repositories/WatchStatusRepository.php';
 
 session_start();
 if (!isset($_SESSION['user_id'])) {
@@ -12,21 +14,12 @@ if (!isset($_SESSION['user_id'])) {
 $user_id = $_SESSION['user_id'];
 $error = '';
 
+// Initialize service
+$repository = new WatchStatusRepository($pdo);
+$service = new WatchStatusService($repository);
+
 try {
-    $stmt = $pdo->prepare(
-        "SELECT m.movie_id, m.title, m.watch_date, ws.watch_state, ws.progress_percent
-         FROM WatchStatus ws
-         JOIN Movies m ON ws.movie_id = m.movie_id
-         WHERE ws.user_id = ?
-         ORDER BY CASE ws.watch_state
-             WHEN 'plan' THEN 1
-             WHEN 'watching' THEN 2
-             WHEN 'completed' THEN 3
-             ELSE 4
-         END, m.title ASC"
-    );
-    $stmt->execute([$user_id]);
-    $movies = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $movies = $service->getWatchlist($user_id);
 } catch (Exception $e) {
     $movies = [];
     $error = $e->getMessage();
