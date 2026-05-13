@@ -4,7 +4,7 @@
 DROP TABLE IF EXISTS WatchStatus;
 DROP TABLE IF EXISTS Review;
 DROP TABLE IF EXISTS Movies;
-DROP TABLE IF EXISTS categories;
+DROP TABLE IF EXISTS genres;
 DROP TABLE IF EXISTS Users;
 
 -- 2. Create independent tables first
@@ -18,8 +18,8 @@ CREATE TABLE Users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP -- Date and time of registration
 );
 
-CREATE TABLE categories (
-    category_id INT AUTO_INCREMENT PRIMARY KEY,
+CREATE TABLE genres (
+    genre_id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     description VARCHAR(255),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -78,8 +78,8 @@ INSERT INTO Users (username, email, password_hash, is_admin) VALUES
 ('cinephile_99', 'cinephile@example.com', 'hashed_pw_1', 0),
 ('movie_boss', 'admin@example.com', 'hashed_pw_2', 1);
 
--- Insert Categories
-INSERT INTO categories (name, description) VALUES
+-- Insert Genres
+INSERT INTO genres (name, description) VALUES
 ('Sci-Fi', 'Science fiction, space, and futuristic concepts.'),
 ('Action', 'High-energy, stunts, and fast-paced storylines.'),
 ('Crime', 'True crime and fictional underworld stories.');
@@ -110,6 +110,6 @@ INSERT INTO WatchStatus (user_id, movie_id, watch_state, progress_percent, finis
 -- Verify the data
 SELECT * FROM Movies;
 SELECT * FROM Users;
-SELECT * FROM categories;
+SELECT * FROM genres;
 SELECT * FROM Review;
 SELECT * FROM WatchStatus;

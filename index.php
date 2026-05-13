@@ -24,7 +24,7 @@ try {
     $recentMovies = $stmt->fetchAll();
     
     // Get genres count
-    $stmt = $pdo->query("SELECT COUNT(*) as count FROM categories");
+    $stmt = $pdo->query("SELECT COUNT(*) as count FROM genres");
     $totalGenres = $stmt->fetch()['count'];
 
     $stmt = $pdo->query("SELECT COUNT(*) as count FROM Review");

@@ -41,7 +41,7 @@
                     <li><a href="https://www.shitallamatamang.com.np/" target="_blank">Shital - User Management</a></li>
                     <li><a href="https://www.facebook.com/babita.pakuwal#" target="_blank">Babita - Movie Management</a></li>
                     <li><a href="https://www.facebook.com/profile.php?id=100073511192402#" target="_blank">Mallika - Watch Status</a></li>
-                    <li><a href="https://www.facebook.com/alia.magar.587#" target="_blank">Alina - Categories/Genres</a></li>
+                    <li><a href="https://www.facebook.com/alia.magar.587#" target="_blank">Alina - Genres</a></li>
                     <li><a href="https://www.facebook.com/rasmi.kumal.180#" target="_blank">Rasmi - Review & Rating</a></li>
                 </ul>
             </div>

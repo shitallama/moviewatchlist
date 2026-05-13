@@ -5,14 +5,14 @@ require_once $basePath . 'includes/db.php';
 $status = $_GET['status'] ?? '';
 $message = '';
 if ($status === 'added') {
-    $message = 'Category added successfully.';
+    $message = 'Genre added successfully.';
 } elseif ($status === 'updated') {
-    $message = 'Category updated successfully.';
+    $message = 'Genre updated successfully.';
 } elseif ($status === 'deleted') {
-    $message = 'Category deleted successfully.';
+    $message = 'Genre deleted successfully.';
 }
 
-$stmt = $pdo->query('SELECT * FROM categories ORDER BY created_at ASC');
+$stmt = $pdo->query('SELECT * FROM genres ORDER BY created_at ASC');
 $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
@@ -21,7 +21,7 @@ $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Categories | CineList</title>
+    <title>Genres | CineList</title>
     <link rel="stylesheet" href="<?php echo $basePath; ?>assets/style.css">
     <link rel="stylesheet" href="<?php echo $basePath; ?>assets/categories.css">
 </head>
@@ -30,9 +30,9 @@ $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 <div class="container">
     <div class="page-header">
-        <h2 class="section-title">Categories List</h2>
+        <h2 class="section-title">Genres List</h2>
         <div class="header-actions">
-            <a href="add_category.php" class="btn-view">Add Category</a>
+            <a href="add_category.php" class="btn-view">Add Genre</a>
         </div>
     </div>
 
@@ -42,7 +42,7 @@ $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     <?php if (empty($categories)): ?>
         <div class="message-banner">
-            No categories found yet. Use the button above to add your first category.
+            No genres found yet. Use the button above to add your first genre.
         </div>
     <?php else: ?>
         <table>
@@ -70,8 +70,8 @@ $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             </span>
                         </td>
                         <td class="table-actions" data-label="Actions">
-                            <a href="edit_category.php?id=<?php echo urlencode($row['category_id']); ?>">Edit</a>
-                            <a href="delete_category.php?id=<?php echo urlencode($row['category_id']); ?>" class="btn-secondary" onclick="return confirm('Delete this category?');">Delete</a>
+                            <a href="edit_category.php?id=<?php echo urlencode($row['genre_id']); ?>">Edit</a>
+                            <a href="delete_category.php?id=<?php echo urlencode($row['genre_id']); ?>" class="btn-secondary" onclick="return confirm('Delete this genre?');">Delete</a>
                         </td>
                     </tr>
                 <?php endforeach; ?>
