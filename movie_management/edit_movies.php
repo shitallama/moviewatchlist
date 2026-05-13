@@ -13,8 +13,13 @@ if (!isset($_SESSION['user_id'])) {
 $basePath = '../';
 $movieRepository = new MovieRepository($pdo);
 
-$id = (int)$_GET['id'];
+$id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 $user_id = (int)$_SESSION['user_id'];
+
+if (!$id) {
+    echo "No movie ID provided.";
+    exit();
+}
 
 $movie = $movieRepository->getById($id, $user_id);
 
@@ -59,34 +64,34 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <form class="manage-form" method="POST">
         <div class="form-group">
             <label for="title">Movie Title</label>
-            <input type="text" id="title" name="title" value="<?= htmlspecialchars($row['title']) ?>" required>
+            <input type="text" id="title" name="title" value="<?= htmlspecialchars($movie->title) ?>" required>
         </div>
 
         <div class="form-group">
             <label for="genre">Genre</label>
-            <input type="text" id="genre" name="genre" value="<?= htmlspecialchars($row['genre']) ?>" required>
+            <input type="text" id="genre" name="genre" value="<?= htmlspecialchars($movie->genre) ?>" required>
         </div>
 
         <div class="form-group">
             <label for="release_date">Release Date</label>
-            <input type="date" id="release_date" name="release_date" value="<?= htmlspecialchars($row['release_date']) ?>">
+            <input type="date" id="release_date" name="release_date" value="<?= htmlspecialchars($movie->release_date) ?>">
         </div>
 
         <div class="form-group checkbox-group">
             <label>
-                <input type="checkbox" id="watched" name="watched" value="1" <?= $row['watched'] ? 'checked' : '' ?>>
+                <input type="checkbox" id="watched" name="watched" value="1" <?= $movie->watched ? 'checked' : '' ?>>
                 Watched
             </label>
         </div>
 
         <div class="form-group">
             <label for="watch_date">Watch Date</label>
-            <input type="date" id="watch_date" name="watch_date" value="<?= htmlspecialchars($row['watch_date']) ?>">
+            <input type="date" id="watch_date" name="watch_date" value="<?= htmlspecialchars($movie->watch_date) ?>">
         </div>
 
         <div class="form-group">
             <label for="user_notes">Notes</label>
-            <textarea id="user_notes" name="user_notes" rows="4"><?= htmlspecialchars($row['user_notes']) ?></textarea>
+            <textarea id="user_notes" name="user_notes" rows="4"><?= htmlspecialchars($movie->user_notes) ?></textarea>
         </div>
 
         <div class="btn-group">
