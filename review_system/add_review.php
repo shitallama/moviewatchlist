@@ -7,7 +7,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $rating = $_POST['rating'];
     $review = $_POST['review'];
 
-    if (addReview($user_id, $movie_id, $rating, $review)) {
+    if ($reviewManager->addReview($user_id, $movie_id, $rating, $review)) {
         echo "success";
     } else {
         echo "error";

@@ -52,8 +52,8 @@ CREATE TABLE Review (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (movie_id) REFERENCES Movies(movie_id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE
-);
- 
+); 
+
 -- Create table for granular watch status management
 CREATE TABLE WatchStatus (
     status_id INT PRIMARY KEY AUTO_INCREMENT,
