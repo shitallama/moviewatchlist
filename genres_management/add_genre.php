@@ -1,6 +1,7 @@
-<?php
+﻿<?php
 $basePath = '../';
 require_once $basePath . 'includes/db.php';
+require_once $basePath . 'genres_management/Genre.php';
 
 $error = '';
 $name = '';
@@ -14,11 +15,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = 'Genre name is required.';
     } else {
         try {
-            $stmt = $pdo->prepare(
-                'INSERT INTO genres (name, description, created_at, is_active) VALUES (:name, :description, CURDATE(), 1)'
+            $genre = new Genre(null, $name, $description, null, 1);
+            $repository = new GenreRepository($pdo);
 
-            header('Location: view_category.php?status=added');
-            exit;
+            if ($repository->add($genre)) {
+                header('Location: view_genre.php?status=added');
+                exit;
+            }
+
+            $error = 'Unable to save genre. Please try again.';
         } catch (PDOException $e) {
             $error = 'Unable to save genre. Please try again.';
         }
@@ -42,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="page-header">
         <h2 class="section-title">Add Genre</h2>
         <div class="header-actions">
-            <a href="view_category.php" class="btn-secondary">Back to list</a>
+            <a href="view_genre.php" class="btn-secondary">Back to list</a>
         </div>
     </div>
 

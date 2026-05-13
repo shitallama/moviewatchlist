@@ -1,26 +1,26 @@
-<?php
+﻿<?php
 $basePath = '../';
 require_once $basePath . 'includes/db.php';
+require_once $basePath . 'genres_management/Genre.php';
 
 $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 if (!$id) {
-    header('Location: view_category.php');
+    header('Location: view_genre.php');
+    exit;
+}
+
+$repository = new GenreRepository($pdo);
+$genre = $repository->getById($id);
+
+if (!$genre) {
+    header('Location: view_genre.php');
     exit;
 }
 
 $error = '';
-$stmt = $pdo->prepare('SELECT * FROM genres WHERE genre_id = :id');
-$stmt->execute(['id' => $id]);
-$row = $stmt->fetch(PDO::FETCH_ASSOC);
-
-if (!$row) {
-    header('Location: view_category.php');
-    exit;
-}
-
-$name = $row['name'];
-$description = $row['description'];
-$is_active = $row['is_active'];
+$name = $genre->name;
+$description = $genre->description;
+$is_active = $genre->is_active;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = trim($_POST['name'] ?? '');
@@ -31,18 +31,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = 'Genre name is required.';
     } else {
         try {
-            $stmt = $pdo->prepare(
-                'UPDATE genres SET name = :name, description = :description, is_active = :is_active WHERE genre_id = :id'
-            );
-            $stmt->execute([
-                'name' => $name,
-                'description' => $description,
-                'is_active' => $is_active,
-                'id' => $id,
-            ]);
+            $genre->name = $name;
+            $genre->description = $description;
+            $genre->is_active = $is_active;
 
-            header('Location: view_category.php?status=updated');
-            exit;
+            if ($repository->update($genre)) {
+                header('Location: view_genre.php?status=updated');
+                exit;
+            }
+
+            $error = 'Unable to save changes. Please try again.';
         } catch (PDOException $e) {
             $error = 'Unable to save changes. Please try again.';
         }
@@ -66,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="page-header">
         <h2 class="section-title">Edit Genre</h2>
         <div class="header-actions">
-            <a href="view_category.php" class="btn-secondary">Back to list</a>
+            <a href="view_genre.php" class="btn-secondary">Back to list</a>
         </div>
     </div>
 

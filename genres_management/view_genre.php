@@ -1,6 +1,7 @@
-<?php
+﻿<?php
 $basePath = '../';
 require_once $basePath . 'includes/db.php';
+require_once $basePath . 'genres_management/Genre.php';
 
 $status = $_GET['status'] ?? '';
 $message = '';
@@ -12,8 +13,8 @@ if ($status === 'added') {
     $message = 'Genre deleted successfully.';
 }
 
-$stmt = $pdo->query('SELECT * FROM genres ORDER BY created_at ASC');
-$categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$repository = new GenreRepository($pdo);
+$categories = $repository->getAll();
 ?>
 
 <!DOCTYPE html>
@@ -32,7 +33,7 @@ $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <div class="page-header">
         <h2 class="section-title">Genres List</h2>
         <div class="header-actions">
-            <a href="add_category.php" class="btn-view">Add Genre</a>
+            <a href="add_genre.php" class="btn-view">Add Genre</a>
         </div>
     </div>
 
@@ -58,20 +59,20 @@ $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </thead>
             <tbody>
                 <?php $rowNumber = 1; ?>
-                <?php foreach ($categories as $row): ?>
+                <?php foreach ($categories as $genre): ?>
                     <tr>
                         <td data-label="No."><?php echo $rowNumber++; ?></td>
-                        <td data-label="Name"><?php echo htmlspecialchars($row['name']); ?></td>
-                        <td data-label="Description"><?php echo htmlspecialchars($row['description']); ?></td>
-                        <td data-label="Created Date"><?php echo htmlspecialchars(date('M j, Y', strtotime($row['created_at']))); ?></td>
+                        <td data-label="Name"><?php echo htmlspecialchars($genre->name); ?></td>
+                        <td data-label="Description"><?php echo htmlspecialchars($genre->description); ?></td>
+                        <td data-label="Created Date"><?php echo htmlspecialchars(date('M j, Y', strtotime($genre->created_at))); ?></td>
                         <td data-label="Status">
-                            <span class="status-pill <?php echo $row['is_active'] == 1 ? 'active' : 'inactive'; ?>">
-                                <?php echo $row['is_active'] == 1 ? 'Active' : 'Inactive'; ?>
+                            <span class="status-pill <?php echo $genre->is_active == 1 ? 'active' : 'inactive'; ?>">
+                                <?php echo $genre->is_active == 1 ? 'Active' : 'Inactive'; ?>
                             </span>
                         </td>
                         <td class="table-actions" data-label="Actions">
-                            <a href="edit_category.php?id=<?php echo urlencode($row['genre_id']); ?>">Edit</a>
-                            <a href="delete_category.php?id=<?php echo urlencode($row['genre_id']); ?>" class="btn-secondary" onclick="return confirm('Delete this genre?');">Delete</a>
+                            <a href="edit_genre.php?id=<?php echo urlencode($genre->genre_id); ?>">Edit</a>
+                            <a href="delete_genre.php?id=<?php echo urlencode($genre->genre_id); ?>" class="btn-secondary" onclick="return confirm('Delete this genre?');">Delete</a>
                         </td>
                     </tr>
                 <?php endforeach; ?>
