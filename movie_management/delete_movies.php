@@ -1,5 +1,6 @@
 <?php
 include('../includes/db.php');
+require_once __DIR__ . '/MovieManager.php';
 
 session_start();
 
@@ -9,13 +10,14 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
+$movieRepository = new MovieRepository($pdo);
+
 // Delete movie
 if (isset($_GET['id'])) {
-    $id = $_GET['id'];
-    $user_id = $_SESSION['user_id'];
+    $id = (int)$_GET['id'];
+    $user_id = (int)$_SESSION['user_id'];
 
-    $stmt = $pdo->prepare("DELETE FROM Movies WHERE movie_id = ? AND user_id = ?");
-    $stmt->execute([$id, $user_id]);
+    $movieRepository->delete($id, $user_id);
 }
 
 header("Location: view_movies.php");

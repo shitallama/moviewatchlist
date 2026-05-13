@@ -14,10 +14,10 @@
             <div class="footer-section">
                 <h4>Quick Links</h4>
                 <ul>
-                    <li><a href="<?php echo $basePath; ?>movies.php">Browse Movies</a></li>
-                    <li><a href="<?php echo $basePath; ?>watchlist.php">My Watchlist</a></li>
-                    <li><a href="<?php echo $basePath; ?>genres.php">Genres</a></li>
-                    <li><a href="<?php echo $basePath; ?>reviews.php">Reviews</a></li>
+                    <li><a href="<?php echo $basePath; ?>movie_management/view_movies.php">Browse Movies</a></li>
+                    <li><a href="<?php echo $basePath; ?>watch_status_management/watchlist.php">My Watchlist</a></li>
+                    <li><a href="<?php echo $basePath; ?>categories_management/view_category.php">Genres</a></li>
+                    <li><a href="<?php echo $basePath; ?>review_system/review_page.php">Reviews</a></li>
                 </ul>
             </div>
             
@@ -41,7 +41,7 @@
                     <li><a href="https://www.shitallamatamang.com.np/" target="_blank">Shital - User Management</a></li>
                     <li><a href="https://www.facebook.com/babita.pakuwal#" target="_blank">Babita - Movie Management</a></li>
                     <li><a href="https://www.facebook.com/profile.php?id=100073511192402#" target="_blank">Mallika - Watch Status</a></li>
-                    <li><a href="https://www.facebook.com/alia.magar.587#" target="_blank">Alina - Categories/Genres</a></li>
+                    <li><a href="https://www.facebook.com/alia.magar.587#" target="_blank">Alina - Genres</a></li>
                     <li><a href="https://www.facebook.com/rasmi.kumal.180#" target="_blank">Rasmi - Review & Rating</a></li>
                 </ul>
             </div>

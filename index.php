@@ -1,4 +1,3 @@
-
 <?php
 require_once 'includes/db.php';
 
@@ -24,7 +23,7 @@ try {
     $recentMovies = $stmt->fetchAll();
     
     // Get genres count
-    $stmt = $pdo->query("SELECT COUNT(*) as count FROM categories");
+    $stmt = $pdo->query("SELECT COUNT(*) as count FROM genres");
     $totalGenres = $stmt->fetch()['count'];
 
     $stmt = $pdo->query("SELECT COUNT(*) as count FROM Review");
@@ -53,7 +52,7 @@ try {
 <?php require_once 'includes/header.php'; ?>
 <div class="hero-section">
     <div class="hero-content">
-        <h1>Welcome to MovieHub</h1>
+        <h1>Welcome to CineList</h1>
         <p>Your ultimate destination for movie management, reviews, and tracking</p>
         <?php if(!$isLoggedIn): ?>
             <div class="hero-buttons">
@@ -125,7 +124,7 @@ try {
             
             <div class="feature-card">
                 <div class="feature-icon">
-                    <img class="icon" src="assets/icons/star-half.svg" alt="" aria-hidden="true">
+                    <img class="icon" src="assets/icons/star.svg" alt="" aria-hidden="true">
                 </div>
                 <h3>Review & Rating</h3>
                 <p>Rate and review movies - Average ratings, comments and feedback system.</p>

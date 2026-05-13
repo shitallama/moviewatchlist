@@ -9,7 +9,7 @@ if (!$id) {
 }
 
 $error = '';
-$stmt = $pdo->prepare('SELECT * FROM categories WHERE category_id = :id');
+$stmt = $pdo->prepare('SELECT * FROM genres WHERE genre_id = :id');
 $stmt->execute(['id' => $id]);
 $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -28,11 +28,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $is_active = ($_POST['is_active'] ?? '1') === '1' ? 1 : 0;
 
     if ($name === '') {
-        $error = 'Category name is required.';
+        $error = 'Genre name is required.';
     } else {
         try {
             $stmt = $pdo->prepare(
-                'UPDATE categories SET name = :name, description = :description, is_active = :is_active WHERE category_id = :id'
+                'UPDATE genres SET name = :name, description = :description, is_active = :is_active WHERE genre_id = :id'
             );
             $stmt->execute([
                 'name' => $name,
@@ -55,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Edit Category | CineList</title>
+    <title>Edit Genre | CineList</title>
     <link rel="stylesheet" href="<?php echo $basePath; ?>assets/style.css">
     <link rel="stylesheet" href="<?php echo $basePath; ?>assets/categories.css">
 </head>
@@ -64,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <div class="container">
     <div class="page-header">
-        <h2 class="section-title">Edit Category</h2>
+        <h2 class="section-title">Edit Genre</h2>
         <div class="header-actions">
             <a href="view_category.php" class="btn-secondary">Back to list</a>
         </div>
@@ -76,7 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <form method="POST" class="category-form">
         <div class="form-field">
-            <label for="name">Category name</label>
+            <label for="name">Genre name</label>
             <input type="text" id="name" name="name" value="<?php echo htmlspecialchars($name); ?>" required>
         </div>
 
@@ -94,7 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
 
         <div class="form-actions">
-            <button type="submit" name="update" class="btn-view">Update Category</button>
+            <button type="submit" name="update" class="btn-view">Update Genre</button>
         </div>
     </form>
 </div>

@@ -11,21 +11,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $description = trim($_POST['description'] ?? '');
 
     if ($name === '') {
-        $error = 'Category name is required.';
+        $error = 'Genre name is required.';
     } else {
         try {
             $stmt = $pdo->prepare(
-                'INSERT INTO categories (name, description, created_at, is_active) VALUES (:name, :description, CURDATE(), 1)'
-            );
-            $stmt->execute([
-                'name' => $name,
-                'description' => $description,
-            ]);
+                'INSERT INTO genres (name, description, created_at, is_active) VALUES (:name, :description, CURDATE(), 1)'
 
             header('Location: view_category.php?status=added');
             exit;
         } catch (PDOException $e) {
-            $error = 'Unable to save category. Please try again.';
+            $error = 'Unable to save genre. Please try again.';
         }
     }
 }
@@ -36,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Add Category | CineList</title>
+    <title>Add Genre | CineList</title>
     <link rel="stylesheet" href="<?php echo $basePath; ?>assets/style.css">
     <link rel="stylesheet" href="<?php echo $basePath; ?>assets/categories.css">
 </head>
@@ -45,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <div class="container">
     <div class="page-header">
-        <h2 class="section-title">Add Category</h2>
+        <h2 class="section-title">Add Genre</h2>
         <div class="header-actions">
             <a href="view_category.php" class="btn-secondary">Back to list</a>
         </div>
@@ -57,8 +52,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <form method="POST" class="category-form">
         <div class="form-field">
-            <label for="name">Category name</label>
-            <input type="text" id="name" name="name" placeholder="Category name" value="<?php echo htmlspecialchars($name); ?>" required>
+            <label for="name">Genre name</label>
+            <input type="text" id="name" name="name" placeholder="Genre name" value="<?php echo htmlspecialchars($name); ?>" required>
         </div>
 
         <div class="form-field">
@@ -67,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
 
         <div class="form-actions">
-            <button type="submit" name="submit" class="btn-view">Add Category</button>
+            <button type="submit" name="submit" class="btn-view">Add Genre</button>
         </div>
     </form>
 </div>

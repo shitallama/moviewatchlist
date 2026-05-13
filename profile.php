@@ -1,6 +1,7 @@
 <?php
 $basePath = '';
 require_once $basePath . 'includes/db.php';
+require_once $basePath . 'includes/UserManager.php';
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -12,10 +13,8 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 $userId = (int)$_SESSION['user_id'];
-
-$stmt = $pdo->prepare('SELECT username, email, is_admin, created_at FROM Users WHERE user_id = :user_id LIMIT 1');
-$stmt->execute(['user_id' => $userId]);
-$user = $stmt->fetch(PDO::FETCH_ASSOC);
+$userManager = new UserManager($pdo);
+$user = $userManager->getUserById($userId);
 
 if (!$user) {
     header('Location: ' . $basePath . 'Login/login.php');

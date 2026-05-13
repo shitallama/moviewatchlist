@@ -1,6 +1,7 @@
 <?php
 $basePath = '';
 require_once $basePath . 'includes/db.php';
+require_once $basePath . 'includes/UserManager.php';
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -15,9 +16,8 @@ $userId = (int)$_SESSION['user_id'];
 $errors = [];
 $success = [];
 
-$stmt = $pdo->prepare('SELECT username, email, password_hash FROM Users WHERE user_id = :user_id LIMIT 1');
-$stmt->execute(['user_id' => $userId]);
-$user = $stmt->fetch(PDO::FETCH_ASSOC);
+$userManager = new UserManager($pdo);
+$user = $userManager->getUserById($userId);
 
 if (!$user) {
     header('Location: ' . $basePath . 'Login/login.php');
@@ -40,28 +40,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         if (empty($errors)) {
-            $check = $pdo->prepare('SELECT user_id FROM Users WHERE (username = :username OR email = :email) AND user_id != :user_id LIMIT 1');
-            $check->execute([
-                'username' => $username,
-                'email' => $email,
-                'user_id' => $userId,
-            ]);
-            $exists = $check->fetch(PDO::FETCH_ASSOC);
+            $exists = $userManager->checkUserExistsExclude($username, $email, $userId);
 
             if ($exists) {
                 $errors[] = 'That username or email is already in use.';
             } else {
-                $update = $pdo->prepare('UPDATE Users SET username = :username, email = :email WHERE user_id = :user_id');
-                $update->execute([
-                    'username' => $username,
-                    'email' => $email,
-                    'user_id' => $userId,
-                ]);
-
-                $_SESSION['user_name'] = $username;
-                $success[] = 'Profile details updated.';
-                $user['username'] = $username;
-                $user['email'] = $email;
+                if ($userManager->updateProfile($userId, $email, $username)) {
+                    $_SESSION['user_name'] = $username;
+                    $success[] = 'Profile details updated.';
+                    $user['username'] = $username;
+                    $user['email'] = $email;
+                } else {
+                    $errors[] = 'Failed to update profile. Please try again.';
+                }
             }
         }
     }
@@ -71,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $newPassword = $_POST['new_password'] ?? '';
         $confirmPassword = $_POST['confirm_password'] ?? '';
 
-        if (!password_verify($currentPassword, $user['password_hash'] ?? '')) {
+        if (!$userManager->verifyPassword($currentPassword, $user['password_hash'] ?? '')) {
             $errors[] = 'Current password is incorrect.';
         }
 
@@ -84,13 +75,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         if (empty($errors)) {
-            $hash = password_hash($newPassword, PASSWORD_DEFAULT);
-            $update = $pdo->prepare('UPDATE Users SET password_hash = :password_hash WHERE user_id = :user_id');
-            $update->execute([
-                'password_hash' => $hash,
-                'user_id' => $userId,
-            ]);
-            $success[] = 'Password updated.';
+            if ($userManager->updatePassword($userId, $newPassword)) {
+                $success[] = 'Password updated.';
+            } else {
+                $errors[] = 'Failed to update password. Please try again.';
+            }
         }
     }
 
@@ -102,23 +91,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $errors[] = 'Please confirm you want to delete your account.';
         }
 
-        if (!password_verify($confirmPassword, $user['password_hash'] ?? '')) {
+        if (!$userManager->verifyPassword($confirmPassword, $user['password_hash'] ?? '')) {
             $errors[] = 'Password confirmation failed.';
         }
 
         if (empty($errors)) {
-            $delete = $pdo->prepare('DELETE FROM Users WHERE user_id = :user_id');
-            $delete->execute(['user_id' => $userId]);
+            if ($userManager->deleteUser($userId)) {
+                $_SESSION = [];
+                if (ini_get('session.use_cookies')) {
+                    $params = session_get_cookie_params();
+                    setcookie(session_name(), '', time() - 42000, $params['path'], $params['domain'], $params['secure'], $params['httponly']);
+                }
+                session_destroy();
 
-            $_SESSION = [];
-            if (ini_get('session.use_cookies')) {
-                $params = session_get_cookie_params();
-                setcookie(session_name(), '', time() - 42000, $params['path'], $params['domain'], $params['secure'], $params['httponly']);
+                header('Location: ' . $basePath . 'Login/login.php');
+                exit;
+            } else {
+                $errors[] = 'Failed to delete account. Please try again.';
             }
-            session_destroy();
-
-            header('Location: ' . $basePath . 'Login/login.php');
-            exit;
         }
     }
 }
