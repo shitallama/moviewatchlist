@@ -3,7 +3,7 @@ include("review_db.php");
 
 $movie_id = $_GET['movie_id'];
 
-$reviews = getReviews($movie_id);
+$reviews = $reviewManager->getReviews($movie_id);
 
 foreach ($reviews as $row) {
     echo "<div class='review'>";
