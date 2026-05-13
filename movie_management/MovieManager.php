@@ -57,6 +57,8 @@ class MovieRepository
 
     public function add(Movie $movie): bool
     {
+        $this->validateUser($movie->user_id);
+
         $stmt = $this->pdo->prepare(
             "INSERT INTO Movies (title, genre, release_date, watched, watch_date, user_notes, user_id)
             VALUES (?, ?, ?, ?, ?, ?, ?)"
@@ -71,6 +73,20 @@ class MovieRepository
             $movie->user_notes,
             $movie->user_id,
         ]);
+    }
+
+    private function validateUser(int $userId): void
+    {
+        if ($userId <= 0) {
+            throw new InvalidArgumentException('Invalid user ID. Please log in again.');
+        }
+
+        $stmt = $this->pdo->prepare('SELECT 1 FROM Users WHERE user_id = ? LIMIT 1');
+        $stmt->execute([$userId]);
+
+        if (!$stmt->fetchColumn()) {
+            throw new InvalidArgumentException('User not found. Please log in again.');
+        }
     }
 
     public function update(Movie $movie): bool

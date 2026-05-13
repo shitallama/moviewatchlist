@@ -12,6 +12,7 @@ if (!isset($_SESSION['user_id'])) {
 
 $basePath = '../';
 $movieRepository = new MovieRepository($pdo);
+$error = '';
 
 // Add movie
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -25,22 +26,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Validation
     if (empty($title) || empty($genre)) {
-        echo "Title and Genre are required.";
+        $error = "Title and Genre are required.";
     } else {
-        $movie = new Movie(
-            null,
-            $title,
-            $genre,
-            $release_date,
-            $watched,
-            $watch_date,
-            $user_notes,
-            $user_id
-        );
+        try {
+            $movie = new Movie(
+                null,
+                $title,
+                $genre,
+                $release_date,
+                $watched,
+                $watch_date,
+                $user_notes,
+                $user_id
+            );
 
-        $movieRepository->add($movie);
-        header("Location: view_movies.php");
-        exit();
+            $movieRepository->add($movie);
+            header("Location: view_movies.php");
+            exit();
+        } catch (Exception $e) {
+            $error = 'Unable to add movie: ' . $e->getMessage();
+        }
     }
 }
 ?>
@@ -61,6 +66,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <h2>Add New Movie</h2>
         <p>Add a movie to your personal collection</p>
     </div>
+
+    <?php if (!empty($error)): ?>
+        <div class="alert alert-error"><?php echo htmlspecialchars($error); ?></div>
+    <?php endif; ?>
 
     <form class="manage-form" method="POST">
         <div class="form-group">
