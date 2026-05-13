@@ -1,6 +1,7 @@
 <?php
 $basePath = '../';
 require_once $basePath . 'includes/db.php';
+require_once $basePath . 'includes/UserManager.php';
 
 if (session_status() === PHP_SESSION_NONE) {
 	session_start();
@@ -48,33 +49,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	}
 
 	if (empty($errors)) {
-		$stmt = $pdo->prepare(
-			'SELECT user_id FROM Users WHERE username = :username OR email = :email LIMIT 1'
-		);
-		$stmt->execute([
-			'username' => $username,
-			'email' => $email,
-		]);
-		$existing = $stmt->fetch(PDO::FETCH_ASSOC);
+		$userManager = new UserManager($pdo);
+		$existing = $userManager->checkUserExists($username, $email);
 
 		if ($existing) {
 			$errors[] = 'An account with that username or email already exists.';
 		} else {
-			$passwordHash = password_hash($password, PASSWORD_DEFAULT);
-
-			try {
-				$insert = $pdo->prepare(
-					'INSERT INTO Users (username, email, password_hash, is_active, is_admin) VALUES (:username, :email, :password_hash, 1, 0)'
-				);
-				$insert->execute([
-					'username' => $username,
-					'email' => $email,
-					'password_hash' => $passwordHash,
-				]);
-
+			if ($userManager->createUser($username, $email, $password)) {
 				header('Location: ' . $basePath . 'Login/login.php?registered=1');
 				exit;
-			} catch (PDOException $e) {
+			} else {
 				$errors[] = 'Could not create your account. Please try again.';
 			}
 		}

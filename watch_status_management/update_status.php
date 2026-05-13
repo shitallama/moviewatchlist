@@ -2,6 +2,8 @@
 // watch status management/update_status.php
 $basePath = '../';
 require_once '../includes/db.php';
+require_once 'WatchStatusService.php';
+require_once 'repositories/WatchStatusRepository.php';
 
 session_start();
 if (!isset($_SESSION['user_id'])) {
@@ -13,6 +15,10 @@ $user_id = $_SESSION['user_id'];
 $message = '';
 $error = '';
 $selectedStatusId = 0;
+
+// Initialize service
+$repository = new WatchStatusRepository($pdo);
+$service = new WatchStatusService($repository);
 
 $allowedStates = [
     'plan' => 'Plan to Watch',
@@ -26,20 +32,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['status_id'])) {
         ? $_POST['watch_state']
         : 'plan';
     $progress_percent = isset($_POST['progress_percent']) ? (int) $_POST['progress_percent'] : 0;
-    $progress_percent = max(0, min(100, $progress_percent));
-
-    $finished_at = $watch_state === 'completed' ? date('Y-m-d H:i:s') : null;
-    if ($watch_state === 'completed') {
-        $progress_percent = 100;
-    }
 
     try {
-        $stmt = $pdo->prepare(
-            "UPDATE WatchStatus
-             SET watch_state = ?, progress_percent = ?, finished_at = ?
-             WHERE status_id = ? AND user_id = ?"
-        );
-        $stmt->execute([$watch_state, $progress_percent, $finished_at, $selectedStatusId, $user_id]);
+        $service->updateWatchStatus($selectedStatusId, $user_id, $watch_state, $progress_percent);
         $message = 'Watch status updated successfully.';
     } catch (Exception $e) {
         $error = 'Unable to update watch status: ' . $e->getMessage();
@@ -47,20 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['status_id'])) {
 }
 
 try {
-    $stmt = $pdo->prepare(
-        "SELECT ws.status_id, m.movie_id, m.title, ws.watch_state, ws.progress_percent, ws.finished_at
-         FROM WatchStatus ws
-         JOIN Movies m ON ws.movie_id = m.movie_id
-         WHERE ws.user_id = ?
-         ORDER BY CASE ws.watch_state
-             WHEN 'plan' THEN 1
-             WHEN 'watching' THEN 2
-             WHEN 'completed' THEN 3
-             ELSE 4
-         END, m.title ASC"
-    );
-    $stmt->execute([$user_id]);
-    $watchlist = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $watchlist = $service->getWatchlist($user_id);
 } catch (Exception $e) {
     $watchlist = [];
     if (!$error) {

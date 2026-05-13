@@ -1,6 +1,7 @@
 <?php
 $basePath = '../';
 require_once $basePath . 'includes/db.php';
+require_once $basePath . 'includes/UserManager.php';
 
 if (session_status() === PHP_SESSION_NONE) {
 	session_start();
@@ -28,17 +29,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	if ($identifier === '' || $password === '') {
 		$errors[] = 'Please enter your username or email and password.';
 	} else {
-		$stmt = $pdo->prepare(
-			'SELECT user_id, username, email, password_hash, is_active FROM Users WHERE username = :identifier OR email = :identifier LIMIT 1'
-		);
-		$stmt->execute(['identifier' => $identifier]);
-		$user = $stmt->fetch(PDO::FETCH_ASSOC);
+		// Initialize UserManager and authenticate user
+		$userManager = new UserManager($pdo);
+		$user = $userManager->getUserByIdentifier($identifier);
 
 		if (!$user || (int)$user['is_active'] !== 1) {
 			$errors[] = 'No active account found for those credentials.';
 		} else {
 			$storedHash = $user['password_hash'] ?? '';
-			$passwordOk = password_verify($password, $storedHash) || hash_equals($storedHash, $password);
+			$passwordOk = $userManager->verifyPassword($password, $storedHash);
 
 			if (!$passwordOk) {
 				$errors[] = 'Incorrect password. Please try again.';

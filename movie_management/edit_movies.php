@@ -1,5 +1,6 @@
 <?php
 include('../includes/db.php');
+require_once __DIR__ . '/MovieManager.php';
 
 session_start();
 
@@ -10,38 +11,33 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 $basePath = '../';
+$movieRepository = new MovieRepository($pdo);
 
-$id = $_GET['id'];
-$user_id = $_SESSION['user_id'];
+$id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+$user_id = (int)$_SESSION['user_id'];
 
-// Get movie
-$stmt = $pdo->prepare("SELECT * FROM Movies WHERE movie_id = ? AND user_id = ?");
-$stmt->execute([$id, $user_id]);
-$row = $stmt->fetch(PDO::FETCH_ASSOC);
+if (!$id) {
+    echo "No movie ID provided.";
+    exit();
+}
 
-if (!$row) {
+$movie = $movieRepository->getById($id, $user_id);
+
+if (!$movie) {
     echo "Movie not found or access denied.";
     exit();
 }
 
 // Update movie
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $title = trim($_POST['title']);
-    $genre = trim($_POST['genre']);
-    $release_date = $_POST['release_date'] ?: null;
-    $watch_date = $_POST['watch_date'] ?: null;
-    $user_notes = trim($_POST['user_notes']) ?: null;
-    $watched = isset($_POST['watched']) ? 1 : 0;
+    $movie->title = trim($_POST['title']);
+    $movie->genre = trim($_POST['genre']);
+    $movie->release_date = $_POST['release_date'] ?: null;
+    $movie->watch_date = $_POST['watch_date'] ?: null;
+    $movie->user_notes = trim($_POST['user_notes']) ?: null;
+    $movie->watched = isset($_POST['watched']) ? 1 : 0;
 
-    $stmt = $pdo->prepare("UPDATE Movies SET 
-        title = ?,
-        genre = ?,
-        release_date = ?,
-        watched = ?,
-        watch_date = ?,
-        user_notes = ?
-        WHERE movie_id = ? AND user_id = ?");
-    $stmt->execute([$title, $genre, $release_date, $watched, $watch_date, $user_notes, $id, $user_id]);
+    $movieRepository->update($movie);
 
     header("Location: view_movies.php");
     exit();
@@ -68,34 +64,34 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <form class="manage-form" method="POST">
         <div class="form-group">
             <label for="title">Movie Title</label>
-            <input type="text" id="title" name="title" value="<?= htmlspecialchars($row['title']) ?>" required>
+            <input type="text" id="title" name="title" value="<?= htmlspecialchars($movie->title) ?>" required>
         </div>
 
         <div class="form-group">
             <label for="genre">Genre</label>
-            <input type="text" id="genre" name="genre" value="<?= htmlspecialchars($row['genre']) ?>" required>
+            <input type="text" id="genre" name="genre" value="<?= htmlspecialchars($movie->genre) ?>" required>
         </div>
 
         <div class="form-group">
             <label for="release_date">Release Date</label>
-            <input type="date" id="release_date" name="release_date" value="<?= htmlspecialchars($row['release_date']) ?>">
+            <input type="date" id="release_date" name="release_date" value="<?= htmlspecialchars($movie->release_date) ?>">
         </div>
 
         <div class="form-group checkbox-group">
             <label>
-                <input type="checkbox" id="watched" name="watched" value="1" <?= $row['watched'] ? 'checked' : '' ?>>
+                <input type="checkbox" id="watched" name="watched" value="1" <?= $movie->watched ? 'checked' : '' ?>>
                 Watched
             </label>
         </div>
 
         <div class="form-group">
             <label for="watch_date">Watch Date</label>
-            <input type="date" id="watch_date" name="watch_date" value="<?= htmlspecialchars($row['watch_date']) ?>">
+            <input type="date" id="watch_date" name="watch_date" value="<?= htmlspecialchars($movie->watch_date) ?>">
         </div>
 
         <div class="form-group">
             <label for="user_notes">Notes</label>
-            <textarea id="user_notes" name="user_notes" rows="4"><?= htmlspecialchars($row['user_notes']) ?></textarea>
+            <textarea id="user_notes" name="user_notes" rows="4"><?= htmlspecialchars($movie->user_notes) ?></textarea>
         </div>
 
         <div class="btn-group">
