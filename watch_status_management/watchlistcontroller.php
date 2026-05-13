@@ -11,17 +11,59 @@ class WatchlistController {
     }
 
     public function getMovies($user_id) {
-        $stmt = $this->pdo->prepare("SELECT movie_id, title, watched, watch_date FROM Movies WHERE user_id = ? ORDER BY watched ASC, title ASC");
+        $stmt = $this->pdo->prepare(
+            "SELECT m.movie_id, m.title, m.watch_date, ws.watch_state, ws.progress_percent
+             FROM WatchStatus ws
+             JOIN Movies m ON ws.movie_id = m.movie_id
+             WHERE ws.user_id = ?
+             ORDER BY CASE ws.watch_state
+                 WHEN 'plan' THEN 1
+                 WHEN 'watching' THEN 2
+                 WHEN 'completed' THEN 3
+                 ELSE 4
+             END, m.title ASC"
+        );
         $stmt->execute([$user_id]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function toggleWatchStatus(int $id, int $currentStatus, $user_id): bool {
-        $newStatus = $currentStatus ? 0 : 1;
-        $watchDate = $newStatus ? date('Y-m-d') : null;
+    public function toggleWatchStatus(int $movieId, int $currentStatus, $user_id): bool {
+        $newState = $currentStatus ? 'plan' : 'completed';
+        $progress = $newState === 'completed' ? 100 : 0;
+        $finishedAt = $newState === 'completed' ? date('Y-m-d H:i:s') : null;
+        $watched = $newState === 'completed' ? 1 : 0;
+        $watchDate = $watched ? date('Y-m-d') : null;
 
-        $stmt = $this->pdo->prepare("UPDATE Movies SET watched = ?, watch_date = ? WHERE movie_id = ? AND user_id = ?");
-        return $stmt->execute([$newStatus, $watchDate, $id, $user_id]);
+        try {
+            $this->pdo->beginTransaction();
+
+            $stmt = $this->pdo->prepare(
+                "UPDATE WatchStatus
+                 SET watch_state = ?, progress_percent = ?, finished_at = ?
+                 WHERE movie_id = ? AND user_id = ?"
+            );
+            $statusUpdated = $stmt->execute([$newState, $progress, $finishedAt, $movieId, $user_id]);
+
+            $stmt = $this->pdo->prepare(
+                "UPDATE Movies
+                 SET watched = ?, watch_date = ?
+                 WHERE movie_id = ? AND user_id = ?"
+            );
+            $movieUpdated = $stmt->execute([$watched, $watchDate, $movieId, $user_id]);
+
+            if ($statusUpdated && $movieUpdated) {
+                $this->pdo->commit();
+                return true;
+            }
+
+            $this->pdo->rollBack();
+            return false;
+        } catch (Exception $e) {
+            if ($this->pdo->inTransaction()) {
+                $this->pdo->rollBack();
+            }
+            return false;
+        }
     }
 }
 

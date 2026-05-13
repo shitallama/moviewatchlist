@@ -6,7 +6,6 @@ DROP TABLE IF EXISTS Review;
 DROP TABLE IF EXISTS Movies;
 DROP TABLE IF EXISTS categories;
 DROP TABLE IF EXISTS Users;
-DROP TABLE IF EXISTS WatchStatus;
 
 -- 2. Create independent tables first
 CREATE TABLE Users (
@@ -100,7 +99,7 @@ INSERT INTO Review (movie_id, user_id, rating, review_text, is_recommended) VALU
 (1, 1, 5, 'Absolutely incredible visuals and a plot that keeps you guessing until the very last frame.', TRUE),
 (5, 2, 2, 'The nostalgia was nice, but the plot felt really disjointed and unnecessary.', FALSE);
 
--- Insert sample watch statuses
+-- Insert sample watch status
 INSERT INTO WatchStatus (user_id, movie_id, watch_state, progress_percent, finished_at) VALUES 
 (1, 3, 'plan', 0, NULL),
 (1, 1, 'completed', 100, '2024-03-15'),
