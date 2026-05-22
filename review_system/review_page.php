@@ -13,6 +13,16 @@ if ($movie_id <= 0) {
     echo 'Invalid movie selected.';
     exit();
 }
+
+require_once __DIR__ . '/../includes/db.php';
+$movieStmt = $pdo->prepare('SELECT title FROM Movies WHERE movie_id = ?');
+$movieStmt->execute([$movie_id]);
+$movie = $movieStmt->fetch(PDO::FETCH_ASSOC);
+if (!$movie) {
+    echo 'Movie not found.';
+    exit();
+}
+$movieTitle = $movie['title'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -32,9 +42,12 @@ if ($movie_id <= 0) {
         <div class="review-header">
             <div>
                 <span class="badge">Reviews</span>
-                <h2>Movie Review System</h2>
+                <h2>Review: <?= htmlspecialchars($movieTitle) ?></h2>
             </div>
-            <p class="review-subtitle">Share your rating and feedback for your favorite movies.</p>
+            <div>
+                <a href="../movie_management/view_movies.php" class="review-back-button">← Back to movie list</a>
+            </div>
+            <p class="review-subtitle">Share your rating and feedback for this movie.</p>
         </div>
 
         <form id="reviewForm" class="review-form">
@@ -105,11 +118,14 @@ function editReview(id, rating, review) {
     document.querySelector("select[name='rating']").value = rating;
     document.querySelector("textarea[name='review']").value = review;
 
-    document.querySelector("button").innerText = "Update Review";
+    submitButton.innerText = "Update Review";
 }
 
 // ADD / UPDATE REVIEW
-document.getElementById("reviewForm").addEventListener("submit", function(e) {
+const reviewForm = document.getElementById("reviewForm");
+const submitButton = reviewForm.querySelector("button[type='submit']");
+
+reviewForm.addEventListener("submit", function(e) {
     e.preventDefault();
 
     let formData = new FormData(this);
@@ -127,8 +143,9 @@ document.getElementById("reviewForm").addEventListener("submit", function(e) {
     })
     .then(res => res.text())
     .then(() => {
-        this.reset();
-        document.querySelector("button").innerText = "Submit Review";
+        reviewForm.reset();
+        document.querySelector("input[name='review_id']")?.remove();
+        submitButton.innerText = "Submit Review";
         loadReviews();
     });
 });

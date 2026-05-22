@@ -27,6 +27,25 @@
     color: var(--text-primary);
 }
 
+.review-back-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: var(--primary-color);
+    background: var(--input-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 999px;
+    padding: 0.75rem 1rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.review-back-button:hover {
+    background: rgba(47, 107, 255, 0.08);
+    transform: translateY(-1px);
+}
+
 .review-subtitle {
     color: var(--text-secondary);
     max-width: 720px;
