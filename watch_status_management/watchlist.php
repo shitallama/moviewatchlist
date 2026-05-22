@@ -85,10 +85,10 @@ include '../includes/header.php';
                         <?php endforeach; ?>
                     </tbody>
                 </table>
-            <?php endif; ?>
+            <?php endif; ?> 
         </section>
     </main>
     <script src="../assets/js/toggle_status.js"></script>
 <?php include '../includes/footer.php'; ?>
 </body>
-</html>
+</html> 
