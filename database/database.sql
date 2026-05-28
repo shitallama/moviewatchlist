@@ -5,6 +5,7 @@ DROP TABLE IF EXISTS WatchStatus;
 DROP TABLE IF EXISTS Review;
 DROP TABLE IF EXISTS Movies;
 DROP TABLE IF EXISTS genres;
+DROP TABLE IF EXISTS password_resets;
 DROP TABLE IF EXISTS Users;
 
 
@@ -17,6 +18,17 @@ CREATE TABLE Users (
     is_active TINYINT(1) DEFAULT 1,                -- 1 for active, 0 for deactivated
     is_admin TINYINT(1) DEFAULT 0,                 -- 1 if user has admin privileges, 0 if not
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP -- Date and time of registration
+);
+
+CREATE TABLE password_resets (
+    reset_id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    token_hash CHAR(64) NOT NULL,
+    expires_at DATETIME NOT NULL,
+    used_at DATETIME NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE KEY token_hash_unique (token_hash),
+    FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE
 );
  
 CREATE TABLE genres (

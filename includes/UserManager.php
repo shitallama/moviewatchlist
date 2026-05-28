@@ -34,7 +34,7 @@ class UserManager {
      */
     public function getUserById($userId) {
         $stmt = $this->pdo->prepare(
-            'SELECT user_id, username, email, is_active, is_admin FROM Users WHERE user_id = :user_id LIMIT 1'
+            'SELECT user_id, username, email, password_hash, is_active, is_admin FROM Users WHERE user_id = :user_id LIMIT 1'
         );
         $stmt->execute(['user_id' => $userId]);
         return $stmt->fetch(PDO::FETCH_ASSOC);

@@ -1,0 +1,82 @@
+@import 'colors.css';
+
+.auth-shell {
+    min-height: calc(100vh - 200px);
+    display: grid;
+    place-items: center;
+    padding: 3.5rem 1.5rem 5rem;
+}
+
+.auth-card {
+    width: min(520px, 100%);
+    background: var(--panel-bg);
+    border: 1px solid var(--panel-border);
+    border-radius: 1.5rem;
+    padding: 2.5rem;
+    display: grid;
+    gap: 1.5rem;
+    box-shadow: 0 25px 80px var(--panel-shadow);
+}
+
+.auth-title {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.auth-title .icon {
+    width: 2.5rem;
+    height: 2.5rem;
+}
+
+.auth-title h1 {
+    font-size: 2rem;
+    margin-bottom: 0.35rem;
+}
+
+.auth-title p {
+    color: var(--text-secondary);
+}
+
+.auth-form {
+    display: grid;
+    gap: 1.25rem;
+}
+
+.auth-footer {
+    text-align: center;
+}
+
+.auth-footer a {
+    color: var(--text-secondary);
+    text-decoration: none;
+}
+
+.auth-footer a:hover {
+    color: var(--primary-color);
+}
+
+.reset-link {
+    margin-top: 0.75rem;
+    word-break: break-all;
+}
+
+.reset-link a {
+    color: var(--text-primary);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.reset-link a:hover {
+    color: var(--primary-color);
+}
+
+@media (max-width: 640px) {
+    .auth-card {
+        padding: 2rem 1.75rem;
+    }
+
+    .auth-title h1 {
+        font-size: 1.7rem;
+    }
+}
