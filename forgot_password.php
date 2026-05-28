@@ -1,6 +1,7 @@
 <?php
 $basePath = '';
 require_once $basePath . 'includes/db.php';
+require_once $basePath . 'includes/UserManager.php';
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -17,34 +18,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $errors[] = 'Please enter a valid email address.';
     } else {
-        $stmt = $pdo->prepare('SELECT user_id FROM Users WHERE email = :email LIMIT 1');
-        $stmt->execute(['email' => $email]);
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        $userManager = new UserManager($pdo);
+        $user = $userManager->getUserByEmail($email);
 
         if ($user) {
-            $token = bin2hex(random_bytes(32));
-            $tokenHash = hash('sha256', $token);
-            $expiresAt = date('Y-m-d H:i:s', time() + 3600);
+            $token = $userManager->createPasswordResetToken($user['user_id']);
+            
+            if ($token) {
+                $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+                $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+                $baseUrl = rtrim($scheme . '://' . $host . dirname($_SERVER['PHP_SELF']), '/\\');
+                $resetLink = $baseUrl . '/reset_password.php?token=' . urlencode($token);
 
-            $pdo->prepare('DELETE FROM password_resets WHERE user_id = :user_id')->execute([
-                'user_id' => $user['user_id'],
-            ]);
-
-            $insert = $pdo->prepare(
-                'INSERT INTO password_resets (user_id, token_hash, expires_at) VALUES (:user_id, :token_hash, :expires_at)'
-            );
-            $insert->execute([
-                'user_id' => $user['user_id'],
-                'token_hash' => $tokenHash,
-                'expires_at' => $expiresAt,
-            ]);
-
-            $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
-            $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
-            $baseUrl = rtrim($scheme . '://' . $host . dirname($_SERVER['PHP_SELF']), '/\\');
-            $resetLink = $baseUrl . '/reset_password.php?token=' . urlencode($token);
-
-            $resetLinkToShow = $resetLink;
+                $resetLinkToShow = $resetLink;
+            }
         }
 
         if (empty($errors)) {

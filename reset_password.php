@@ -1,6 +1,7 @@
 <?php
 $basePath = '';
 require_once $basePath . 'includes/db.php';
+require_once $basePath . 'includes/UserManager.php';
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -17,15 +18,8 @@ if ($token === '') {
 
 $resetRow = null;
 if ($token !== '') {
-    $tokenHash = hash('sha256', $token);
-    $stmt = $pdo->prepare(
-        'SELECT pr.reset_id, pr.user_id, pr.expires_at, pr.used_at, u.email '
-        . 'FROM password_resets pr '
-        . 'JOIN Users u ON u.user_id = pr.user_id '
-        . 'WHERE pr.token_hash = :token_hash LIMIT 1'
-    );
-    $stmt->execute(['token_hash' => $tokenHash]);
-    $resetRow = $stmt->fetch(PDO::FETCH_ASSOC);
+    $userManager = new UserManager($pdo);
+    $resetRow = $userManager->getResetTokenDetails($token);
 
     if (!$resetRow || $resetRow['used_at'] !== null || strtotime($resetRow['expires_at']) < time()) {
         $errors[] = 'This reset link is invalid or has expired.';
@@ -46,20 +40,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $resetRow) {
     }
 
     if (empty($errors)) {
-        $hash = password_hash($newPassword, PASSWORD_DEFAULT);
-        $updateUser = $pdo->prepare('UPDATE Users SET password_hash = :password_hash WHERE user_id = :user_id');
-        $updateUser->execute([
-            'password_hash' => $hash,
-            'user_id' => $resetRow['user_id'],
-        ]);
-
-        $updateReset = $pdo->prepare('UPDATE password_resets SET used_at = :used_at WHERE reset_id = :reset_id');
-        $updateReset->execute([
-            'used_at' => date('Y-m-d H:i:s'),
-            'reset_id' => $resetRow['reset_id'],
-        ]);
-
-        $successMessage = 'Your password has been updated. You can now log in.';
+        $userManager = new UserManager($pdo);
+        if ($userManager->resetPasswordWithToken($token, $newPassword)) {
+            $successMessage = 'Your password has been updated. You can now log in.';
+        } else {
+            $errors[] = 'Failed to reset password. Please try again.';
+        }
     }
 }
 ?>
