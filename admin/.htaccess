@@ -1,0 +1,16 @@
+# Admin Panel Security Configuration
+# Protect access to sensitive admin files
+
+<FilesMatch "\.php$">
+    Options -ExecCGI
+    AddHandler cgi-script .php
+</FilesMatch>
+
+# Prevent directory listing
+Options -Indexes
+
+# Prevent access to sensitive files
+<FilesMatch "(admin_config\.php|AdminAuth\.php)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
