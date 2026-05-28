@@ -35,6 +35,13 @@
     margin-bottom: 1.5rem;
 }
 
+.form-group .add-genre-link {
+    margin-top: 0.75rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
 .form-group label {
     display: block;
     font-weight: 600;

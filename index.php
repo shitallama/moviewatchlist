@@ -1,5 +1,11 @@
-<?php
+ <?php
 require_once 'includes/db.php';
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+$currentUserId = isset($_SESSION['user_id']) ? (int) $_SESSION['user_id'] : null;
 
 // Fetch some statistics for the dashboard
 try {
@@ -28,6 +34,32 @@ try {
 
     $stmt = $pdo->query("SELECT COUNT(*) as count FROM Review");
     $totalReviews = $stmt->fetch()['count'];
+
+    $communitySql = "
+        SELECT
+            m.movie_id,
+            m.title,
+            m.genre,
+            m.user_id,
+            u.username,
+            AVG(r.rating) AS avg_rating,
+            COUNT(r.review_id) AS review_count,
+            SUBSTRING_INDEX(
+                GROUP_CONCAT(r.review_text ORDER BY r.created_at DESC SEPARATOR '|||'),
+                '|||',
+                1
+            ) AS latest_review
+        FROM Movies m
+        JOIN Users u ON m.user_id = u.user_id
+        LEFT JOIN Review r ON r.movie_id = m.movie_id
+    ";
+
+    $communitySql .= " GROUP BY m.movie_id ";
+
+    $communitySql .= " ORDER BY MAX(r.created_at) DESC, m.movie_id DESC LIMIT 3 ";
+
+    $stmt = $pdo->query($communitySql);
+    $communityMovies = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
 } catch(PDOException $e) {
     $totalMovies = 0;
@@ -35,6 +67,7 @@ try {
     $recentMovies = [];
     $totalGenres = 0;
     $totalReviews = 0;
+    $communityMovies = [];
 }
 ?>
 <!DOCTYPE html>
@@ -133,5 +166,60 @@ try {
     </div>
 </div>
 
+<div class="community-section">
+    <div class="container">
+        <div class="section-header">
+            <div>
+                <span class="section-kicker">Community</span>
+                <h2 class="section-title">What others are watching</h2>
+            </div>
+            <p class="section-subtitle">See recent movies and quick impressions from other users.</p>
+            <a class="reviews-link" href="review_system/all_reviews.php">View all community</a>
+        </div>
+
+        <?php if (empty($communityMovies)): ?>
+            <p class="empty-state">No community activity yet. Check back soon for new reviews.</p>
+        <?php else: ?>
+            <div class="community-grid">
+                <?php foreach ($communityMovies as $movie): ?>
+                    <?php
+                        $reviewSnippet = trim((string) $movie['latest_review']);
+                        if ($reviewSnippet === '') {
+                            $reviewSnippet = 'No reviews yet. Be the first to share your thoughts.';
+                        }
+                        if (strlen($reviewSnippet) > 140) {
+                            $reviewSnippet = substr($reviewSnippet, 0, 137) . '...';
+                        }
+                        $reviewCount = (int) $movie['review_count'];
+                        $avgRating = $reviewCount > 0 ? number_format((float) $movie['avg_rating'], 1) : null;
+                    ?>
+                    <article class="community-card">
+                        <div class="community-meta">
+                            <span class="community-genre"><?php echo htmlspecialchars($movie['genre']); ?></span>
+                            <span class="community-user">Added by <?php echo htmlspecialchars($movie['username']); ?></span>
+                        </div>
+                        <h3><?php echo htmlspecialchars($movie['title']); ?></h3>
+                        <div class="community-rating">
+                            <?php if ($avgRating !== null): ?>
+                                <span class="rating-value"><?php echo $avgRating; ?></span>
+                                <span class="rating-count"><?php echo $reviewCount; ?> reviews</span>
+                            <?php else: ?>
+                                <span class="rating-count">No ratings yet</span>
+                            <?php endif; ?>
+                        </div>
+                        <p class="community-review">“<?php echo htmlspecialchars($reviewSnippet); ?>”</p>
+                        <div class="community-actions">
+                            <?php if ($isLoggedIn): ?>
+                                <a class="community-link" href="review_system/review_page.php?movie_id=<?php echo (int) $movie['movie_id']; ?>">Read reviews</a>
+                            <?php else: ?>
+                                <a class="community-link" href="Login/login.php">Login to review</a>
+                            <?php endif; ?>
+                        </div>
+                    </article>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
+    </div>
+</div>
 <?php require 'includes/footer.php';?>
 </html>

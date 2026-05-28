@@ -13,5 +13,8 @@ define('ADMIN_PASSWORD', 'SecureAdminPass123!'); // Change this to a secure pass
 // Admin session timeout (in seconds) - 1 hour
 define('ADMIN_SESSION_TIMEOUT', 3600);
 
+// Admin session cookie lifetime (in seconds) - 1 hour
+define('ADMIN_SESSION_COOKIE_LIFETIME', 3600);
+
 // Admin cookie prefix
 define('ADMIN_COOKIE_PREFIX', 'cinelisr_admin_');

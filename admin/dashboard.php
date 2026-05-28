@@ -22,6 +22,7 @@ try {
     $allUsers = $adminManager->getAllUsers();
     $allMovies = $adminManager->getAllMovies();
     $allGenres = $adminManager->getAllGenres();
+    $allReviews = $adminManager->getAllReviews();
     
 } catch(Exception $e) {
     $totalUsers = 0;
@@ -31,6 +32,7 @@ try {
     $allUsers = [];
     $allMovies = [];
     $allGenres = [];
+    $allReviews = [];
 }
 ?>
 <!DOCTYPE html>
@@ -217,6 +219,57 @@ try {
             <?php endif; ?>
         </div>
 
+        <!-- Reviews Section -->
+        <div class="table-card">
+            <h2><i class="fas fa-comments"></i> User Reviews</h2>
+
+            <?php if (!empty($allReviews)): ?>
+                <table class="admin-table" id="reviewsTable">
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Movie</th>
+                            <th>Rating</th>
+                            <th>Review</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($allReviews as $review): ?>
+                            <?php
+                                $reviewText = trim((string) $review['review_text']);
+                                if ($reviewText === '') {
+                                    $reviewText = 'No review text provided.';
+                                }
+                                if (strlen($reviewText) > 140) {
+                                    $reviewText = substr($reviewText, 0, 137) . '...';
+                                }
+                            ?>
+                            <tr>
+                                <td><strong><?php echo htmlspecialchars($review['username']); ?></strong></td>
+                                <td><?php echo htmlspecialchars($review['title']); ?></td>
+                                <td>
+                                    <span style="background-color: #f3e8ff; color: #6b21a8; padding: 6px 12px; border-radius: 20px; font-weight: 600; font-size: 12px;">
+                                        <?php echo (int) $review['rating']; ?> ⭐
+                                    </span>
+                                </td>
+                                <td><?php echo htmlspecialchars($reviewText); ?></td>
+                                <td><?php echo date('M d, Y', strtotime($review['created_at'])); ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+                <div class="result-count">
+                    <?php echo count($allReviews); ?> review(s) found
+                </div>
+            <?php else: ?>
+                <div class="empty-state">
+                    <i class="fas fa-inbox"></i>
+                    <p>No reviews yet</p>
+                </div>
+            <?php endif; ?>
+        </div>
+
         <!-- Quick Links -->
         <div class="quick-links">
             <h2><i class="fas fa-link"></i> Quick Links</h2>
@@ -234,84 +287,7 @@ try {
         </div>
     </div>
 
-    <script>
-        // User Search Functionality
-        document.getElementById('userSearch').addEventListener('input', function(e) {
-            const searchTerm = e.target.value.toLowerCase().trim();
-            const userRows = document.querySelectorAll('.user-row');
-            let visibleCount = 0;
-
-            userRows.forEach(row => {
-                const username = row.getAttribute('data-username');
-                const email = row.getAttribute('data-email');
-                
-                if (username.includes(searchTerm) || email.includes(searchTerm)) {
-                    row.classList.remove('hidden-row');
-                    visibleCount++;
-                } else {
-                    row.classList.add('hidden-row');
-                }
-            });
-
-            document.getElementById('userCount').textContent = visibleCount;
-        });
-
-        // Movie Search Functionality
-        document.getElementById('movieSearch').addEventListener('input', filterMovies);
-        document.getElementById('genreFilter').addEventListener('change', filterMovies);
-        document.getElementById('ratingFilter').addEventListener('change', filterMovies);
-
-        function filterMovies() {
-            const searchTerm = document.getElementById('movieSearch').value.toLowerCase().trim();
-            const genreFilter = document.getElementById('genreFilter').value.toLowerCase().trim();
-            const ratingFilter = document.getElementById('ratingFilter').value;
-            const movieRows = document.querySelectorAll('.movie-row');
-            let visibleCount = 0;
-
-            movieRows.forEach(row => {
-                const title = row.getAttribute('data-title');
-                const genre = row.getAttribute('data-genre');
-                const rating = parseInt(row.getAttribute('data-rating'));
-
-                // Check search term
-                let matchesSearch = title.includes(searchTerm);
-
-                // Check genre filter
-                let matchesGenre = !genreFilter || genre === genreFilter;
-
-                // Check rating filter
-                let matchesRating = true;
-                if (ratingFilter !== '') {
-                    const filterRating = parseInt(ratingFilter);
-                    if (filterRating === 0) {
-                        matchesRating = rating === 0;
-                    } else {
-                        matchesRating = rating >= filterRating;
-                    }
-                }
-
-                // Show/hide row based on all filters
-                if (matchesSearch && matchesGenre && matchesRating) {
-                    row.classList.remove('hidden-row');
-                    visibleCount++;
-                } else {
-                    row.classList.add('hidden-row');
-                }
-            });
-
-            document.getElementById('movieCount').textContent = visibleCount;
-        }
-
-        // Add smooth transitions
-        document.querySelectorAll('.stat-card').forEach(card => {
-            card.addEventListener('mouseenter', function() {
-                this.style.boxShadow = '0 12px 35px rgba(0, 0, 0, 0.15)';
-            });
-            card.addEventListener('mouseleave', function() {
-                this.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.1)';
-            });
-        });
-    </script>
+    <script src="<?php echo $basePath; ?>assets/js/admin_dashboard.js"></script>
 
 </body>
 </html>

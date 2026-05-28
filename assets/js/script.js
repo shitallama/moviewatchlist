@@ -39,6 +39,37 @@
 			});
 		}
 
+		const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+		const navMenu = document.getElementById('navMenu');
+
+		if (mobileMenuBtn && navMenu) {
+			mobileMenuBtn.addEventListener('click', () => {
+				const isOpen = navMenu.classList.toggle('active');
+				mobileMenuBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+			});
+
+			const closeMenu = () => {
+				if (navMenu.classList.contains('active')) {
+					navMenu.classList.remove('active');
+					mobileMenuBtn.setAttribute('aria-expanded', 'false');
+				}
+			};
+
+			navMenu.addEventListener('click', (event) => {
+				const target = event.target;
+				if (target && target.closest('a')) {
+					closeMenu();
+				}
+			});
+
+			document.addEventListener('click', (event) => {
+				const target = event.target;
+				if (!target.closest('.nav-container')) {
+					closeMenu();
+				}
+			});
+		}
+
 		// Password visibility toggle
 		if (!window.__passwordToggleBound) {
 			window.__passwordToggleBound = true;

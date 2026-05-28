@@ -3,9 +3,7 @@ $basePath = '../';
 require_once $basePath . 'admin/includes/AdminAuth.php';
 
 // Start session if not started
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+AdminAuth::startSession();
 
 // Redirect to dashboard if already logged in
 if (AdminAuth::isLoggedIn()) {
@@ -45,19 +43,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         .admin-login-banner {
-            background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+            background: linear-gradient(135deg, #b91c1c 0%, #7f1d1d 100%);
             padding: 15px 20px;
             border-radius: 8px;
             margin-bottom: 20px;
             text-align: center;
-            color: white;
+            color: #fff1f2;
             font-weight: 600;
+            border: 1px solid rgba(248, 113, 113, 0.45);
+            box-shadow: 0 12px 26px rgba(185, 28, 28, 0.3);
         }
         
         .admin-lock-icon {
             font-size: 2.5rem;
             margin-bottom: 15px;
-            color: #dc2626;
+            color: #b91c1c;
         }
     </style>
 </head>
@@ -74,6 +74,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
             </div>
             <div class="login-form-wrap">
+                <a class="admin-home-link" href="<?php echo $basePath; ?>index.php">
+                    <img class="icon" src="<?php echo $basePath; ?>assets/icons/home.svg" alt="" aria-hidden="true">
+                    Back to home
+                </a>
                 <div>
                     <div class="admin-lock-icon">
                         <i class="fas fa-lock"></i>
@@ -104,14 +108,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                     <div class="form-group">
                         <label for="password">Password</label>
-                        <input 
-                            type="password" 
-                            id="password" 
-                            name="password" 
-                            placeholder="Enter admin password" 
-                            required
-                            autocomplete="current-password"
-                        >
+                        <div class="password-wrap">
+                            <input 
+                                type="password" 
+                                id="password" 
+                                name="password" 
+                                placeholder="Enter admin password" 
+                                required
+                                autocomplete="current-password"
+                            >
+                            <button
+                                type="button"
+                                class="toggle-password"
+                                data-target="password"
+                                aria-label="Show password"
+                            >
+                                <img
+                                    class="icon"
+                                    src="<?php echo $basePath; ?>assets/icons/eye-closed.svg"
+                                    data-icon-open="<?php echo $basePath; ?>assets/icons/eye-open.svg"
+                                    data-icon-closed="<?php echo $basePath; ?>assets/icons/eye-closed.svg"
+                                    alt=""
+                                    aria-hidden="true"
+                                >
+                            </button>
+                        </div>
                     </div>
 
                     <button type="submit" class="btn btn-primary">Sign In as Admin</button>
@@ -124,5 +145,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
         </div>
     </section>
+    <script src="<?php echo $basePath; ?>assets/js/script.js"></script>
 </body>
 </html>

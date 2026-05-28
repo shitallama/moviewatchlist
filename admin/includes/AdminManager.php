@@ -138,6 +138,35 @@ class AdminManager {
     }
 
     /**
+     * Get all reviews with user and movie info
+     * @param int|null $limit Limit results (optional)
+     * @return array Array of review data
+     */
+    public function getAllReviews($limit = null) {
+        try {
+            $query = "
+                SELECT r.review_id, r.rating, r.review_text, r.created_at,
+                       u.username, m.title
+                FROM Review r
+                JOIN Users u ON r.user_id = u.user_id
+                JOIN Movies m ON r.movie_id = m.movie_id
+                ORDER BY r.created_at DESC
+            ";
+            if ($limit !== null) {
+                $query .= " LIMIT :limit";
+                $stmt = $this->pdo->prepare($query);
+                $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
+                $stmt->execute();
+            } else {
+                $stmt = $this->pdo->query($query);
+            }
+            return $stmt->fetchAll(PDO::FETCH_ASSOC) ?? [];
+        } catch (PDOException $e) {
+            return [];
+        }
+    }
+
+    /**
      * Get top rated movies
      * @param int $limit Number of movies to return
      * @return array Array of top-rated movies

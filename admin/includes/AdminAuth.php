@@ -5,6 +5,24 @@
  */
 
 class AdminAuth {
+    public static function startSession(): void {
+        if (session_status() !== PHP_SESSION_NONE) {
+            return;
+        }
+
+        require_once __DIR__ . '/admin_config.php';
+        $secure = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off';
+
+        session_set_cookie_params([
+            'lifetime' => ADMIN_SESSION_COOKIE_LIFETIME,
+            'path' => '/',
+            'secure' => $secure,
+            'httponly' => true,
+            'samesite' => 'Lax',
+        ]);
+
+        session_start();
+    }
     
     /**
      * Authenticate admin credentials
@@ -23,9 +41,7 @@ class AdminAuth {
      * @param string $username Admin username
      */
     public static function setSession($username) {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
+        self::startSession();
         
         $_SESSION['admin_logged_in'] = true;
         $_SESSION['admin_username'] = $username;
@@ -37,9 +53,7 @@ class AdminAuth {
      * @return bool True if admin is logged in with valid session, false otherwise
      */
     public static function isLoggedIn() {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
+        self::startSession();
         
         // Check if admin session exists
         if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
@@ -66,9 +80,7 @@ class AdminAuth {
      * @return string|null Admin username or null if not logged in
      */
     public static function getUsername() {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
+        self::startSession();
         
         return $_SESSION['admin_username'] ?? null;
     }
@@ -77,9 +89,7 @@ class AdminAuth {
      * Logout admin
      */
     public static function logout() {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
+        self::startSession();
         
         unset($_SESSION['admin_logged_in']);
         unset($_SESSION['admin_username']);
