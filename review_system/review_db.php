@@ -9,10 +9,10 @@ class ReviewManager {
         $this->pdo = $pdo;
     }
 
-    public function addReview(int $userId, int $movieId, int $rating, string $review): bool {
-        $query = "INSERT INTO Review (user_id, movie_id, rating, review_text) VALUES (?, ?, ?, ?)";
+    public function addReview(int $userId, int $movieId, int $rating, string $review, bool $isRecommended): bool {
+        $query = "INSERT INTO Review (user_id, movie_id, rating, review_text, is_recommended) VALUES (?, ?, ?, ?, ?)";
         $stmt = $this->pdo->prepare($query);
-        return $stmt->execute([$userId, $movieId, $rating, $review]);
+        return $stmt->execute([$userId, $movieId, $rating, $review, (int) $isRecommended]);
     }
 
     public function getReviews(int $movieId): array {
@@ -28,10 +28,10 @@ class ReviewManager {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function updateReview(int $id, int $userId, int $rating, string $review): bool {
-        $query = "UPDATE Review SET rating = ?, review_text = ?, updated_at = CURRENT_TIMESTAMP WHERE review_id = ? AND user_id = ?";
+    public function updateReview(int $id, int $userId, int $rating, string $review, bool $isRecommended): bool {
+        $query = "UPDATE Review SET rating = ?, review_text = ?, is_recommended = ?, updated_at = CURRENT_TIMESTAMP WHERE review_id = ? AND user_id = ?";
         $stmt = $this->pdo->prepare($query);
-        return $stmt->execute([$rating, $review, $id, $userId]);
+        return $stmt->execute([$rating, $review, (int) $isRecommended, $id, $userId]);
     }
 
     public function deleteReview(int $id, int $userId): bool {

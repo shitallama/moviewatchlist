@@ -10,6 +10,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $movieId = isset($_POST['movie_id']) ? (int) $_POST['movie_id'] : 0;
     $rating = isset($_POST['rating']) ? (int) $_POST['rating'] : 0;
     $review = isset($_POST['review']) ? trim((string) $_POST['review']) : '';
+    $isRecommended = isset($_POST['is_recommended']) ? (int) $_POST['is_recommended'] : 0;
+    $isRecommended = $isRecommended === 1 ? 1 : 0;
 
     if ($userId <= 0 || $movieId <= 0 || $rating <= 0 || $review === '') {
         echo "error";
@@ -21,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    if ($reviewManager->addReview($userId, $movieId, $rating, $review)) {
+    if ($reviewManager->addReview($userId, $movieId, $rating, $review, (bool) $isRecommended)) {
         echo "success";
     } else {
         echo "error";

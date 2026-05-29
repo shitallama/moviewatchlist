@@ -10,13 +10,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id = isset($_POST['id']) ? (int) $_POST['id'] : 0;
     $rating = isset($_POST['rating']) ? (int) $_POST['rating'] : 0;
     $review = isset($_POST['review']) ? trim((string) $_POST['review']) : '';
+    $isRecommended = isset($_POST['is_recommended']) ? (int) $_POST['is_recommended'] : 0;
+    $isRecommended = $isRecommended === 1 ? 1 : 0;
 
     if ($userId <= 0 || $id <= 0 || $rating <= 0 || $review === '') {
         echo "error";
         exit;
     }
 
-    if ($reviewManager->updateReview($id, $userId, $rating, $review)) {
+    if ($reviewManager->updateReview($id, $userId, $rating, $review, (bool) $isRecommended)) {
         echo "success";
     } else {
         echo "error";

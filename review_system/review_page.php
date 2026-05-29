@@ -67,6 +67,11 @@ $movieTitle = $movie['title'];
             <label for="review">Review</label>
             <textarea id="review" name="review" placeholder="Write your review..." required></textarea>
 
+            <label class="recommend-toggle" for="is_recommended">
+                <input type="checkbox" id="is_recommended" name="is_recommended" value="1">
+                Recommend this movie to others
+            </label>
+
             <button type="submit">Submit Review</button>
         </form>
 

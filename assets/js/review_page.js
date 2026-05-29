@@ -33,7 +33,7 @@
             .then(() => window.loadReviews());
     };
 
-    window.editReview = function editReview(id, rating, review) {
+    window.editReview = function editReview(id, rating, review, isRecommended) {
         if (!reviewForm) {
             return;
         }
@@ -55,6 +55,11 @@
             reviewText.value = review;
         }
 
+        const recommendCheckbox = document.querySelector("input[name='is_recommended']");
+        if (recommendCheckbox) {
+            recommendCheckbox.checked = Boolean(isRecommended);
+        }
+
         if (submitButton) {
             submitButton.innerText = 'Update Review';
         }
@@ -68,6 +73,8 @@
             const reviewId = formData.get('review_id');
 
             const url = reviewId ? 'update_review.php' : 'add_review.php';
+            const recommendCheckbox = document.querySelector("input[name='is_recommended']");
+            formData.set('is_recommended', recommendCheckbox && recommendCheckbox.checked ? '1' : '0');
 
             if (reviewId) {
                 formData.append('id', reviewId);
