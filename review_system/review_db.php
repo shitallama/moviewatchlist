@@ -9,29 +9,42 @@ class ReviewManager {
         $this->pdo = $pdo;
     }
 
-    public function addReview(int $userId, int $movieId, int $rating, string $review): bool {
-        $query = "INSERT INTO Review (user_id, movie_id, rating, review_text) VALUES (?, ?, ?, ?)";
+    public function addReview(int $userId, int $movieId, int $rating, string $review, bool $isRecommended): bool {
+        $query = "INSERT INTO Review (user_id, movie_id, rating, review_text, is_recommended) VALUES (?, ?, ?, ?, ?)";
         $stmt = $this->pdo->prepare($query);
-        return $stmt->execute([$userId, $movieId, $rating, $review]);
+        return $stmt->execute([$userId, $movieId, $rating, $review, (int) $isRecommended]);
     }
 
     public function getReviews(int $movieId): array {
-        $query = "SELECT * FROM Review WHERE movie_id = ?";
+        $query = "
+            SELECT r.*, u.username
+            FROM Review r
+            JOIN Users u ON r.user_id = u.user_id
+            WHERE r.movie_id = ?
+            ORDER BY r.created_at DESC, r.review_id DESC
+        ";
         $stmt = $this->pdo->prepare($query);
         $stmt->execute([$movieId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function updateReview(int $id, int $rating, string $review): bool {
-        $query = "UPDATE Review SET rating = ?, review_text = ?, updated_at = CURRENT_TIMESTAMP WHERE review_id = ?";
+    public function updateReview(int $id, int $userId, int $rating, string $review, bool $isRecommended): bool {
+        $query = "UPDATE Review SET rating = ?, review_text = ?, is_recommended = ?, updated_at = CURRENT_TIMESTAMP WHERE review_id = ? AND user_id = ?";
         $stmt = $this->pdo->prepare($query);
-        return $stmt->execute([$rating, $review, $id]);
+        return $stmt->execute([$rating, $review, (int) $isRecommended, $id, $userId]);
     }
 
-    public function deleteReview(int $id): bool {
-        $query = "DELETE FROM Review WHERE review_id = ?";
+    public function deleteReview(int $id, int $userId): bool {
+        $query = "DELETE FROM Review WHERE review_id = ? AND user_id = ?";
         $stmt = $this->pdo->prepare($query);
-        return $stmt->execute([$id]);
+        return $stmt->execute([$id, $userId]);
+    }
+
+    public function hasUserReview(int $userId, int $movieId): bool {
+        $query = "SELECT 1 FROM Review WHERE user_id = ? AND movie_id = ? LIMIT 1";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute([$userId, $movieId]);
+        return (bool) $stmt->fetchColumn();
     }
 }
 
