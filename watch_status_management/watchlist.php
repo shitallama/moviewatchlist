@@ -126,17 +126,10 @@ include '../includes/header.php';
                                 <td class="action-buttons">
                                     <div class="action-group">
                                         <a href="../movie_management/edit_movies.php?id=<?php echo $movie['movie_id']; ?>" class="btn btn-edit">Edit</a>
-                                        <?php if (!empty($movie['status_id'])): ?>
-                                            <form method="POST" action="remove_watchlist.php" class="inline-form" onsubmit="return confirm('Remove this movie from your watchlist?');">
-                                                <input type="hidden" name="status_id" value="<?php echo htmlspecialchars($movie['status_id']); ?>">
-                                                <button type="submit" class="btn btn-delete">Delete</button>
-                                            </form>
-                                        <?php else: ?>
-                                            <form method="POST" action="add_to_watchlist.php" class="inline-form">
-                                                <input type="hidden" name="movie_id" value="<?php echo htmlspecialchars($movie['movie_id']); ?>">
-                                                <button type="submit" class="btn btn-primary">+ Add to Wishlist</button>
-                                            </form>
-                                        <?php endif; ?>
+                                        <form method="POST" action="remove_watchlist.php" class="inline-form" onsubmit="return confirm('Remove this movie from your watchlist?');">
+                                            <input type="hidden" name="status_id" value="<?php echo htmlspecialchars($movie['status_id']); ?>">
+                                            <button type="submit" class="btn btn-delete">Delete</button>
+                                        </form>
                                     </div>
                                 </td>
                             </tr>
