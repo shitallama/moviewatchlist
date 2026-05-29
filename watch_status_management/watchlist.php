@@ -42,18 +42,21 @@ include '../includes/header.php';
 <body>
     <main>
         <section class="container">
-            <h2>My Watchlist</h2>
+            <div class="watchlist-header">
+                <div class="watchlist-heading">
+                    <h2>My Watchlist</h2>
+                    <p class="watchlist-subtitle">Track progress, update watched status, and keep your favorites in one place.</p>
+                </div>
+                <a href="../movie_management/view_movies.php" class="btn btn-primary btn-add-watchlist">+ Add to Wishlist</a>
+            </div>
             <?php if (!empty($error)): ?>
                 <div class="alert alert-error">Error loading watchlist: <?php echo htmlspecialchars($error); ?></div>
             <?php endif; ?>
             <?php if (count($movies) === 0): ?>
                 <p>You haven't added any movies to your watchlist yet. <a href="../movie_management/view_movies.php">Browse movies</a> to add them to your list.</p>
             <?php else: ?>
-                <div class="watchlist-header">
-                    <a href="../movie_management/view_movies.php" class="btn btn-primary">Browse Movies</a>
-                </div>
                 <div class="watchlist-controls">
-                    <div class="search-group">
+                    <div class="filter-group">
                         <label for="watchlist-search">Find:</label>
                         <input type="text" id="watchlist-search" placeholder="Search by title..." />
                     </div>
@@ -75,51 +78,66 @@ include '../includes/header.php';
                     <thead>
                         <tr>
                             <th>Title</th>
-                            <th>Watchlist Status</th>
-                            <th>Movie Status</th>
+                            <th>STATUS</th>
+                            <th>WATCHED</th>
                             <th>Progress</th>
                             <th>Watch Date</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($movies as $movie): ?>
+                        <?php foreach ($movies as $movie): 
+                            $watchState = $movie['watch_state'] ?? 'plan';
+                            $statusClass = 'status-chip--plan';
+
+                            if ($watchState === 'completed') {
+                                $statusClass = 'status-chip--completed';
+                            } elseif ($watchState === 'watching') {
+                                $statusClass = 'status-chip--watching';
+                            } elseif ($watchState === 'dropped') {
+                                $statusClass = 'status-chip--dropped';
+                            }
+                        ?>
                             <tr>
                                 <td><?php echo htmlspecialchars($movie['title']); ?></td>
                                 <td>
-                                    <span class="status <?php echo htmlspecialchars($movie['watch_state']); ?>">
-                                        <?php echo ucfirst(htmlspecialchars($movie['watch_state'])); ?>
+                                    <span class="status-chip <?php echo $statusClass; ?>">
+                                        <?php echo ucfirst(htmlspecialchars($watchState)); ?>
                                     </span>
                                 </td>
                                 <td>
-                                    <span class="status <?php echo $movie['watched'] ? 'completed' : 'plan'; ?>">
-                                        <?php echo $movie['watched'] ? 'Watched' : 'Not Watched'; ?>
-                                    </span>
+                                    <button type="button" class="watch-toggle <?php echo $movie['watched'] ? 'watched' : 'unwatched'; ?>"
+                                            onclick="toggleStatus(<?php echo $movie['movie_id']; ?>, <?php echo intval($movie['watch_state'] === 'completed'); ?>)">
+                                        <span class="switch"></span>
+                                    </button>
+                                    <div class="watch-toggle-label">
+                                        <?php echo $movie['watched'] ? 'Unwatch' : 'Watched'; ?>
+                                    </div>
                                 </td>
-                                <td><?php echo intval($movie['progress_percent']); ?>%</td>
+                                <td>
+                                    <div class="progress-wrapper">
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" style="width: <?php echo intval($movie['progress_percent']); ?>%;"></div>
+                                        </div>
+                                        <span class="progress-text"><?php echo intval($movie['progress_percent']); ?>%</span>
+                                    </div>
+                                </td>
                                 <td><?php echo $movie['watch_date'] ? htmlspecialchars($movie['watch_date']) : 'N/A'; ?></td>
                                 <td class="action-buttons">
-                                    <a href="../movie_management/edit_movies.php?id=<?php echo $movie['movie_id']; ?>" class="btn btn-edit">
-                                        <i class="fas fa-edit"></i> Edit
-                                    </a>
-                                    <button type="button" class="btn btn-secondary" onclick="toggleStatus(<?php echo $movie['movie_id']; ?>, <?php echo intval($movie['watch_state'] === 'completed'); ?>)">
-                                        <i class="fas fa-eye"></i> <?php echo $movie['watch_state'] === 'completed' ? 'Unwatch' : 'Watch'; ?>
-                                    </button>
-                                    <?php if (!empty($movie['status_id'])): ?>
-                                        <form method="POST" action="remove_watchlist.php" class="inline-form" onsubmit="return confirm('Remove this movie from your watchlist?');">
-                                            <input type="hidden" name="status_id" value="<?php echo htmlspecialchars($movie['status_id']); ?>">
-                                            <button type="submit" class="btn btn-delete">
-                                                <i class="fas fa-trash"></i> Remove
-                                            </button>
-                                        </form>
-                                    <?php else: ?>
-                                        <form method="POST" action="add_to_watchlist.php" class="inline-form">
-                                            <input type="hidden" name="movie_id" value="<?php echo htmlspecialchars($movie['movie_id']); ?>">
-                                            <button type="submit" class="btn btn-primary">
-                                                <i class="fas fa-plus"></i> Add to Watchlist
-                                            </button>
-                                        </form>
-                                    <?php endif; ?>
+                                    <div class="action-group">
+                                        <a href="../movie_management/edit_movies.php?id=<?php echo $movie['movie_id']; ?>" class="btn btn-edit">Edit</a>
+                                        <?php if (!empty($movie['status_id'])): ?>
+                                            <form method="POST" action="remove_watchlist.php" class="inline-form" onsubmit="return confirm('Remove this movie from your watchlist?');">
+                                                <input type="hidden" name="status_id" value="<?php echo htmlspecialchars($movie['status_id']); ?>">
+                                                <button type="submit" class="btn btn-delete">Delete</button>
+                                            </form>
+                                        <?php else: ?>
+                                            <form method="POST" action="add_to_watchlist.php" class="inline-form">
+                                                <input type="hidden" name="movie_id" value="<?php echo htmlspecialchars($movie['movie_id']); ?>">
+                                                <button type="submit" class="btn btn-primary">+ Add to Wishlist</button>
+                                            </form>
+                                        <?php endif; ?>
+                                    </div>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
