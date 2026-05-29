@@ -1,6 +1,7 @@
 ﻿/* categories.css
    Genre management styles for add/edit/view pages.
    Scoped to genre-management pages and complements the base app theme.
+   Optimized for both light and dark modes.
 */
 
 .categories-page {
@@ -11,10 +12,10 @@
     max-width: 1100px;
     margin: 3rem auto;
     padding: 2rem;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: var(--panel-bg);
+    border: 1px solid var(--panel-border);
     border-radius: 1.25rem;
-    box-shadow: 0 24px 50px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 24px 50px var(--panel-shadow);
     backdrop-filter: blur(18px);
 }
 
@@ -62,7 +63,7 @@
 .categories-page .btn-secondary {
     background: transparent;
     color: var(--text-primary);
-    border: 1px solid rgba(255, 255, 255, 0.16);
+    border: 1px solid var(--panel-border);
 }
 
 .categories-page .btn-view:hover,
@@ -77,7 +78,7 @@
 
 .categories-page .btn-secondary:hover,
 .categories-page .btn-secondary:focus-visible {
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--secondary-bg);
     color: var(--primary-color);
     border-color: var(--primary-color);
 }
@@ -189,18 +190,18 @@
 }
 
 .categories-page th {
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--table-header-bg);
     color: var(--text-primary);
     font-size: 0.95rem;
     letter-spacing: 0.01em;
 }
 
 .categories-page tbody tr:nth-child(odd) {
-    background: rgba(255, 255, 255, 0.03);
+    background: var(--panel-muted);
 }
 
 .categories-page tbody tr:hover {
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--secondary-bg);
 }
 
 .categories-page td a {
@@ -212,6 +213,161 @@
 
 .categories-page td a:hover {
     color: var(--primary-dark);
+}
+
+/* Search and Filter Section */
+.categories-page .search-filter-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    margin-bottom: 1.5rem;
+    padding: 1.2rem;
+    background: var(--panel-muted);
+    border: 1px solid var(--panel-border);
+    border-radius: 1rem;
+}
+
+.categories-page .search-box {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.categories-page .search-input {
+    width: 100%;
+    padding: 0.85rem 1rem 0.85rem 2.5rem;
+    border: 1px solid var(--panel-border);
+    border-radius: 0.85rem;
+    background: var(--card-bg);
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.categories-page .search-input::placeholder {
+    color: var(--text-secondary);
+}
+
+.categories-page .search-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px var(--glow-primary);
+}
+
+.categories-page .search-icon {
+    position: absolute;
+    left: 0.85rem;
+    color: var(--text-secondary);
+    pointer-events: none;
+    font-size: 1rem;
+}
+
+.categories-page .filter-controls {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-end;
+    flex-wrap: wrap;
+}
+
+.categories-page .filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.categories-page .filter-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    letter-spacing: 0.01em;
+}
+
+.categories-page .filter-select {
+    padding: 0.65rem 0.9rem;
+    border: 1px solid var(--panel-border);
+    border-radius: 0.75rem;
+    background: var(--card-bg);
+    color: var(--text-primary);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    min-width: 140px;
+}
+
+.categories-page .filter-select:hover {
+    border-color: var(--primary-color);
+}
+
+.categories-page .filter-select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px var(--glow-primary);
+}
+
+.categories-page .btn-clear-filters {
+    padding: 0.65rem 1rem;
+    border: 1px solid var(--panel-border);
+    border-radius: 0.75rem;
+    background: var(--card-bg);
+    color: var(--text-primary);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.categories-page .btn-clear-filters:hover {
+    background: var(--secondary-bg);
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+.categories-page .btn-clear-filters:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--glow-primary);
+}
+
+.categories-page .results-info {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    padding: 0.5rem 0;
+}
+
+.categories-page .results-info strong {
+    color: var(--text-primary);
+    font-weight: 700;
+}
+
+@media (max-width: 768px) {
+    .categories-page .search-filter-section {
+        gap: 0.9rem;
+        padding: 1rem;
+    }
+
+    .categories-page .filter-controls {
+        gap: 0.75rem;
+    }
+
+    .categories-page .filter-select {
+        min-width: 110px;
+        font-size: 0.85rem;
+        padding: 0.55rem 0.75rem;
+    }
+
+    .categories-page .filter-label {
+        font-size: 0.8rem;
+    }
+
+    .categories-page .btn-clear-filters {
+        padding: 0.55rem 0.8rem;
+        font-size: 0.85rem;
+    }
+
+    .categories-page .search-input {
+        padding: 0.75rem 1rem 0.75rem 2.3rem;
+        font-size: 0.9rem;
+    }
 }
 
 .categories-page form {
@@ -227,9 +383,9 @@
     width: 100%;
     min-height: 3rem;
     padding: 0.95rem 1rem;
-    border: 1px solid rgba(255, 255, 255, 0.18);
+    border: 1px solid var(--panel-border);
     border-radius: 0.95rem;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--panel-muted);
     color: var(--text-primary);
     transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
@@ -244,8 +400,8 @@
 .categories-page select:focus {
     outline: none;
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 4px rgba(29, 155, 240, 0.12);
-    background: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 0 0 4px var(--glow-primary);
+    background: var(--card-bg);
 }
 
 .categories-page label {
@@ -271,11 +427,16 @@
 .categories-page .table-actions a {
     padding: 0.45rem 0.8rem;
     border-radius: 0.75rem;
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--secondary-bg);
+    border: 1px solid var(--panel-border);
+    color: var(--text-primary);
+    text-decoration: none;
+    transition: background 0.2s ease, border-color 0.2s ease;
 }
 
 .categories-page .table-actions a:hover {
-    background: rgba(255, 255, 255, 0.12);
+    background: var(--panel-bg);
+    border-color: var(--panel-border);
 }
 
 @media (max-width: 900px) {
@@ -297,7 +458,7 @@
 
     .categories-page tbody tr {
         margin-bottom: 1rem;
-        border: 1px solid rgba(255, 255, 255, 0.12);
+        border: 1px solid var(--panel-border);
         border-radius: 1rem;
         overflow: hidden;
     }
