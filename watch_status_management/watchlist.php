@@ -53,7 +53,6 @@ include '../includes/header.php';
                     <thead>
                         <tr>
                             <th>Title</th>
-                            <th>Status</th>
                             <th>Progress</th>
                             <th>Watch Date</th>
                             <th>Actions</th>
@@ -63,11 +62,6 @@ include '../includes/header.php';
                         <?php foreach ($movies as $movie): ?>
                             <tr>
                                 <td><?php echo htmlspecialchars($movie['title']); ?></td>
-                                <td>
-                                    <span class="status <?php echo htmlspecialchars($movie['watch_state']); ?>">
-                                        <?php echo ucfirst(htmlspecialchars($movie['watch_state'])); ?>
-                                    </span>
-                                </td>
                                 <td><?php echo intval($movie['progress_percent']); ?>%</td>
                                 <td><?php echo $movie['watch_date'] ? htmlspecialchars($movie['watch_date']) : 'N/A'; ?></td>
                                 <td class="action-buttons">
