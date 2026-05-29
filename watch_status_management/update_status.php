@@ -1,5 +1,7 @@
-﻿<?php
-// watch status management/update_status.php
+<?php
+// watch_status_management/update_status.php
+// Handles the POST from the Edit modal on watchlist.php, then redirects back.
+
 $basePath = '../';
 require_once '../includes/db.php';
 require_once 'WatchStatusService.php';
@@ -11,119 +13,27 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
-$user_id = $_SESSION['user_id'];
-$message = '';
-$error = '';
-$selectedStatusId = 0;
+$user_id  = $_SESSION['user_id'];
+$redirect = isset($_POST['redirect']) ? $_POST['redirect'] : 'watchlist.php';
 
-// Initialize service
 $repository = new WatchStatusRepository($pdo);
-$service = new WatchStatusService($repository);
+$service    = new WatchStatusService($repository);
 
-$allowedStates = [
-    'plan' => 'Plan to Watch',
-    'watching' => 'Watching',
-    'completed' => 'Completed',
-];
+$allowedStates = ['plan', 'watching', 'completed'];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['status_id'])) {
-    $selectedStatusId = (int) $_POST['status_id'];
-    $watch_state = isset($_POST['watch_state']) && array_key_exists($_POST['watch_state'], $allowedStates)
-        ? $_POST['watch_state']
-        : 'plan';
+    $status_id       = (int) $_POST['status_id'];
+    $watch_state     = (isset($_POST['watch_state']) && in_array($_POST['watch_state'], $allowedStates))
+                        ? $_POST['watch_state'] : 'plan';
     $progress_percent = isset($_POST['progress_percent']) ? (int) $_POST['progress_percent'] : 0;
 
     try {
-        $service->updateWatchStatus($selectedStatusId, $user_id, $watch_state, $progress_percent);
-        $message = 'Watch status updated successfully.';
+        $service->updateWatchStatus($status_id, $user_id, $watch_state, $progress_percent);
     } catch (Exception $e) {
-        $error = 'Unable to update watch status: ' . $e->getMessage();
+        // Log error; redirect back regardless
+        error_log('updateWatchStatus error: ' . $e->getMessage());
     }
 }
 
-try {
-    $watchlist = $service->getWatchlist($user_id);
-} catch (Exception $e) {
-    $watchlist = [];
-    if (!$error) {
-        $error = 'Unable to load watchlist items: ' . $e->getMessage();
-    }
-}
-
-include '../includes/header.php';
-?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Update Watch Status - MovieHub</title>
-    <link rel="stylesheet" href="../assets/colors.css">
-    <link rel="stylesheet" href="../assets/style.css">
-    <link rel="stylesheet" href="../assets/watchstyle_styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-</head>
-<body>
-    <main>
-        <section class="container">
-            <h2>Update Watch Status</h2>
-            <?php if ($message): ?>
-                <div class="alert alert-success"><?php echo htmlspecialchars($message); ?></div>
-            <?php endif; ?>
-            <?php if ($error): ?>
-                <div class="alert alert-error"><?php echo htmlspecialchars($error); ?></div>
-            <?php endif; ?>
-
-            <?php if (empty($watchlist)): ?>
-                <p>You have no items in your watchlist yet. <a href="watchlist.php">Go to Watchlist</a> to add movies.</p>
-            <?php else: ?>
-                <form method="post" action="update_status.php">
-                    <div class="form-group">
-                        <label for="status_id">Select Watchlist Item</label>
-                        <select id="status_id" name="status_id" required onchange="syncWatchStatus()">
-                            <option value="">Choose a movie</option>
-                            <?php foreach ($watchlist as $item): ?>
-                                <option
-                                    value="<?php echo $item['status_id']; ?>"
-                                    data-state="<?php echo htmlspecialchars($item['watch_state']); ?>"
-                                    data-progress="<?php echo intval($item['progress_percent']); ?>"
-                                    <?php echo $selectedStatusId === (int) $item['status_id'] ? 'selected' : ''; ?>>
-                                    <?php echo htmlspecialchars($item['title']); ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Current State</label>
-                        <div id="current-state">Select a watchlist item</div>
-                    </div>
-                    <div class="form-group">
-                        <label>Current Progress</label>
-                        <div id="current-progress">0%</div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="watch_state">New Status</label>
-                        <select id="watch_state" name="watch_state" required>
-                            <?php foreach ($allowedStates as $value => $label): ?>
-                                <option value="<?php echo $value; ?>"><?php echo $label; ?></option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="progress_percent">Progress (%)</label>
-                        <input type="range" id="progress_percent" name="progress_percent" min="0" max="100" step="5" value="0" oninput="document.getElementById('progress-output').textContent = this.value + '%';">
-                        <div><span id="progress-output">0%</span></div>
-                    </div>
-
-                    <button type="submit" class="btn btn-primary">Save Status</button>
-                </form>
-            <?php endif; ?>
-        </section>
-    </main>
-    <script src="../assets/js/update_status.js"></script>
-<?php include '../includes/footer.php'; ?>
-</body>
-</html>
+header('Location: ' . $redirect);
+exit();

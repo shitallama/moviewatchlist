@@ -1,9 +1,11 @@
 <?php
-// watch status management/watchlistcontroller.php
+// watch_status_management/watchlistcontroller.php
 $basePath = '../';
 require_once '../includes/db.php';
 require_once 'WatchStatusService.php';
 require_once 'repositories/WatchStatusRepository.php';
+
+session_start();
 
 class WatchlistController {
     private $service;
@@ -21,44 +23,43 @@ class WatchlistController {
             $this->service->toggleWatchStatus($movieId, $user_id, $currentStatus);
             return true;
         } catch (Exception $e) {
+            error_log('toggleWatchStatus error: ' . $e->getMessage());
             return false;
         }
     }
 }
 
-// Initialize controller with service
+// Initialize
 $repository = new WatchStatusRepository($pdo);
-$service = new WatchStatusService($repository);
+$service    = new WatchStatusService($repository);
 $controller = new WatchlistController($service);
 
-// AJAX endpoint for status toggling
+// ── AJAX: toggle watched status ──────────────────────────────────────────────
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'], $_POST['current_status'])) {
-    session_start();
     if (!isset($_SESSION['user_id'])) {
         header('Content-Type: application/json');
         echo json_encode(['success' => false, 'error' => 'Not logged in']);
         exit;
     }
-    $user_id = $_SESSION['user_id'];
-    $id = (int) $_POST['id'];
+    $user_id       = $_SESSION['user_id'];
+    $id            = (int) $_POST['id'];
     $currentStatus = (int) $_POST['current_status'];
-    $success = $controller->toggleWatchStatus($id, $currentStatus, $user_id);
+    $success       = $controller->toggleWatchStatus($id, $currentStatus, $user_id);
 
     header('Content-Type: application/json');
     echo json_encode(['success' => $success]);
     exit;
 }
 
-// Optional JSON endpoint for consuming the watchlist via AJAX
+// ── AJAX: get watchlist as JSON ──────────────────────────────────────────────
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['action'] === 'list') {
-    session_start();
     if (!isset($_SESSION['user_id'])) {
         header('Content-Type: application/json');
         echo json_encode(['success' => false, 'error' => 'Not logged in']);
         exit;
     }
     $user_id = $_SESSION['user_id'];
-    $movies = $controller->getMovies($user_id);
+    $movies  = $controller->getMovies($user_id);
     header('Content-Type: application/json');
     echo json_encode(['success' => true, 'movies' => $movies]);
     exit;
