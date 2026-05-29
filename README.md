@@ -48,4 +48,10 @@ A modern, responsive web application for managing your personal movie watchlist,
 - Main page: `index.php`
 - Register: `Login/register.php`
 - Login: `Login/login.php`
-- Admin access: `admin/login.php`
+
+## Admin Panel
+
+- **Admin Dashboard**: `http://localhost/moviewatchlist/admin/login.php`
+- **Manage Users**: Add, edit, and remove user accounts
+- **Manage Reviews**: Moderate and manage user reviews
+- **Site Administration**: Full control over content and users

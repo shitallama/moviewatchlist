@@ -78,7 +78,11 @@
                 body: formData
             })
                 .then((res) => res.text())
-                .then(() => {
+                .then((data) => {
+                    if (data === 'exists') {
+                        alert('You have already added review for this movie.');
+                        return;
+                    }
                     reviewForm.reset();
                     document.querySelector("input[name='review_id']")?.remove();
                     if (submitButton) {

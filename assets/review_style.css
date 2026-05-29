@@ -182,12 +182,34 @@
     color: var(--text-primary);
     padding: 0.85rem 1.1rem;
     cursor: pointer;
-    transition: background 0.2s ease, transform 0.2s ease;
+    font-weight: 600;
+    transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .review-actions button:hover {
     background: var(--hover-bg);
     transform: translateY(-1px);
+    box-shadow: 0 12px 22px rgba(15, 23, 42, 0.12);
+}
+
+.review-actions .review-edit {
+    border-color: rgba(47, 107, 255, 0.35);
+    background: rgba(47, 107, 255, 0.12);
+    color: var(--primary-color);
+}
+
+.review-actions .review-edit:hover {
+    background: rgba(47, 107, 255, 0.18);
+}
+
+.review-actions .review-delete {
+    border-color: rgba(239, 68, 68, 0.35);
+    background: rgba(239, 68, 68, 0.12);
+    color: #ef4444;
+}
+
+.review-actions .review-delete:hover {
+    background: rgba(239, 68, 68, 0.18);
 }
 
 @media (max-width: 720px) {
