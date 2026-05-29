@@ -137,9 +137,18 @@ class WatchStatusRepository {
     }
 
     /**
+     * Delete a movie from the user's watchlist
+     */
+    public function deleteMovie(int $movie_id, int $user_id): bool {
+        $query = "DELETE FROM Movies WHERE movie_id = ? AND user_id = ?";
+        $preparedStatement = $this->pdo->prepare($query);
+        return $preparedStatement->execute([$movie_id, $user_id]);
+    }
+
+    /**
      * Toggle watch status (plan/completed)
      */
-    public function toggleStatus($movie_id, $user_id) {
+    public function toggleStatus($movie_id, $user_id, $currentStatus = 0) {
         $this->pdo->beginTransaction();
         
         try {
@@ -147,8 +156,9 @@ class WatchStatusRepository {
             $watchStatus = $this->findByMovieAndUser($movie_id, $user_id);
 
             if (!$watchStatus) {
-                // Create new with 'plan' state
-                $newStatus = new WatchStatus($user_id, $movie_id, 'plan', 0);
+                // Determine initial state based on current status
+                $newState = $currentStatus ? 'plan' : 'completed';
+                $newStatus = new WatchStatus($user_id, $movie_id, $newState, $newState === 'completed' ? 100 : 0);
                 $result = $this->save($newStatus);
             } else {
                 // Toggle between plan and completed
@@ -156,6 +166,7 @@ class WatchStatusRepository {
                 $newState = ($currentState === 'completed') ? 'plan' : 'completed';
                 
                 $watchStatus->setWatchState($newState);
+                $watchStatus->setProgressPercent($newState === 'completed' ? 100 : 0);
                 $result = $this->update($watchStatus);
             }
 

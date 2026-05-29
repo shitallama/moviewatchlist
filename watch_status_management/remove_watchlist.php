@@ -9,20 +9,22 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['status_id'])) {
     $user_id = $_SESSION['user_id'];
-    $movie_id = (int) $_POST['id'];
+    $status_id = (int) $_POST['status_id'];
 
     // Initialize service
     $repository = new WatchStatusRepository($pdo);
     $service = new WatchStatusService($repository);
 
     try {
-        // Find the watch status by movie and user
-        $watchStatus = $repository->findByMovieAndUser($movie_id, $user_id);
-        
+        $watchStatus = $repository->findById($status_id, $user_id);
         if ($watchStatus) {
-            $service->removeFromWatchlist($watchStatus->getStatusId(), $user_id);
+            $movie_id = $watchStatus->getMovieId();
+            $service->removeFromWatchlist($status_id, $user_id);
+
+            $updateStatement = $pdo->prepare("UPDATE Movies SET watched = 0, watch_date = NULL WHERE movie_id = ? AND user_id = ?");
+            $updateStatement->execute([$movie_id, $user_id]);
         }
     } catch (Exception $e) {
         // Log error if needed

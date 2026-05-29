@@ -49,8 +49,8 @@ class WatchStatusService {
     /**
      * Toggle watch status
      */
-    public function toggleWatchStatus($movie_id, $user_id) {
-        return $this->repository->toggleStatus($movie_id, $user_id);
+    public function toggleWatchStatus($movie_id, $user_id, $currentStatus = 0) {
+        return $this->repository->toggleStatus($movie_id, $user_id, $currentStatus);
     }
 
     /**
@@ -73,5 +73,13 @@ class WatchStatusService {
     public function removeFromWatchlist($status_id, $user_id) {
         return $this->repository->delete($status_id, $user_id);
     }
+
+    /**
+     * Delete a movie from the user's watchlist
+     */
+    public function removeMovieFromWatchlist($movie_id, $user_id) {
+        return $this->repository->deleteMovie($movie_id, $user_id);
+    }
 }
 ?>
+

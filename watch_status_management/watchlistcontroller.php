@@ -18,7 +18,7 @@ class WatchlistController {
 
     public function toggleWatchStatus(int $movieId, int $currentStatus, $user_id): bool {
         try {
-            $this->service->toggleWatchStatus($movieId, $user_id);
+            $this->service->toggleWatchStatus($movieId, $user_id, $currentStatus);
             return true;
         } catch (Exception $e) {
             return false;
