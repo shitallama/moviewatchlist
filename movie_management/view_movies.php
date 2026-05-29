@@ -62,14 +62,6 @@ foreach ($reviewsByMovie as $movieId => $movieReviews) {
                 <label for="genre">Genre</label>
                 <input type="text" id="genre" name="genre" value="<?= htmlspecialchars($_GET['genre'] ?? '') ?>" placeholder="Filter by genre...">
             </div>
-            <div class="form-group">
-                <label for="watched">Status</label>
-                <select id="watched" name="watched">
-                    <option value="">All Movies</option>
-                    <option value="1" <?= ($_GET['watched'] ?? '') === '1' ? 'selected' : '' ?>>Watched</option>
-                    <option value="0" <?= ($_GET['watched'] ?? '') === '0' ? 'selected' : '' ?>>Not Watched</option>
-                </select>
-            </div>
             <button type="submit" class="btn-primary">Filter</button>
         </form>
     </div>
@@ -88,7 +80,6 @@ foreach ($reviewsByMovie as $movieId => $movieReviews) {
                 <th>Rating</th>
                 <th>Notes</th>
                 <th>Reviews</th>
-                <th>Status</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -125,11 +116,6 @@ foreach ($reviewsByMovie as $movieId => $movieReviews) {
                     <?php else: ?>
                         <span class="no-reviews">No reviews yet</span>
                     <?php endif; ?>
-                </td>
-                <td>
-                    <span class="status-badge <?= $movie->watched ? 'watched' : 'not-watched' ?>">
-                        <?= $movie->watched ? 'Watched' : 'Not Watched' ?>
-                    </span>
                 </td>
                 <td>
                     <a href="edit_movies.php?id=<?= $movie->movie_id ?>" class="action-link edit">Edit</a>

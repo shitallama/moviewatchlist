@@ -143,8 +143,8 @@ try {
                 <div class="feature-icon">
                     <img class="icon" src="assets/icons/eye.svg" alt="" aria-hidden="true">
                 </div>
-                <h3>Watch Status</h3>
-                <p>Track your viewing progress - Mark movies as watched or to-watch.</p>
+                <h3>Watchlist</h3>
+                <p>Keep your personal movie list organized and easy to browse.</p>
             </div>
             
             <div class="feature-card">
