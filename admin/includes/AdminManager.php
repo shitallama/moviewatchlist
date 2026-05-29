@@ -407,4 +407,94 @@ class AdminManager {
             return [];
         }
     }
+
+    /**
+     * Deactivate a user account
+     * @param int $userId User ID to deactivate
+     * @return bool True if successful, false otherwise
+     */
+    public function deactivateUser($userId) {
+        try {
+            $stmt = $this->pdo->prepare("
+                UPDATE Users 
+                SET is_active = 0 
+                WHERE user_id = :user_id
+            ");
+            return $stmt->execute(['user_id' => (int)$userId]);
+        } catch (PDOException $e) {
+            return false;
+        }
+    }
+
+    /**
+     * Reactivate a user account
+     * @param int $userId User ID to reactivate
+     * @return bool True if successful, false otherwise
+     */
+    public function reactivateUser($userId) {
+        try {
+            $stmt = $this->pdo->prepare("
+                UPDATE Users 
+                SET is_active = 1 
+                WHERE user_id = :user_id
+            ");
+            return $stmt->execute(['user_id' => (int)$userId]);
+        } catch (PDOException $e) {
+            return false;
+        }
+    }
+
+    /**
+     * Delete a review by ID
+     * @param int $reviewId Review ID to delete
+     * @return bool True if successful, false otherwise
+     */
+    public function deleteReview($reviewId) {
+        try {
+            $stmt = $this->pdo->prepare("
+                DELETE FROM Review 
+                WHERE review_id = :review_id
+            ");
+            return $stmt->execute(['review_id' => (int)$reviewId]);
+        } catch (PDOException $e) {
+            return false;
+        }
+    }
+
+    /**
+     * Get all reviews with full user and movie info for moderation
+     * @return array Array of reviews for moderation
+     */
+    public function getAllReviewsForModeration() {
+        try {
+            $stmt = $this->pdo->query("
+                SELECT r.review_id, r.rating, r.review_text, r.is_recommended, r.created_at,
+                       u.user_id, u.username, m.movie_id, m.title
+                FROM Review r
+                JOIN Users u ON r.user_id = u.user_id
+                JOIN Movies m ON r.movie_id = m.movie_id
+                ORDER BY r.created_at DESC
+            ");
+            return $stmt->fetchAll(PDO::FETCH_ASSOC) ?? [];
+        } catch (PDOException $e) {
+            return [];
+        }
+    }
+
+    /**
+     * Get all active users with status
+     * @return array Array of users with their active status
+     */
+    public function getAllUsersWithStatus() {
+        try {
+            $stmt = $this->pdo->query("
+                SELECT user_id, username, email, is_active, created_at 
+                FROM Users 
+                ORDER BY created_at DESC
+            ");
+            return $stmt->fetchAll(PDO::FETCH_ASSOC) ?? [];
+        } catch (PDOException $e) {
+            return [];
+        }
+    }
 }

@@ -111,6 +111,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
     }
+
+    if ($action === 'deactivate_account') {
+        $deactivatePassword = $_POST['deactivate_password'] ?? '';
+
+        if (!$userManager->verifyPassword($deactivatePassword, $user['password_hash'] ?? '')) {
+            $errors[] = 'Password confirmation failed.';
+        }
+
+        if (empty($errors)) {
+            if ($userManager->deactivateUserAccount($userId)) {
+                $_SESSION = [];
+                if (ini_get('session.use_cookies')) {
+                    $params = session_get_cookie_params();
+                    setcookie(session_name(), '', time() - 42000, $params['path'], $params['domain'], $params['secure'], $params['httponly']);
+                }
+                session_destroy();
+
+                header('Location: ' . $basePath . 'Login/login.php?msg=account_deactivated');
+                exit;
+            } else {
+                $errors[] = 'Failed to deactivate account. Please try again.';
+            }
+        }
+    }
 }
 ?>
 <!DOCTYPE html>
@@ -206,6 +230,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <button class="primary-btn" type="submit">Update password</button>
             </form>
 
+            <form method="post" class="settings-card settings-card-warning">
+                <div class="settings-card-header">
+                    <h2>Deactivate account</h2>
+                    <span>Temporarily disable your account. You can reactivate it later.</span>
+                </div>
+                <input type="hidden" name="action" value="deactivate_account">
+                <div class="form-field">
+                    <label for="deactivate_password">Confirm password</label>
+                    <input type="password" id="deactivate_password" name="deactivate_password" autocomplete="current-password" required placeholder="Enter your password">
+                </div>
+                <p style="font-size: 14px; color: #666; margin: 10px 0;">
+                    <i class="fas fa-info-circle"></i> Your account will be deactivated and you won't be able to log in. You can reactivate it anytime.
+                </p>
+                <button class="warning-btn" type="button" data-deactivate-trigger>Deactivate account</button>
+            </form>
+
             <form method="post" class="settings-card settings-card-danger">
                 <div class="settings-card-header">
                     <h2>Delete account</h2>
@@ -225,6 +265,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </div>
 </section>
+
+<div class="modal" data-deactivate-modal aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="deactivate-modal-title">
+    <div class="modal-backdrop" data-deactivate-close></div>
+    <div class="modal-card" role="document">
+        <h2 id="deactivate-modal-title">Deactivate your account</h2>
+        <p>Your account will be temporarily deactivated. You can reactivate it anytime by logging back in.</p>
+        <div class="modal-actions">
+            <button type="button" class="secondary-btn" data-deactivate-close>Cancel</button>
+            <button type="button" class="warning-btn" data-deactivate-confirm>Yes, deactivate</button>
+        </div>
+    </div>
+</div>
 
 <div class="modal" data-delete-modal aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="delete-modal-title">
     <div class="modal-backdrop" data-delete-close></div>

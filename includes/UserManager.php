@@ -349,6 +349,51 @@ class UserManager {
             return null;
         }
     }
+
+    /**
+     * Deactivate user account (user-initiated)
+     * @param int $userId User ID
+     * @return bool True if successful, false otherwise
+     */
+    public function deactivateUserAccount($userId) {
+        try {
+            $stmt = $this->pdo->prepare(
+                'UPDATE Users SET is_active = 0 WHERE user_id = :user_id'
+            );
+            return $stmt->execute(['user_id' => $userId]);
+        } catch (PDOException $e) {
+            return false;
+        }
+    }
+
+    /**
+     * Reactivate user account (user-initiated)
+     * @param int $userId User ID
+     * @param string $password User password to verify identity
+     * @return bool True if successful, false otherwise
+     */
+    public function reactivateUserAccount($userId, $password) {
+        try {
+            // First verify the password
+            $stmt = $this->pdo->prepare(
+                'SELECT password_hash FROM Users WHERE user_id = :user_id LIMIT 1'
+            );
+            $stmt->execute(['user_id' => $userId]);
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            if (!$user || !password_verify($password, $user['password_hash'])) {
+                return false;
+            }
+
+            // Reactivate the account
+            $updateStmt = $this->pdo->prepare(
+                'UPDATE Users SET is_active = 1 WHERE user_id = :user_id'
+            );
+            return $updateStmt->execute(['user_id' => $userId]);
+        } catch (PDOException $e) {
+            return false;
+        }
+    }
 }
 ?>
 }

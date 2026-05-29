@@ -274,6 +274,12 @@ try {
         <div class="quick-links">
             <h2><i class="fas fa-link"></i> Quick Links</h2>
             <div class="quick-links-grid">
+                <a href="<?php echo $basePath; ?>admin/manage_users.php" class="quick-link">
+                    <i class="fas fa-user-cog"></i> Manage Users
+                </a>
+                <a href="<?php echo $basePath; ?>admin/manage_reviews.php" class="quick-link">
+                    <i class="fas fa-comments"></i> Manage Reviews
+                </a>
                 <a href="<?php echo $basePath; ?>movie_management/view_movies.php" class="quick-link">
                     <i class="fas fa-clapperboard"></i> Manage Movies
                 </a>
