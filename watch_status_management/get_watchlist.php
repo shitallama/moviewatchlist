@@ -47,7 +47,6 @@ try {
             <thead>
                 <tr>
                     <th>Title</th>
-                    <th>Status</th>
                     <th>Progress</th>
                     <th>Watch Date</th>
                 </tr>
@@ -61,7 +60,6 @@ try {
                     <?php foreach ($movies as $movie): ?>
                         <tr>
                             <td><?php echo htmlspecialchars($movie['title']); ?></td>
-                            <td><?php echo ucfirst(htmlspecialchars($movie['watch_state'])); ?></td>
                             <td><?php echo intval($movie['progress_percent']); ?>%</td>
                             <td><?php echo $movie['watch_date'] ? htmlspecialchars($movie['watch_date']) : 'N/A'; ?></td>
                         </tr>
