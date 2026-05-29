@@ -134,6 +134,11 @@ foreach ($reviewsByMovie as $movieId => $movieReviews) {
                 <td>
                     <a href="edit_movies.php?id=<?= $movie->movie_id ?>" class="action-link edit">Edit</a>
                     <a href="../review_system/review_page.php?movie_id=<?= $movie->movie_id ?>" class="action-link review">Reviews</a>
+                    <form method="POST" action="../watch_status_management/add_to_watchlist.php" class="inline-form">
+                        <input type="hidden" name="movie_id" value="<?= $movie->movie_id ?>">
+                        <input type="hidden" name="redirect" value="../movie_management/view_movies.php">
+                        <button type="submit" class="action-link add">Add to Watchlist</button>
+                    </form>
                     <a href="delete_movies.php?id=<?= $movie->movie_id ?>" class="action-link delete" onclick="return confirm('Are you sure you want to delete this movie?')">Delete</a>
                 </td>
             </tr>
