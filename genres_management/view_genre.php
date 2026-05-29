@@ -56,7 +56,7 @@ $categories = $repository->getAll();
                     class="search-input"
                     aria-label="Search genres"
                 >
-                <span class="search-icon">🔍</span>
+                <span class="search-icon"></span>
             </div>
             
             <div class="filter-controls">
