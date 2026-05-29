@@ -66,19 +66,19 @@ class WatchStatusRepository {
     public function getWatchlistForUser($user_id) {
         $query = "SELECT m.movie_id, m.title, m.watch_date, m.watched,
                          ws.status_id,
-                         ws.watch_state,
-                         ws.progress_percent
-                  FROM WatchStatus ws
-                  JOIN Movies m ON m.movie_id = ws.movie_id AND m.user_id = ws.user_id
-                  WHERE ws.user_id = ?
-                  ORDER BY CASE ws.watch_state
+                         COALESCE(ws.watch_state, CASE WHEN m.watched = 1 THEN 'completed' ELSE 'plan' END) AS watch_state,
+                         COALESCE(ws.progress_percent, CASE WHEN m.watched = 1 THEN 100 ELSE 0 END) AS progress_percent
+                  FROM Movies m
+                  LEFT JOIN WatchStatus ws ON ws.movie_id = m.movie_id AND ws.user_id = ?
+                  WHERE m.user_id = ?
+                  ORDER BY CASE COALESCE(ws.watch_state, CASE WHEN m.watched = 1 THEN 'completed' ELSE 'plan' END)
                       WHEN 'plan' THEN 1
                       WHEN 'watching' THEN 2
                       WHEN 'completed' THEN 3
                       ELSE 4
                   END, m.title ASC";
         $preparedStatement = $this->pdo->prepare($query);
-        $preparedStatement->execute([$user_id]);
+        $preparedStatement->execute([$user_id, $user_id]);
         return $preparedStatement->fetchAll(PDO::FETCH_ASSOC);
     }
 

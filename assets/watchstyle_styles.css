@@ -268,6 +268,16 @@ button:hover,
     text-align: center;
 }
 
+.watchlist-label {
+    display: inline-flex;
+    align-items: center;
+    color: #64748b;
+    font-size: 0.9rem;
+    padding: 8px 12px;
+    border-radius: 10px;
+    background: #f8fafc;
+}
+
 .action-buttons .action-group {
     display: flex;
     flex-wrap: wrap;
