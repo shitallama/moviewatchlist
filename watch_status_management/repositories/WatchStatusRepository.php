@@ -30,7 +30,7 @@ class WatchStatusRepository {
                 $result['progress_percent'],
                 $result['status_id'],
                 $result['finished_at'],
-                $result['created_at']
+                $result['added_to_list_at']
             );
         }
         return null;
@@ -54,7 +54,7 @@ class WatchStatusRepository {
                 $result['progress_percent'],
                 $result['status_id'],
                 $result['finished_at'],
-                $result['created_at']
+                $result['added_to_list_at']
             );
         }
         return null;
@@ -86,7 +86,7 @@ class WatchStatusRepository {
      * Save a new watch status
      */
     public function save(WatchStatus $watchStatus) {
-        $query = "INSERT INTO WatchStatus (user_id, movie_id, watch_state, progress_percent, finished_at, created_at)
+        $query = "INSERT INTO WatchStatus (user_id, movie_id, watch_state, progress_percent, finished_at, added_to_list_at)
                   VALUES (?, ?, ?, ?, ?, NOW())";
         $preparedStatement = $this->pdo->prepare($query);
         
