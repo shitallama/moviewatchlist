@@ -380,3 +380,34 @@ body {
 
 @media (min-width: 1025px) {
 }
+
+/* Global action link/button styles used across pages */
+.action-link, .action-link:link, .action-link:visited {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    padding: .5rem .9rem;
+    border-radius: .6rem;
+    font-weight: 700;
+    text-decoration: none;
+    border: 1px solid var(--border-color);
+    background: transparent;
+    color: var(--text-primary);
+    transition: transform .12s ease, box-shadow .15s ease, filter .12s ease;
+}
+
+.action-link:hover { transform: translateY(-3px); box-shadow: 0 10px 22px rgba(10,12,30,.06); }
+.action-link:active { transform: translateY(-1px) scale(.995); }
+
+.action-link.edit { background: linear-gradient(180deg, var(--primary-color) 0%, var(--primary-dark) 100%); color: #fff; border-color: rgba(0,0,0,.06); }
+.action-link.delete { background: linear-gradient(180deg, var(--danger) 0%, var(--delete-color) 100%); color: #fff; border-color: rgba(0,0,0,.06); }
+.action-link.add { background: linear-gradient(180deg, var(--success-color) 0%, var(--success-bg) 100%); color: #fff; border-color: rgba(0,0,0,.04); }
+.action-link.review { background: transparent; color: var(--primary-color); border: 1px dashed var(--border-color); font-weight:600 }
+
+/* subtle click ripple via transform */
+@keyframes clickPulse { 0% { transform: scale(1); } 50% { transform: scale(.985); } 100% { transform: scale(1); } }
+.action-link:active { animation: clickPulse .18s linear; }
+
+/* Provide small icon sizing consistency */
+.action-link .icon, .action-link svg { width: 14px; height: 14px; }
+
