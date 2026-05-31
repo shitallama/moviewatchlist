@@ -90,11 +90,23 @@ td{padding:1.25rem 1.4rem;font-size:1rem;vertical-align:middle}
 
 /* action buttons */
 .actions{display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap}
-.act{display:inline-flex;align-items:center;gap:.35rem;background:var(--indigo);color:#fff;border:none;font-family:inherit;font-weight:700;font-size:.85rem;padding:.5rem .9rem;border-radius:9px;cursor:pointer;transition:.15s;text-decoration:none}
-.act:hover{background:var(--indigo-600)}
-.act.del{background:var(--red)}
-.act.del:hover{background:var(--red-hover)}
-.act svg{width:14px;height:14px}
+.act{display:inline-flex;align-items:center;gap:.5rem;background:transparent;color:var(--text);border:1px solid var(--border);font-family:inherit;font-weight:700;font-size:0.9rem;padding:0.55rem 0.95rem;border-radius:10px;cursor:pointer;transition:all .18s ease;text-decoration:none;box-shadow:none}
+.act:hover{transform:translateY(-3px);box-shadow:0 6px 18px rgba(20,22,45,.06)}
+.act svg{width:14px;height:14px;opacity:.95}
+
+/* Primary action (Edit) */
+.act.edit{background:linear-gradient(180deg,var(--indigo) 0%,var(--indigo-600) 100%);color:#fff;border:1px solid rgba(0,0,0,.06);box-shadow:0 6px 18px rgba(91,91,240,.18)}
+.act.edit:hover{filter:brightness(.98);transform:translateY(-2px)}
+
+/* Danger action (Delete) */
+.act.del{background:linear-gradient(180deg,var(--red) 0%,var(--red-hover) 100%);color:#fff;border:1px solid rgba(0,0,0,.06);box-shadow:0 6px 18px rgba(255,80,80,.12)}
+.act.del:hover{filter:brightness(.98);transform:translateY(-2px)}
+
+/* Small subtle action for inline links */
+.act.ghost{background:transparent;color:var(--text-soft);border:1px dashed var(--border);padding:.4rem .7rem;font-weight:600}
+
+/* make icons look consistent */
+.act svg{width:14px;height:14px;flex-shrink:0}
 
 /* modal */
 .overlay{position:fixed;inset:0;background:rgba(20,22,45,.55);backdrop-filter:blur(3px);display:none;align-items:center;justify-content:center;z-index:50;padding:1rem}
