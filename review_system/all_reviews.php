@@ -7,6 +7,7 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 $currentUserId = isset($_SESSION['user_id']) ? (int) $_SESSION['user_id'] : null;
+$isLoggedIn = $currentUserId !== null;
 
 try {
     $communitySql = "
@@ -18,6 +19,7 @@ try {
             u.username,
             AVG(r.rating) AS avg_rating,
             COUNT(r.review_id) AS review_count,
+            MAX(CASE WHEN r.user_id = :current_user_id THEN 1 ELSE 0 END) AS has_reviewed,
             SUBSTRING_INDEX(
                 GROUP_CONCAT(r.review_text ORDER BY r.created_at DESC SEPARATOR '|||'),
                 '|||',
@@ -30,7 +32,8 @@ try {
         ORDER BY MAX(r.created_at) DESC, m.movie_id DESC
     ";
 
-    $stmt = $pdo->query($communitySql);
+    $stmt = $pdo->prepare($communitySql);
+    $stmt->execute(['current_user_id' => $currentUserId ?? 0]);
     $communityMovies = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
     $communityMovies = [];
@@ -88,6 +91,7 @@ try {
                         }
                         $reviewCount = (int) $movie['review_count'];
                         $avgRating = $reviewCount > 0 ? number_format((float) $movie['avg_rating'], 1) : null;
+                        $hasReviewed = isset($movie['has_reviewed']) && (int) $movie['has_reviewed'] === 1;
                     ?>
                     <article
                         class="community-card"
@@ -113,6 +117,11 @@ try {
                         <div class="community-actions">
                             <?php if ($isLoggedIn): ?>
                                 <a class="community-link" href="<?php echo $basePath; ?>review_system/review_page.php?movie_id=<?php echo (int) $movie['movie_id']; ?>">Read reviews</a>
+                                <?php if ($hasReviewed): ?>
+                                    <a class="community-link" href="<?php echo $basePath; ?>review_system/review_page.php?movie_id=<?php echo (int) $movie['movie_id']; ?>">Edit my review</a>
+                                <?php else: ?>
+                                    <a class="community-link" href="<?php echo $basePath; ?>review_system/review_page.php?movie_id=<?php echo (int) $movie['movie_id']; ?>">Give review</a>
+                                <?php endif; ?>
                             <?php else: ?>
                                 <a class="community-link" href="<?php echo $basePath; ?>Login/login.php">Login to review</a>
                             <?php endif; ?>

@@ -2,7 +2,7 @@
     <footer class="footer">
         <div class="footer-container">
             <div class="footer-section">
-                <h3><img class="icon" src="<?php echo $basePath; ?>assets/icons/film.svg" alt="" aria-hidden="true" width="20" height="20"> MovieHub</h3>
+                <h3><img class="icon" src="<?php echo $basePath; ?>assets/icons/film.svg" alt="" aria-hidden="true" width="20" height="20"> CineList</h3>
                 <p>Your complete movie management system. Track, rate, and discover amazing movies.</p>
                 <div class="social-links">
                     <a href="https://github.com/shitallama/moviewatchlist" target="_blank" aria-label="GitHub">
@@ -17,7 +17,8 @@
                     <li><a href="<?php echo $basePath; ?>movie_management/view_movies.php">Browse Movies</a></li>
                     <li><a href="<?php echo $basePath; ?>watch_status_management/watchlist.php">My Watchlist</a></li>
                     <li><a href="<?php echo $basePath; ?>genres_management/view_genre.php">Genres</a></li>
-                    <li><a href="<?php echo $basePath; ?>review_system/review_page.php">Reviews</a></li>
+                    <li><a href="<?php echo $basePath; ?>review_system/all_reviews.php">Reviews</a></li>
+                    <li><a href="mailto:59154@edu.nielsbrock.dk">Feedback</a></li>
                 </ul>
             </div>
             
@@ -48,7 +49,7 @@
         </div>
         
         <div class="footer-bottom">
-            <p>&copy; 2026 MovieHub. All rights reserved. | <a class="footer-link" href="http://localhost/moviewatchlist/" target="_blank">CineList</a></p>
+            <p>&copy; 2026 Starlight Pvt Ltd. All rights reserved. | <a class="footer-link" href="http://localhost/moviewatchlist/" target="_blank">CineList</a></p>
         </div>
     </footer>
     

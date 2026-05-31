@@ -84,8 +84,7 @@ class WatchStatusRepository {
      * Save a new watch status
      */
     public function save(WatchStatus $watchStatus) {
-        $query = "INSERT INTO WatchStatus (user_id, movie_id, watch_state, progress_percent, finished_at)
-                  VALUES (?, ?, ?, ?, ?)";
+        $query = "INSERT INTO WatchStatus (user_id, movie_id, watch_state, progress_percent, finished_at) VALUES (?, ?, ?, ?, ?)";
         $preparedStatement = $this->pdo->prepare($query);
         
         $result = $preparedStatement->execute([

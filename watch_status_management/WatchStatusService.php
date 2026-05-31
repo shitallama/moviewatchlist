@@ -24,19 +24,19 @@ class WatchStatusService {
      */
     public function updateWatchStatus($status_id, $user_id, $watch_state, $progress_percent) {
         $allowedStates = ['plan', 'watching', 'completed'];
-        
+
         if (!in_array($watch_state, $allowedStates)) {
             throw new InvalidArgumentException("Invalid watch state: $watch_state");
         }
 
         $watchStatus = $this->repository->findById($status_id, $user_id);
-        
+
         if (!$watchStatus) {
-            throw new Exception("Watch status not found");
+            throw new Exception("Watch status not found or does not belong to this user.");
         }
 
         $watchStatus->setWatchState($watch_state);
-        $watchStatus->setProgressPercent($progress_percent);
+        $watchStatus->setProgressPercent((int) $progress_percent);
 
         if ($watch_state === 'completed') {
             $watchStatus->setProgressPercent(100);
@@ -47,20 +47,20 @@ class WatchStatusService {
     }
 
     /**
-     * Toggle watch status
+     * Toggle watched/unwatched on a movie (by movie_id)
      */
     public function toggleWatchStatus($movie_id, $user_id, $currentStatus = 0) {
         return $this->repository->toggleStatus($movie_id, $user_id, $currentStatus);
     }
 
     /**
-     * Add movie to watchlist
+     * Add movie to watchlist (skips if already present)
      */
     public function addToWatchlist($user_id, $movie_id, $watch_state = 'plan') {
         $existing = $this->repository->findByMovieAndUser($movie_id, $user_id);
-        
+
         if ($existing) {
-            return $existing;
+            return $existing; // already on the list — do nothing
         }
 
         $progress = $watch_state === 'completed' ? 100 : 0;
@@ -70,18 +70,17 @@ class WatchStatusService {
     }
 
     /**
-     * Remove from watchlist
+     * Remove a watchlist entry by its status_id
      */
     public function removeFromWatchlist($status_id, $user_id) {
         return $this->repository->delete($status_id, $user_id);
     }
 
     /**
-     * Delete a movie from the user's watchlist
+     * Remove a watchlist entry by movie_id (fallback)
      */
     public function removeMovieFromWatchlist($movie_id, $user_id) {
         return $this->repository->deleteMovie($movie_id, $user_id);
     }
 }
 ?>
-

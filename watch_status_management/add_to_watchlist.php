@@ -1,4 +1,5 @@
 <?php
+// watch_status_management/add_to_watchlist.php
 session_start();
 require_once '../includes/db.php';
 require_once 'WatchStatusService.php';
@@ -23,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     $repository = new WatchStatusRepository($pdo);
-    $service = new WatchStatusService($repository);
+    $service    = new WatchStatusService($repository);
 
     try {
         if ($movie_id > 0) {
@@ -70,7 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $updateQuery->execute([$watch_date, $newMovieId, $user_id]);
         }
     } catch (Exception $e) {
-        // ignore or log error
+        error_log('addToWatchlist error: ' . $e->getMessage());
     }
 
     header('Location: ' . $redirect);
