@@ -1,6 +1,7 @@
 <?php
 include('../includes/db.php');
 require_once __DIR__ . '/MovieManager.php';
+require_once __DIR__ . '/../genres_management/Genre.php';
 
 session_start();
 
@@ -10,8 +11,12 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
+
 $basePath = '../';
 $movieRepository = new MovieRepository($pdo);
+$genreRepository = new GenreRepository($pdo);
+$genres = $genreRepository->getAll();
+$error = '';
 
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 $user_id = (int)$_SESSION['user_id'];
@@ -33,14 +38,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $movie->title = trim($_POST['title']);
     $movie->genre = trim($_POST['genre']);
     $movie->release_date = $_POST['release_date'] ?: null;
-    $movie->watch_date = $_POST['watch_date'] ?: null;
-    $movie->user_notes = trim($_POST['user_notes']) ?: null;
-    $movie->watched = isset($_POST['watched']) ? 1 : 0;
 
-    $movieRepository->update($movie);
-
-    header("Location: view_movies.php");
-    exit();
+    // Validation
+    if (empty($movie->title) || empty($movie->genre)) {
+        $error = "Title and Genre are required.";
+    } else {
+        $movieRepository->update($movie);
+        header("Location: view_movies.php");
+        exit();
+    }
 }
 ?>
 <!DOCTYPE html>
@@ -61,6 +67,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <p>Update movie information in your collection</p>
     </div>
 
+    <?php if (!empty($error)): ?>
+        <div class="alert alert-error"><?php echo htmlspecialchars($error); ?></div>
+    <?php endif; ?>
+
     <form class="manage-form" method="POST">
         <div class="form-group">
             <label for="title">Movie Title</label>
@@ -69,31 +79,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         <div class="form-group">
             <label for="genre">Genre</label>
-            <input type="text" id="genre" name="genre" value="<?= htmlspecialchars($movie->genre) ?>" required>
+            <select id="genre" name="genre" required>
+                <option value="">Select a genre</option>
+                <?php foreach ($genres as $genreItem): ?>
+                    <?php if ((int) $genreItem->is_active === 1): ?>
+                        <option value="<?php echo htmlspecialchars($genreItem->name); ?>" <?php echo htmlspecialchars($movie->genre) === $genreItem->name ? 'selected' : ''; ?>>
+                            <?php echo htmlspecialchars($genreItem->name); ?>
+                        </option>
+                    <?php endif; ?>
+                <?php endforeach; ?>
+            </select>
+            <a class="btn-secondary add-genre-link" href="<?php echo $basePath; ?>genres_management/add_genre.php">Add Genres</a>
         </div>
 
         <div class="form-group">
             <label for="release_date">Release Date</label>
             <input type="date" id="release_date" name="release_date" value="<?= htmlspecialchars($movie->release_date) ?>">
         </div>
-
-        <div class="form-group checkbox-group">
-            <label>
-                <input type="checkbox" id="watched" name="watched" value="1" <?= $movie->watched ? 'checked' : '' ?>>
-                Watched
-            </label>
-        </div>
-
-        <div class="form-group">
-            <label for="watch_date">Watch Date</label>
-            <input type="date" id="watch_date" name="watch_date" value="<?= htmlspecialchars($movie->watch_date) ?>">
-        </div>
-
-        <div class="form-group">
-            <label for="user_notes">Notes</label>
-            <textarea id="user_notes" name="user_notes" rows="4"><?= htmlspecialchars($movie->user_notes) ?></textarea>
-        </div>
-
         <div class="btn-group">
             <button type="submit" class="btn-primary">Update Movie</button>
             <a href="view_movies.php" class="btn-secondary">Cancel</a>
