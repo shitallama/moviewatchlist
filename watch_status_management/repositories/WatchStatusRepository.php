@@ -30,7 +30,7 @@ class WatchStatusRepository {
                 $result['progress_percent'],
                 $result['status_id'],
                 $result['finished_at'],
-                $result['created_at']
+                $result['added_to_list_at'] ?? null
             );
         }
         return null;
@@ -54,7 +54,7 @@ class WatchStatusRepository {
                 $result['progress_percent'],
                 $result['status_id'],
                 $result['finished_at'],
-                $result['created_at']
+                $result['added_to_list_at'] ?? null
             );
         }
         return null;
@@ -65,13 +65,11 @@ class WatchStatusRepository {
      */
     public function getWatchlistForUser($user_id) {
         $query = "SELECT m.movie_id, m.title, m.watch_date, m.watched,
-                         ws.status_id,
-                         COALESCE(ws.watch_state, CASE WHEN m.watched = 1 THEN 'completed' ELSE 'plan' END) AS watch_state,
-                         COALESCE(ws.progress_percent, CASE WHEN m.watched = 1 THEN 100 ELSE 0 END) AS progress_percent
-                  FROM Movies m
-                  LEFT JOIN WatchStatus ws ON ws.movie_id = m.movie_id AND ws.user_id = ?
-                  WHERE m.user_id = ?
-                  ORDER BY CASE COALESCE(ws.watch_state, CASE WHEN m.watched = 1 THEN 'completed' ELSE 'plan' END)
+                         ws.status_id, ws.watch_state, ws.progress_percent
+                  FROM WatchStatus ws
+                  JOIN Movies m ON m.movie_id = ws.movie_id AND m.user_id = ?
+                  WHERE ws.user_id = ?
+                  ORDER BY CASE ws.watch_state
                       WHEN 'plan' THEN 1
                       WHEN 'watching' THEN 2
                       WHEN 'completed' THEN 3
@@ -86,8 +84,8 @@ class WatchStatusRepository {
      * Save a new watch status
      */
     public function save(WatchStatus $watchStatus) {
-        $query = "INSERT INTO WatchStatus (user_id, movie_id, watch_state, progress_percent, finished_at, created_at)
-                  VALUES (?, ?, ?, ?, ?, NOW())";
+        $query = "INSERT INTO WatchStatus (user_id, movie_id, watch_state, progress_percent, finished_at)
+                  VALUES (?, ?, ?, ?, ?)";
         $preparedStatement = $this->pdo->prepare($query);
         
         $result = $preparedStatement->execute([
@@ -149,8 +147,6 @@ class WatchStatusRepository {
      * Toggle watch status (plan/completed)
      */
     public function toggleStatus($movie_id, $user_id, $currentStatus = 0) {
-        $this->pdo->beginTransaction();
-        
         try {
             // Get current status
             $watchStatus = $this->findByMovieAndUser($movie_id, $user_id);
@@ -176,18 +172,20 @@ class WatchStatusRepository {
                       SET watched = ?, watch_date = ?
                       WHERE movie_id = ? AND user_id = ?";
             $preparedStatement = $this->pdo->prepare($query);
-            $preparedStatement->execute([
+            $updateResult = $preparedStatement->execute([
                 $isCompleted ? 1 : 0,
                 $isCompleted ? date('Y-m-d') : null,
                 $movie_id,
                 $user_id
             ]);
 
-            $this->pdo->commit();
+            if (!$updateResult || !$result) {
+                throw new Exception("Failed to update watch status");
+            }
+
             return true;
         } catch (Exception $e) {
-            $this->pdo->rollBack();
-            throw $e;
+            throw new Exception("Toggle status error: " . $e->getMessage());
         }
     }
 }

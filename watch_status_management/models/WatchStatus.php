@@ -10,7 +10,7 @@ class WatchStatus {
     private $watch_state;
     private $progress_percent;
     private $finished_at;
-    private $created_at;
+    private $added_to_list_at;
 
     public function __construct(
         $user_id,
@@ -19,7 +19,7 @@ class WatchStatus {
         $progress_percent = 0,
         $status_id = null,
         $finished_at = null,
-        $created_at = null
+        $added_to_list_at = null
     ) {
         $this->status_id = $status_id;
         $this->user_id = $user_id;
@@ -27,7 +27,7 @@ class WatchStatus {
         $this->watch_state = $watch_state;
         $this->progress_percent = max(0, min(100, $progress_percent));
         $this->finished_at = $finished_at;
-        $this->created_at = $created_at;
+        $this->added_to_list_at = $added_to_list_at;
     }
 
     // Getters
@@ -55,8 +55,8 @@ class WatchStatus {
         return $this->finished_at;
     }
 
-    public function getCreatedAt() {
-        return $this->created_at;
+    public function getAddedToListAt() {
+        return $this->added_to_list_at;
     }
 
     // Setters
@@ -88,7 +88,7 @@ class WatchStatus {
             'watch_state' => $this->watch_state,
             'progress_percent' => $this->progress_percent,
             'finished_at' => $this->finished_at,
-            'created_at' => $this->created_at,
+            'added_to_list_at' => $this->added_to_list_at,
         ];
     }
 }

@@ -1,12 +1,16 @@
 ﻿// watch status management/toggle_status.js
 function toggleStatus(id, currentStatus) {
-    const formData = new FormData();
-    formData.append('id', id);
-    formData.append('current_status', currentStatus);
+    const body = new URLSearchParams();
+    body.append('id', id);
+    body.append('current_status', currentStatus ? '1' : '0');
 
     fetch('watchlistcontroller.php', {
         method: 'POST',
-        body: formData,
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: body.toString()
     })
     .then(response => {
         if (!response.ok) {
@@ -18,7 +22,7 @@ function toggleStatus(id, currentStatus) {
         if (data.success) {
             location.reload();
         } else {
-            alert('Update failed.');
+            alert(data.error || 'Update failed.');
         }
     })
     .catch(error => {

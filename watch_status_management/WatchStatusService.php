@@ -63,7 +63,9 @@ class WatchStatusService {
             return $existing;
         }
 
-        $newStatus = new WatchStatus($user_id, $movie_id, $watch_state, 0);
+        $progress = $watch_state === 'completed' ? 100 : 0;
+        $finishedAt = $watch_state === 'completed' ? date('Y-m-d H:i:s') : null;
+        $newStatus = new WatchStatus($user_id, $movie_id, $watch_state, $progress, null, $finishedAt);
         return $this->repository->save($newStatus);
     }
 
