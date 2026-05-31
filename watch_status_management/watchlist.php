@@ -184,20 +184,27 @@ try {
                 <option value="">Select a movie…</option>
                 <?php
                 try {
-                    $stmt = $pdo->prepare("\
-                        SELECT m.movie_id, m.title\
-                        FROM Movies m\
-                        LEFT JOIN WatchStatus ws ON ws.movie_id = m.movie_id AND ws.user_id = ?\
-                        WHERE m.user_id = ? AND ws.status_id IS NULL\
-                        ORDER BY m.title ASC\
-                    ");
+                    $stmt = $pdo->prepare(
+                        "SELECT m.movie_id, m.title
+                         FROM Movies m
+                         LEFT JOIN WatchStatus ws ON ws.movie_id = m.movie_id AND ws.user_id = ?
+                         WHERE m.user_id = ? AND ws.status_id IS NULL
+                         ORDER BY m.title ASC"
+                    );
                     $stmt->execute([$user_id, $user_id]);
                     $availableMovies = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                } catch (Exception $e) {
+                    $availableMovies = [];
+                }
+
+                if (count($availableMovies) > 0):
                     foreach ($availableMovies as $am):
                 ?>
                     <option value="<?php echo intval($am['movie_id']); ?>"><?php echo htmlspecialchars($am['title']); ?></option>
                 <?php endforeach;
-                } catch (Exception $e) { /* show empty list */ } ?>
+                else: ?>
+                    <option value="" disabled>No movies available to add. Add movies in your collection first.</option>
+                <?php endif; ?>
             </select>
 
             <div class="modal-actions">
