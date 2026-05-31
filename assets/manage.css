@@ -194,6 +194,89 @@
     margin-bottom: 2rem;
 }
 
+/* Action buttons in table rows */
+.inline-form {
+    display: inline-flex;
+    margin: 0;
+    padding: 0;
+    align-items: center;
+}
+
+.action-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.25rem 0.6rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+    margin: 0; /* spacing handled by .actions container */
+}
+
+.action-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(2,6,23,0.06);
+}
+
+/* Remove extra margin on the last action in a cell */
+.manage-table td .action-link:last-child {
+    margin-right: 0;
+}
+
+/* Container for action buttons to prevent overlap and allow wrapping */
+.actions {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.action-link.edit {
+    background: var(--edit-bg);
+    color: var(--edit-color);
+}
+.action-link.edit:hover {
+    background: var(--edit-hover);
+}
+
+.action-link.review {
+    background: var(--secondary-bg);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+}
+
+.action-link.add {
+    background: var(--success-bg);
+    color: var(--success-color);
+    border-color: transparent;
+}
+.action-link.add:hover {
+    background: rgba(34,197,94,0.28);
+}
+
+.action-link.delete {
+    background: var(--delete-bg);
+    color: var(--delete-color);
+}
+.action-link.delete:hover {
+    background: var(--delete-hover);
+}
+
+/* Ensure buttons inside forms look like links/buttons */
+.inline-form .action-link,
+.inline-form button.action-link {
+    border: none;
+    background-clip: padding-box;
+}
+
+/* Add style to match watchlist primary green action */
+.act.add{background:linear-gradient(180deg,var(--green) 0%,var(--green-hover, var(--green)) 100%);color:#fff;border:1px solid rgba(0,0,0,.06);box-shadow:0 6px 18px rgba(34,197,94,.12)}
+.act.add:hover{filter:brightness(.98);transform:translateY(-2px)}
+
 /* Rating Stars */
 .rating-stars {
     display: flex;

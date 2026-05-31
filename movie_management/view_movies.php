@@ -41,6 +41,7 @@ foreach ($reviewsByMovie as $movieId => $movieReviews) {
     <title>Movie List | CineList</title>
     <link rel="stylesheet" href="<?php echo $basePath; ?>assets/style.css">
     <link rel="stylesheet" href="<?php echo $basePath; ?>assets/manage.css">
+    <link rel="stylesheet" href="<?php echo $basePath; ?>assets/watchlist.css">
 </head>
 <body>
 <?php require_once $basePath . 'includes/header.php'; ?>
@@ -118,14 +119,16 @@ foreach ($reviewsByMovie as $movieId => $movieReviews) {
                     <?php endif; ?>
                 </td>
                 <td>
-                    <a href="edit_movies.php?id=<?= $movie->movie_id ?>" class="action-link edit">Edit</a>
-                    <a href="../review_system/review_page.php?movie_id=<?= $movie->movie_id ?>" class="action-link review">Reviews</a>
-                    <form method="POST" action="../watch_status_management/add_to_watchlist.php" class="inline-form">
-                        <input type="hidden" name="movie_id" value="<?= $movie->movie_id ?>">
-                        <input type="hidden" name="redirect" value="../movie_management/view_movies.php">
-                        <button type="submit" class="action-link add">Add to Watchlist</button>
-                    </form>
-                    <a href="delete_movies.php?id=<?= $movie->movie_id ?>" class="action-link delete" onclick="return confirm('Are you sure you want to delete this movie?')">Delete</a>
+                    <div class="actions">
+                        <a href="edit_movies.php?id=<?= $movie->movie_id ?>" class="act edit">Edit</a>
+                        <a href="../review_system/review_page.php?movie_id=<?= $movie->movie_id ?>" class="act ghost">Reviews</a>
+                        <form method="POST" action="../watch_status_management/add_to_watchlist.php" class="inline-form">
+                            <input type="hidden" name="movie_id" value="<?= $movie->movie_id ?>">
+                            <input type="hidden" name="redirect" value="../movie_management/view_movies.php">
+                            <button type="submit" class="act add">Add to Watchlist</button>
+                        </form>
+                        <a href="delete_movies.php?id=<?= $movie->movie_id ?>" class="act del" onclick="return confirm('Are you sure you want to delete this movie?')">Delete</a>
+                    </div>
                 </td>
             </tr>
             <?php endforeach; ?>
