@@ -238,7 +238,7 @@ class AdminManager {
     public function getUserById($userId) {
         try {
             $stmt = $this->pdo->prepare("
-                SELECT user_id, username, email, is_active, created_at 
+                SELECT user_id, username, email, is_active, is_admin, created_at 
                 FROM Users 
                 WHERE user_id = :user_id 
                 LIMIT 1
@@ -247,6 +247,73 @@ class AdminManager {
             return $stmt->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             return null;
+        }
+    }
+    
+    /**
+     * Check if username or email is already in use by another user
+     * @param string $username Username
+     * @param string $email Email
+     * @param int $userId Exclude this user ID from the check
+     * @return array|null Existing user data or null
+     */
+    public function checkUserExistsExclude($username, $email, $userId) {
+        try {
+            $stmt = $this->pdo->prepare("
+                SELECT user_id FROM Users 
+                WHERE (username = :username OR email = :email) AND user_id != :user_id 
+                LIMIT 1
+            ");
+            $stmt->execute([
+                'username' => $username,
+                'email' => $email,
+                'user_id' => (int)$userId,
+            ]);
+            return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
+        } catch (PDOException $e) {
+            return null;
+        }
+    }
+    
+    /**
+     * Update a user profile from the admin panel
+     * @param int $userId User ID
+     * @param string $username Username
+     * @param string $email Email address
+     * @param int $isActive Whether the account is active
+     * @param int $isAdmin Whether the user has admin privileges
+     * @return bool True if successful, false otherwise
+     */
+    public function updateUser($userId, $username, $email, $isActive, $isAdmin) {
+        try {
+            $stmt = $this->pdo->prepare("
+                UPDATE Users 
+                SET username = :username, email = :email, is_active = :is_active, is_admin = :is_admin 
+                WHERE user_id = :user_id
+            ");
+            return $stmt->execute([
+                'username' => $username,
+                'email' => $email,
+                'is_active' => (int)$isActive,
+                'is_admin' => (int)$isAdmin,
+                'user_id' => (int)$userId,
+            ]);
+        } catch (PDOException $e) {
+            return false;
+        }
+    }
+    
+    /**
+     * Permanently delete a user
+     * @param int $userId User ID
+     * @return bool True if successful, false otherwise
+     */
+    public function deleteUser($userId) {
+        try {
+            $stmt = $this->pdo->prepare("DELETE FROM Users WHERE user_id = :user_id");
+            return $stmt->execute(['user_id' => (int)$userId]);
+        } catch (PDOException $e) {
+            return false;
         }
     }
 
@@ -488,7 +555,7 @@ class AdminManager {
     public function getAllUsersWithStatus() {
         try {
             $stmt = $this->pdo->query("
-                SELECT user_id, username, email, is_active, created_at 
+                SELECT user_id, username, email, is_active, is_admin, created_at 
                 FROM Users 
                 ORDER BY created_at DESC
             ");

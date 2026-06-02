@@ -2,11 +2,15 @@
 include('../includes/db.php');
 require_once __DIR__ . '/MovieManager.php';
 require_once __DIR__ . '/../genres_management/Genre.php';
+require_once __DIR__ . '/../admin/includes/AdminAuth.php';
 
 session_start();
 
 // Check login
-if (!isset($_SESSION['user_id'])) {
+AdminAuth::startSession();
+$isAdmin = AdminAuth::isLoggedIn();
+
+if (!isset($_SESSION['user_id']) && !$isAdmin) {
     header("Location: ../Login/login.php");
     exit();
 }
@@ -26,7 +30,7 @@ if (!$id) {
     exit();
 }
 
-$movie = $movieRepository->getById($id, $user_id);
+$movie = $movieRepository->getById($id, $isAdmin ? null : $user_id);
 
 if (!$movie) {
     echo "Movie not found or access denied.";
@@ -43,7 +47,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (empty($movie->title) || empty($movie->genre)) {
         $error = "Title and Genre are required.";
     } else {
-        $movieRepository->update($movie);
+        $movieRepository->update($movie, $isAdmin ? null : $user_id);
         header("Location: view_movies.php");
         exit();
     }
@@ -74,7 +78,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <form class="manage-form" method="POST">
         <div class="form-group">
             <label for="title">Movie Title</label>
-            <input type="text" id="title" name="title" value="<?= htmlspecialchars($movie->title) ?>" required>
+            <input type="text" id="title" name="title" value="<?= htmlspecialchars($movie->title) ?>" placeholder="Enter movie title" required>
         </div>
 
         <div class="form-group">
@@ -94,7 +98,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         <div class="form-group">
             <label for="release_date">Release Date</label>
-            <input type="date" id="release_date" name="release_date" value="<?= htmlspecialchars($movie->release_date) ?>">
+            <input type="date" id="release_date" name="release_date" value="<?= htmlspecialchars($movie->release_date) ?>" placeholder="YYYY-MM-DD">
         </div>
         <div class="btn-group">
             <button type="submit" class="btn-primary">Update Movie</button>

@@ -89,8 +89,31 @@ class MovieRepository
         }
     }
 
-    public function update(Movie $movie): bool
+    public function update(Movie $movie, ?int $userId = null): bool
     {
+        if ($userId === null) {
+            $stmt = $this->pdo->prepare(
+                "UPDATE Movies SET
+                    title = ?,
+                    genre = ?,
+                    release_date = ?,
+                    watched = ?,
+                    watch_date = ?,
+                    user_notes = ?
+                WHERE movie_id = ?"
+            );
+
+            return $stmt->execute([
+                $movie->title,
+                $movie->genre,
+                $movie->release_date,
+                $movie->watched,
+                $movie->watch_date,
+                $movie->user_notes,
+                $movie->movie_id,
+            ]);
+        }
+
         $stmt = $this->pdo->prepare(
             "UPDATE Movies SET
                 title = ?,
@@ -110,20 +133,30 @@ class MovieRepository
             $movie->watch_date,
             $movie->user_notes,
             $movie->movie_id,
-            $movie->user_id,
+            $userId,
         ]);
     }
 
-    public function delete(int $movieId, int $userId): bool
+    public function delete(int $movieId, ?int $userId = null): bool
     {
+        if ($userId === null) {
+            $stmt = $this->pdo->prepare("DELETE FROM Movies WHERE movie_id = ?");
+            return $stmt->execute([$movieId]);
+        }
+
         $stmt = $this->pdo->prepare("DELETE FROM Movies WHERE movie_id = ? AND user_id = ?");
         return $stmt->execute([$movieId, $userId]);
     }
 
-    public function getById(int $movieId, int $userId): ?Movie
+    public function getById(int $movieId, ?int $userId = null): ?Movie
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM Movies WHERE movie_id = ? AND user_id = ?");
-        $stmt->execute([$movieId, $userId]);
+        if ($userId === null) {
+            $stmt = $this->pdo->prepare("SELECT * FROM Movies WHERE movie_id = ?");
+            $stmt->execute([$movieId]);
+        } else {
+            $stmt = $this->pdo->prepare("SELECT * FROM Movies WHERE movie_id = ? AND user_id = ?");
+            $stmt->execute([$movieId, $userId]);
+        }
         $movieData = $stmt->fetch(PDO::FETCH_ASSOC);
 
         return $movieData ? Movie::fromArray($movieData) : null;

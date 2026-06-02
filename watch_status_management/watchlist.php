@@ -149,7 +149,7 @@ try {
             <input type="hidden" name="redirect" value="watchlist.php">
 
             <label>Movie</label>
-            <input class="input" id="editMovieTitle" disabled style="opacity:.6">
+            <input class="input" id="editMovieTitle" placeholder="Movie title" disabled style="opacity:.6">
 
             <label for="editWatchState">Status</label>
             <select id="editWatchState" name="watch_state" class="select">

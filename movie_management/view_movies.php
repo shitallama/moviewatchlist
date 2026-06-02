@@ -1,18 +1,22 @@
 <?php
 include('../includes/db.php');
 require_once __DIR__ . '/MovieManager.php';
+require_once __DIR__ . '/../admin/includes/AdminAuth.php';
 
 session_start();
 
 // Check login
-if (!isset($_SESSION['user_id'])) {
+AdminAuth::startSession();
+$isAdmin = AdminAuth::isLoggedIn();
+
+if (!isset($_SESSION['user_id']) && !$isAdmin) {
     header("Location: ../Login/login.php");
     exit();
 }
 
 $basePath = '../';
-$user_id = (int)$_SESSION['user_id'];
-$showAll = isset($_GET['all']) && $_GET['all'] === '1';
+$user_id = isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : 0;
+$showAll = $isAdmin || (isset($_GET['all']) && $_GET['all'] === '1');
 
 $search = isset($_GET['search']) ? trim($_GET['search']) : '';
 $genre = isset($_GET['genre']) ? trim($_GET['genre']) : '';

@@ -280,10 +280,10 @@ try {
                 <a href="<?php echo $basePath; ?>admin/manage_reviews.php" class="quick-link">
                     <i class="fas fa-comments"></i> Manage Reviews
                 </a>
-                <a href="<?php echo $basePath; ?>movie_management/view_movies.php" class="quick-link">
+                <a href="<?php echo $basePath; ?>admin/manage_movies.php" class="quick-link">
                     <i class="fas fa-clapperboard"></i> Manage Movies
                 </a>
-                <a href="<?php echo $basePath; ?>genres_management/view_genre.php" class="quick-link">
+                <a href="<?php echo $basePath; ?>admin/manage_genres.php" class="quick-link">
                     <i class="fas fa-list"></i> Manage Genres
                 </a>
                 <a href="<?php echo $basePath; ?>index.php" class="quick-link">

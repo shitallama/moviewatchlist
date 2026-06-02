@@ -2,11 +2,16 @@
 include('../includes/db.php');
 require_once __DIR__ . '/MovieManager.php';
 require_once __DIR__ . '/../genres_management/Genre.php';
+require_once __DIR__ . '/../admin/includes/AdminAuth.php';
+require_once __DIR__ . '/../admin/includes/AdminManager.php';
 
 session_start();
 
 // Check login
-if (!isset($_SESSION['user_id'])) {
+AdminAuth::startSession();
+$isAdmin = AdminAuth::isLoggedIn();
+
+if (!isset($_SESSION['user_id']) && !$isAdmin) {
     header("Location: ../Login/login.php");
     exit();
 }
@@ -14,7 +19,9 @@ if (!isset($_SESSION['user_id'])) {
 $basePath = '../';
 $movieRepository = new MovieRepository($pdo);
 $genreRepository = new GenreRepository($pdo);
+$adminManager = new AdminManager($pdo);
 $genres = $genreRepository->getAll();
+$adminUsers = $isAdmin ? $adminManager->getAllUsers() : [];
 $error = '';
 
 // Add movie
@@ -25,11 +32,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $watch_date = null;
     $user_notes = null;
     $watched = 0;
-    $user_id = (int)$_SESSION['user_id'];
+    $user_id = $isAdmin ? (int)($_POST['owner_user_id'] ?? 0) : (int)$_SESSION['user_id'];
 
     // Validation
     if (empty($title) || empty($genre)) {
         $error = "Title and Genre are required.";
+    } elseif ($isAdmin && $user_id <= 0) {
+        $error = "Please select a valid owner for this movie.";
     } else {
         try {
             $movie = new Movie(
@@ -44,7 +53,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             );
 
             $movieRepository->add($movie);
-            header("Location: view_movies.php");
+            if ($isAdmin) {
+                header("Location: ../admin/manage_movies.php");
+            } else {
+                header("Location: view_movies.php");
+            }
             exit();
         } catch (Exception $e) {
             $error = 'Unable to add movie: ' . $e->getMessage();
@@ -75,9 +88,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <?php endif; ?>
 
     <form class="manage-form" method="POST">
+        <?php if ($isAdmin): ?>
+            <div class="form-group">
+                <label for="owner_user_id">Owner</label>
+                <select id="owner_user_id" name="owner_user_id" required>
+                    <option value="">Select a user</option>
+                    <?php foreach ($adminUsers as $adminUser): ?>
+                        <option value="<?php echo (int)$adminUser['user_id']; ?>">
+                            <?php echo htmlspecialchars($adminUser['username']); ?> (<?php echo htmlspecialchars($adminUser['email']); ?>)
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+        <?php endif; ?>
         <div class="form-group">
             <label for="title">Movie Title</label>
-            <input type="text" id="title" name="title" required>
+            <input type="text" id="title" name="title" placeholder="Enter movie title" required>
         </div>
 
         <div class="form-group">
@@ -97,12 +123,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         <div class="form-group">
             <label for="release_date">Release Date</label>
-            <input type="date" id="release_date" name="release_date">
+            <input type="date" id="release_date" name="release_date" placeholder="YYYY-MM-DD">
         </div>
 
         <div class="btn-group">
             <button type="submit" class="btn-primary">Add Movie</button>
-            <a href="view_movies.php" class="btn-secondary">Cancel</a>
+            <?php if ($isAdmin): ?>
+                <a href="<?php echo $basePath; ?>admin/manage_movies.php" class="btn-secondary">Cancel</a>
+            <?php else: ?>
+                <a href="view_movies.php" class="btn-secondary">Cancel</a>
+            <?php endif; ?>
         </div>
     </form>
 </div>

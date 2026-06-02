@@ -2,6 +2,14 @@
 $basePath = '../';
 require_once $basePath . 'includes/db.php';
 require_once $basePath . 'genres_management/Genre.php';
+require_once $basePath . 'admin/includes/AdminAuth.php';
+
+AdminAuth::startSession();
+
+if (!isset($_SESSION['user_id']) && !AdminAuth::isLoggedIn()) {
+    header('Location: ../Login/login.php');
+    exit;
+}
 
 $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 if (!$id) {
@@ -75,12 +83,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <form method="POST" class="category-form">
         <div class="form-field">
             <label for="name">Genre name</label>
-            <input type="text" id="name" name="name" value="<?php echo htmlspecialchars($name); ?>" required>
+            <input type="text" id="name" name="name" value="<?php echo htmlspecialchars($name); ?>" placeholder="Genre name" required>
         </div>
 
         <div class="form-field">
             <label for="description">Description</label>
-            <textarea id="description" name="description"><?php echo htmlspecialchars($description); ?></textarea>
+            <textarea id="description" name="description" placeholder="Describe the genre"><?php echo htmlspecialchars($description); ?></textarea>
         </div>
 
         <div class="form-field">

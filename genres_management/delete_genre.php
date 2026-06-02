@@ -2,6 +2,14 @@
 $basePath = '../';
 require_once $basePath . 'includes/db.php';
 require_once $basePath . 'genres_management/Genre.php';
+require_once $basePath . 'admin/includes/AdminAuth.php';
+
+AdminAuth::startSession();
+
+if (!isset($_SESSION['user_id']) && !AdminAuth::isLoggedIn()) {
+    header('Location: ../Login/login.php');
+    exit;
+}
 
 $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 if ($id) {
